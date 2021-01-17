@@ -8,6 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="tfe_semi_transparent">#66000000</color>
+
     <color name="green_500">#8AB766</color>
     <color name="yellow_500">#FFC135</color>
 

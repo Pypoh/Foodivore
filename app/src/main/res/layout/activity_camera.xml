@@ -6,4 +6,4 @@
     android:layout_height="fill_parent"
     android:background="#000"
     android:orientation="vertical"
-    tools:context=".scanner.CameraActivity" />
+    tools:context="com.perkoren.product.CameraActivity" />

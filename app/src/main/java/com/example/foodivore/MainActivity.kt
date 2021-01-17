@@ -1,5 +1,6 @@
 package com.example.foodivore
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -8,8 +9,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.foodivore.scanner.DetectorActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var navAddButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,5 +29,15 @@ class MainActivity : AppCompatActivity() {
         val scanNavItem = navMenu.findItem(R.id.navigation_scan)
         scanNavItem.isEnabled = false
 
+        navAddButton = findViewById(R.id.nav_button_add)
+        navAddButton.setOnClickListener {
+            intentToCameraActivity()
+        }
+
+    }
+
+    private fun intentToCameraActivity() {
+        val intent = Intent(this, DetectorActivity::class.java)
+        startActivity(intent)
     }
 }
