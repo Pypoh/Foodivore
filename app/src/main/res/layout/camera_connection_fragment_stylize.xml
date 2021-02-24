@@ -17,7 +17,7 @@
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
-  <com.example.foodivore.scanner.AutoFitTextureView
+  <com.example.foodivore.scanner.customview.AutoFitTextureView
     android:id="@+id/texture"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -37,13 +37,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
-  <com.example.foodivore.scanner.OverlayView
+  <com.example.foodivore.scanner.customview.OverlayView
       android:id="@+id/overlay"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true" />
 
-  <com.example.foodivore.scanner.OverlayView
+  <com.example.foodivore.scanner.customview.OverlayView
     android:id="@+id/debug_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

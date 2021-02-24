@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package com.example.foodivore.scanner
+package com.example.foodivore.scanner.customview
+
+import com.example.foodivore.scanner.deepmodel.Classifier
 
 interface ResultsView {
     fun setResults(results: List<Classifier.Recognition>)

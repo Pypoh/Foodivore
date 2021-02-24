@@ -23,7 +23,7 @@ import android.util.Pair
 import android.util.TypedValue
 import com.example.foodivore.scanner.env.BorderedText
 import com.example.foodivore.scanner.env.ImageUtils
-import com.example.foodivore.scanner.test.ClassifierTflite
+import com.example.foodivore.scanner.deepmodel.Classifier
 import java.util.*
 
 /**
@@ -105,7 +105,7 @@ class MultiBoxTracker(private val context: Context) {
     }
 
     @Synchronized
-    fun trackResults(results: List<ClassifierTflite.Recognition>, timestamp: Long) {
+    fun trackResults(results: List<Classifier.Recognition>, timestamp: Long) {
 //        logger.i("Processing %d results from %d", results.size, timestamp)
         processResults(results)
     }
@@ -147,9 +147,9 @@ class MultiBoxTracker(private val context: Context) {
         }
     }
 
-    private fun processResults(results: List<ClassifierTflite.Recognition>) {
-        val rectsToTrack: MutableList<Pair<Float, ClassifierTflite.Recognition>> =
-            LinkedList<Pair<Float, ClassifierTflite.Recognition>>()
+    private fun processResults(results: List<Classifier.Recognition>) {
+        val rectsToTrack: MutableList<Pair<Float, Classifier.Recognition>> =
+            LinkedList<Pair<Float, Classifier.Recognition>>()
         screenRects.clear()
         val rgbFrameToScreen = Matrix(getFrameToCanvasMatrix())
         for (result in results) {
@@ -168,7 +168,7 @@ class MultiBoxTracker(private val context: Context) {
 //                logger.w("Degenerate rectangle! $detectionFrameRect")
                 continue
             }
-            rectsToTrack.add(Pair<Float, ClassifierTflite.Recognition>(result.confidence, result))
+            rectsToTrack.add(Pair<Float, Classifier.Recognition>(result.confidence, result))
         }
         trackedObjects.clear()
         if (rectsToTrack.isEmpty()) {

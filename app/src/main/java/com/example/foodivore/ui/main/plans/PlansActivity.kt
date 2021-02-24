@@ -1,13 +1,12 @@
 package com.example.foodivore.ui.main.plans
 
+import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.foodivore.R
-import com.example.foodivore.databinding.FragmentPlansBinding
+import com.example.foodivore.databinding.ActivityPlansBinding
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -16,25 +15,22 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 
+class PlansActivity : AppCompatActivity() {
 
-class PlansFragment : Fragment() {
-
-    private lateinit var plansDataBinding: FragmentPlansBinding
+    private lateinit var plansDataBinding: ActivityPlansBinding
 
     private lateinit var plansChart: PieChart
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_plans)
 
-        plansDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        plansDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_plans)
 
         setupViews(plansDataBinding.root)
 
         setupChart()
 
-        return plansDataBinding.root
     }
 
     private fun setupChart() {
@@ -46,13 +42,13 @@ class PlansFragment : Fragment() {
         plansChart.centerText = "Meals"
 
         plansChart.isDrawHoleEnabled = true
-        plansChart.setHoleColor(resources.getColor(R.color.green_500))
+        plansChart.setHoleColor(resources.getColor(R.color.white))
 
-        plansChart.setTransparentCircleColor(resources.getColor(R.color.green_500))
+        plansChart.setTransparentCircleColor(resources.getColor(R.color.white))
         plansChart.setTransparentCircleAlpha(110)
 
-        plansChart.holeRadius = 8f
-        plansChart.transparentCircleRadius = 10f
+        plansChart.holeRadius = 48f
+        plansChart.transparentCircleRadius = 52f
 
         plansChart.setDrawCenterText(true)
 
@@ -68,9 +64,10 @@ class PlansFragment : Fragment() {
 
         // set data
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(56f))
-        entries.add(PieEntry(13f))
-        entries.add(PieEntry(36f))
+        entries.add(PieEntry(56f, "Makanan Pokok"))
+        entries.add(PieEntry(13f, "Buah"))
+        entries.add(PieEntry(36f, "Sayuran"))
+        entries.add(PieEntry(48f, "Lauk Pauk"))
 
         val dataSet = PieDataSet(entries, "Nutritions")
 
@@ -96,13 +93,11 @@ class PlansFragment : Fragment() {
 
         val data = PieData(dataSet)
 //        data.setValueFormatter(PercentFormatter())
-//        data.setValueTextSize(12f)
-//        data.setValueTextColor(Color.WHITE)
+        data.setValueTextSize(16f)
+        data.setValueTextColor(Color.WHITE)
 //        data.setValueTypeface(tfLight)
-        data.setDrawValues(false)
+        data.setDrawValues(true)
         plansChart.data = data
-
-        // undo all highlights
 
         // undo all highlights
         plansChart.highlightValues(null)

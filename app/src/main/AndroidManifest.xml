@@ -14,7 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodivore">
-        <activity android:name=".scanner.DetectorActivity" />
+        <activity
+            android:name=".ui.main.plans.PlansActivity"
+            android:theme="@style/MaterialTheme.NoActionBar" />
+        <activity
+            android:name=".ui.pretest.PreTestActivity"
+            android:theme="@style/MaterialTheme.NoActionBar" />
+        <activity android:name=".scanner.camera.DetectorActivity" />
         <activity
             android:name=".ui.auth.AuthActivity"
             android:theme="@style/MaterialTheme.NoActionBar" />

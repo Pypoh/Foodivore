@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.foodivore.scanner
+package com.example.foodivore.scanner.customview
 
 import android.content.Context
 import android.graphics.Canvas
@@ -21,6 +21,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import com.example.foodivore.scanner.deepmodel.Classifier
 
 
 class RecognitionScoreView(context: Context, set: AttributeSet) : View(context, set), ResultsView {

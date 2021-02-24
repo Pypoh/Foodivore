@@ -7,9 +7,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.foodivore.scanner.DetectorActivity
+import com.example.foodivore.scanner.camera.DetectorActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu: Menu = navView.menu
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_plans, R.id.navigation_scan, R.id.navigation_article, R.id.navigation_profile))
+                R.id.navigation_home, R.id.navigation_scan, R.id.navigation_profile))
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         val scanNavItem = navMenu.findItem(R.id.navigation_scan)

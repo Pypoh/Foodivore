@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.foodivore.scanner
+package com.example.foodivore.scanner.camera
 
 import android.Manifest
 import android.app.Activity
@@ -35,6 +35,7 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.Toast
 import com.example.foodivore.R
+import com.example.foodivore.scanner.customview.OverlayView
 import com.example.foodivore.scanner.env.ImageUtils
 
 abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.PreviewCallback {

@@ -1,10 +1,10 @@
-package com.example.foodivore.scanner.test
+package com.example.foodivore.scanner.deepmodel
 
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.os.Trace
-import com.example.foodivore.scanner.test.ClassifierTflite.Recognition
+import com.example.foodivore.scanner.deepmodel.Classifier.Recognition
 import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -16,7 +16,7 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.util.*
 
-class TFLiteObjectDetectionAPIModelTflite private constructor(): ClassifierTflite {
+class TFLiteObjectDetectionAPIModel private constructor(): Classifier {
 
 //    private val LOGGER: Logger = Logger()
 
@@ -183,8 +183,8 @@ class TFLiteObjectDetectionAPIModelTflite private constructor(): ClassifierTflit
             labelFilename: String,
             inputSize: Int,
             isQuantized: Boolean
-        ): ClassifierTflite {
-            val d = TFLiteObjectDetectionAPIModelTflite()
+        ): Classifier {
+            val d = TFLiteObjectDetectionAPIModel()
             val actualFilename =
                 labelFilename.split("file:///android_asset/".toRegex()).toTypedArray()[1]
             val labelsInput = assetManager.open(actualFilename)

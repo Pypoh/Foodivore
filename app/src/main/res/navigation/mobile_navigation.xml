@@ -11,11 +11,6 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
-    <fragment
-        android:id="@+id/navigation_plans"
-        android:name="com.example.foodivore.ui.main.plans.PlansFragment"
-        android:label="@string/title_plans"
-        tools:layout="@layout/fragment_plans" />
 
     <fragment
         android:id="@+id/navigation_scan"
@@ -23,11 +18,6 @@
         android:label="@string/title_scan"
         tools:layout="@layout/fragment_scan" />
 
-    <fragment
-        android:id="@+id/navigation_article"
-        android:name="com.example.foodivore.ui.main.article.ArticleFragment"
-        android:label="@string/title_article"
-        tools:layout="@layout/fragment_article" />
 
     <fragment
         android:id="@+id/navigation_profile"

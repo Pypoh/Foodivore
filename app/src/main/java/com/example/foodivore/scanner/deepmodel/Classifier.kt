@@ -1,9 +1,9 @@
-package com.example.foodivore.scanner.test
+package com.example.foodivore.scanner.deepmodel
 
 import android.graphics.Bitmap
 import android.graphics.RectF
 
-interface ClassifierTflite {
+interface Classifier {
     fun recognizeImage(bitmap: Bitmap?): List<Recognition?>?
     fun enableStatLogging(debug: Boolean)
     val statString: String?

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.foodivore.scanner
+package com.example.foodivore.scanner.camera
 
 import android.graphics.*
 import android.graphics.Bitmap.Config
@@ -24,10 +24,11 @@ import android.util.Size
 import android.util.TypedValue
 import android.widget.Toast
 import com.example.foodivore.R
+import com.example.foodivore.scanner.customview.OverlayView
+import com.example.foodivore.scanner.deepmodel.Classifier
+import com.example.foodivore.scanner.deepmodel.TFLiteObjectDetectionAPIModel
 import com.example.foodivore.scanner.env.BorderedText
 import com.example.foodivore.scanner.env.ImageUtils
-import com.example.foodivore.scanner.test.ClassifierTflite
-import com.example.foodivore.scanner.test.TFLiteObjectDetectionAPIModelTflite
 import com.example.foodivore.scanner.tracking.MultiBoxTracker
 import java.io.IOException
 import java.util.*
@@ -56,7 +57,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
     var trackingOverlay: OverlayView? = null
     private var sensorOrientation: Int? = null
 
-    private var detector: ClassifierTflite? = null
+    private var detector: Classifier? = null
 
     private var lastProcessingTimeMs: Long = 0
     private var rgbFrameBitmap: Bitmap? = null
@@ -83,7 +84,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
         tracker = MultiBoxTracker(this)
         var cropSize = TF_OD_API_INPUT_SIZE
         try {
-            detector = TFLiteObjectDetectionAPIModelTflite.create(
+            detector = TFLiteObjectDetectionAPIModel.create(
                 assets,
                 TF_OD_API_MODEL_FILE,
                 TF_OD_API_LABELS_FILE,
@@ -175,7 +176,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
             minimumConfidence = when (MODE) {
                 DetectorMode.TF_OD_API -> MINIMUM_CONFIDENCE_TF_OD_API
             }
-            val mappedRecognitions: MutableList<ClassifierTflite.Recognition> =
+            val mappedRecognitions: MutableList<Classifier.Recognition> =
                 LinkedList()
             for (result in results!!) {
                 val location: RectF = result!!.location!!

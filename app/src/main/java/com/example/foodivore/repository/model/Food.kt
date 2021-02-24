@@ -10,6 +10,9 @@ object Food {
     data class Detail(
         var imageUrl: String,
         var name: String,
-        var calorie: Int
+        var calorie: Int,
+        var type: String
     )
+
+
 }

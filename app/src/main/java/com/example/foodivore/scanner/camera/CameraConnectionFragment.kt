@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.foodivore.scanner
+package com.example.foodivore.scanner.camera
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -39,6 +39,7 @@ import android.util.SparseIntArray
 import android.view.*
 import android.widget.Toast
 import com.example.foodivore.R
+import com.example.foodivore.scanner.customview.AutoFitTextureView
 import com.example.foodivore.scanner.env.ImageUtils
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -49,10 +50,10 @@ import java.util.concurrent.TimeUnit
 class CameraConnectionFragment : Fragment {
 
     private constructor(
-            connectionCallback: ConnectionCallback?,
-            imageListener: OnImageAvailableListener?,
-            layout: Int?,
-            inputSize: Size?):super(){
+        connectionCallback: ConnectionCallback?,
+        imageListener: OnImageAvailableListener?,
+        layout: Int?,
+        inputSize: Size?):super(){
         this.cameraConnectionCallback = connectionCallback
         this.imageListener = imageListener
         this.layout = layout
@@ -73,9 +74,9 @@ class CameraConnectionFragment : Fragment {
         }
 
         fun newInstance(cameraConnectionCallback: ConnectionCallback?,
-            imageListener: OnImageAvailableListener?,
-            layout: Int?,
-            inputSize: Size?): CameraConnectionFragment {
+                        imageListener: OnImageAvailableListener?,
+                        layout: Int?,
+                        inputSize: Size?): CameraConnectionFragment {
 
             return CameraConnectionFragment(cameraConnectionCallback,imageListener, layout,inputSize)
         }
@@ -123,7 +124,7 @@ class CameraConnectionFragment : Fragment {
         }
     }
 
-    private var cameraConnectionCallback: CameraConnectionFragment.ConnectionCallback? = null
+    private var cameraConnectionCallback: ConnectionCallback? = null
     private var imageListener: OnImageAvailableListener? = null
     private var layout: Int? = null
     private var inputSize: Size? = null
