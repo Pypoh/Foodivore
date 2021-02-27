@@ -7,20 +7,18 @@
     android:background="#00000000">
 
     <com.google.android.material.textfield.TextInputEditText
+        style=""
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style=""/>
+        android:layout_height="wrap_content" />
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:orientation="vertical">
 
 
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+        <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -33,15 +31,9 @@
             android:layout_alignParentTop="true"
             android:background="@color/tfe_semi_transparent">
 
-<!--            <ImageView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/tfl2_logo" />-->
         </androidx.appcompat.widget.Toolbar>
+
 
     </RelativeLayout>
 
-<!--    <include-->
-<!--        android:id="@+id/bottom_sheet_layout"-->
-<!--        layout="@layout/tfe_od_layout_bottom_sheet" />-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
