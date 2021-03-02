@@ -20,6 +20,7 @@ import android.graphics.Bitmap.Config
 import android.graphics.Paint.Style
 import android.media.ImageReader.OnImageAvailableListener
 import android.os.SystemClock
+import android.util.Log
 import android.util.Size
 import android.util.TypedValue
 import android.widget.Toast
@@ -51,7 +52,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
     // Minimum detection confidence to track a detection.
     private val MINIMUM_CONFIDENCE_TF_OD_API = 0.3f
     private val MAINTAIN_ASPECT = false
-    private val DESIRED_PREVIEW_SIZE = Size(640, 640)
+    private val DESIRED_PREVIEW_SIZE = Size(1920, 1080)
     private val SAVE_PREVIEW_BITMAP = false
     private val TEXT_SIZE_DIP = 10f
     var trackingOverlay: OverlayView? = null
@@ -129,7 +130,8 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
     }
 
     override val desiredPreviewFrameSize: Size
-        get() =  DESIRED_PREVIEW_SIZE
+        get() = DESIRED_PREVIEW_SIZE
+
 
     override fun processImage() {
         ++timestamp
@@ -186,6 +188,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
                     result.location = location
                     mappedRecognitions.add(result)
                 }
+                Log.d("DetectionResult", "$result")
             }
             tracker!!.trackResults(mappedRecognitions, currTimestamp)
             trackingOverlay!!.postInvalidate()
@@ -198,6 +201,19 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
                 showInference(lastProcessingTimeMs.toString() + "ms")
             }
         }
+    }
+
+    override fun captureResult() {
+        Log.d("DetectionResultCamera", "Capturing...")
+       runInBackground {
+           val results = detector!!.recognizeImage(
+               croppedBitmap!!
+           )
+           for (result in results!!) {
+               Log.d("DetectionResultCamera", "$result")
+           }
+
+       }
     }
 
     protected fun getLayoutId(): Int {
@@ -218,280 +234,5 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
     protected fun setNumThreads(numThreads: Int) {
         runInBackground { detector!!.setNumThreads(numThreads) }
     }
-
-
-
-
-
-
-
-
-
-//    private var sensorOrientation: Int? = null
-//
-////    private var detector: Classifier? = null
-//    private var detector: ClassifierTflite? = null
-//    private var objectDetector: MobileNetObjDetector? = null
-//
-//    private var lastProcessingTimeMs: Long = 0
-//    private var rgbFrameBitmap: Bitmap? = null
-//    private var croppedBitmap: Bitmap? = null
-//    private var cropCopyBitmap: Bitmap? = null
-//
-//    private var computingDetection = false
-//
-//    private var timestamp: Long = 0
-//
-//    private var frameToCropTransform: Matrix? = null
-//    private var cropToFrameTransform: Matrix? = null
-//
-//    private var tracker: MultiBoxTracker? = null
-//
-//    private var luminanceCopy: ByteArray? = null
-//
-//    private var borderedText: BorderedText? = null
-//
-//    lateinit var trackingOverlay: OverlayView
-//
-//    override val desiredPreviewFrameSize: Size
-//        get() = DESIRED_PREVIEW_SIZE
-//
-//
-//    public override fun onPreviewSizeChosen(size: Size, rotation: Int) {
-//        val textSizePx = TypedValue.applyDimension(
-//            TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, resources.displayMetrics
-//        )
-//        borderedText = BorderedText(textSizePx)
-//        borderedText!!.setTypeface(Typeface.MONOSPACE)
-//
-//        tracker = MultiBoxTracker(this)
-//
-//        var cropSize = TF_OD_API_INPUT_SIZE
-//
-//        try {
-////            detector = TensorFlowObjectDetectionAPIModel.create(
-////                assets, TF_OD_API_MODEL_FILE, TF_OD_API_LABELS_FILE, TF_OD_API_INPUT_SIZE
-////            )
-//            detector = TFLiteObjectDetectionAPIModelTflite.create(
-//                assets,
-//                TF_OD_API_MODEL_FILE,
-//                TF_OD_API_LABELS_FILE,
-//                TF_OD_API_INPUT_SIZE,
-//                TF_OD_API_IS_QUANTIZED
-//            )
-//            cropSize = TF_OD_API_INPUT_SIZE
-//        } catch (e: IOException) {
-//            Log.e(ImageUtils.TAG, "Exception initializing classifier!", e)
-//            val toast = Toast.makeText(
-//                applicationContext, "Classifier could not be initialized", Toast.LENGTH_SHORT
-//            )
-//            toast.show()
-//            finish()
-//        }
-//
-////        try {
-////            objectDetector = MobileNetObjDetector.create(assets)
-////            Log.i(DetectorActivity.LOGGING_TAG, "Model Initiated successfully.")
-////            Toast.makeText(applicationContext, "MobileNetObjDetector created", Toast.LENGTH_SHORT)
-////                .show()
-////        } catch (e: IOException) {
-////            e.printStackTrace()
-////            Toast.makeText(
-////                applicationContext,
-////                "MobileNetObjDetector could not be created",
-////                Toast.LENGTH_SHORT
-////            ).show()
-////            finish()
-////        }
-//
-//
-//        previewWidth = size.width
-//        previewHeight = size.height
-//
-//        sensorOrientation = rotation - screenOrientation
-//        Log.i(ImageUtils.TAG, "Camera orientation relative to screen canvas: $sensorOrientation")
-//
-//        Log.i(ImageUtils.TAG, "Initializing at size $previewWidth x $previewHeight")
-//        rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888)
-//        croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888)
-//
-//        frameToCropTransform = ImageUtils.getTransformationMatrix(
-//            previewWidth, previewHeight,
-//            cropSize, cropSize,
-//            sensorOrientation!!, MAINTAIN_ASPECT
-//        )
-//
-//        cropToFrameTransform = Matrix()
-//        frameToCropTransform!!.invert(cropToFrameTransform)
-//
-//        trackingOverlay = findViewById(R.id.tracking_overlay) as OverlayView
-//
-//        val drawCall = object: OverlayView.DrawCallback {
-//            override fun drawCallback(canvas: Canvas){
-//                tracker!!.draw(canvas)
-//                if (isDebug) {
-//                    tracker!!.drawDebug(canvas)
-//                }
-//            }
-//        }
-//        trackingOverlay.addCallback(drawCall)
-//
-//
-//        val thisDrawCall = object: OverlayView.DrawCallback {
-//
-//            override fun drawCallback(canvas: Canvas){
-//                    if (!isDebug) {
-//                        return
-//                    }
-//                    val copy = cropCopyBitmap ?: return
-//
-//                    val backgroundColor = Color.argb(100, 0, 0, 0)
-//                    canvas.drawColor(backgroundColor)
-//
-//                    val matrix = Matrix()
-//                    val scaleFactor = 2f
-//                    matrix.postScale(scaleFactor, scaleFactor)
-//                    matrix.postTranslate(
-//                        canvas.width - copy.width * scaleFactor,
-//                        canvas.height - copy.height * scaleFactor
-//                    )
-//                    canvas.drawBitmap(copy, matrix, Paint())
-//
-//                    val lines = Vector<String>()
-//                    if (detector != null) {
-//                        val statString = detector!!.statString
-//                        val statLines = statString!!.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-//                        for (line in statLines) {
-//                            lines.add(line)
-//                        }
-//                    }
-//                    lines.add("")
-//
-//                    lines.add("Frame: " + previewWidth + "x" + previewHeight)
-//                    lines.add("Crop: " + copy.width + "x" + copy.height)
-//                    lines.add("View: " + canvas.width + "x" + canvas.height)
-//                    lines.add("Rotation: " + sensorOrientation!!)
-//                    lines.add("Inference time: " + lastProcessingTimeMs + "ms")
-//
-//                    borderedText!!.drawLines(canvas, 10f, (canvas.height - 10).toFloat(), lines)
-//            }
-//        }
-//
-//        addCallback(thisDrawCall)
-//
-//    }
-//
-//    override fun processImage() {
-//        ++timestamp
-//        val currTimestamp = timestamp
-//        val originalLuminance = getLuminance()
-//        tracker!!.onFrame(
-//            previewWidth,
-//            previewHeight,
-//            luminanceStride,
-//            sensorOrientation!!,
-//            originalLuminance,
-//            timestamp
-//        )
-//        trackingOverlay.postInvalidate()
-//
-//        // No mutex needed as this method is not reentrant.
-//        if (computingDetection) {
-//            readyForNextImage()
-//            return
-//        }
-//        computingDetection = true
-//        Log.i(ImageUtils.TAG, "Preparing image $currTimestamp for detection in bg thread.")
-//
-//        rgbFrameBitmap!!.setPixels(
-//            getRgbBytes(),
-//            0,
-//            previewWidth,
-//            0,
-//            0,
-//            previewWidth,
-//            previewHeight
-//        )
-//
-//        if (luminanceCopy == null) {
-//            luminanceCopy = ByteArray(originalLuminance!!.size)
-//        }
-//        System.arraycopy(originalLuminance, 0, luminanceCopy!!, 0, originalLuminance!!.size)
-//        readyForNextImage()
-//
-//        val canvas = Canvas(croppedBitmap!!)
-//        canvas.drawBitmap(rgbFrameBitmap!!, frameToCropTransform!!, null)
-//        // For examining the actual TF input.
-//        if (SAVE_PREVIEW_BITMAP) {
-//            ImageUtils.saveBitmap(croppedBitmap!!)
-//        }
-//
-//        runInBackground(
-//            Runnable {
-//                Log.i(ImageUtils.TAG, "Running detection on image $currTimestamp")
-//                val startTime = SystemClock.uptimeMillis()
-//                val results = detector!!.recognizeImage(croppedBitmap!!)
-//                lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime
-//
-//                cropCopyBitmap = Bitmap.createBitmap(croppedBitmap!!)
-//                val canvas = Canvas(cropCopyBitmap!!)
-//                val paint = Paint()
-//                paint.color = Color.RED
-//                paint.style = Style.STROKE
-//                paint.strokeWidth = 2.0f
-//
-//                val minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API
-//
-////                val mappedRecognitions = LinkedList<Classifier.Recognition>()
-//                val mappedRecognitions = LinkedList<ClassifierTflite.Recognition>()
-//
-//                for (result in results!!) {
-//                    val location = result!!.location
-//                    if (location != null && result.confidence!! >= minimumConfidence) {
-//                        canvas.drawRect(location, paint)
-//
-//                        cropToFrameTransform!!.mapRect(location)
-//                        result.location = location
-//                        mappedRecognitions.add(result)
-//                    }
-//                }
-//
-//                tracker!!.trackResults(mappedRecognitions, luminanceCopy!!, currTimestamp)
-//                trackingOverlay.postInvalidate()
-//
-//                requestRender()
-//                computingDetection = false
-//            })
-//    }
-//
-//    override fun onSetDebug(debug: Boolean) {
-//        detector!!.enableStatLogging(debug)
-//    }
-//
-//    companion object {
-//        private val TF_OD_API_INPUT_SIZE = 300
-////        private val TF_OD_API_MODEL_FILE = "file:///android_asset/frozen_inference_graph.pb"
-////        private val TF_OD_API_LABELS_FILE = "file:///android_asset/frozen_inference_labels.txt"
-//        private val TF_OD_API_MODEL_FILE = "model.tflite"
-//        private val TF_OD_API_LABELS_FILE = "file:///android_asset/labelmap_food.txt"
-//        private val TF_OD_API_IS_QUANTIZED = false
-//        private val LOGGING_TAG: String = DetectorActivity::class.java.name
-//
-//
-//        // Minimum detection confidence to track a detection.
-//        private val MINIMUM_CONFIDENCE_TF_OD_API = 0.6f
-//
-//        private val MAINTAIN_ASPECT = false
-//
-//        private val DESIRED_PREVIEW_SIZE = Size(640, 480)
-//
-//        private val SAVE_PREVIEW_BITMAP = false
-//        private val TEXT_SIZE_DIP = 10f
-//    }
-
-
-
-
-
 
 }

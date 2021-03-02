@@ -391,7 +391,7 @@ class CameraConnectionFragment : Fragment {
     /**
      * Closes the current [CameraDevice].
      */
-    private fun closeCamera() {
+    fun closeCamera() {
         try {
             cameraOpenCloseLock.acquire()
             if (null != captureSession) {

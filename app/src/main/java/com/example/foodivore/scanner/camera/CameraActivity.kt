@@ -33,9 +33,11 @@ import android.util.Size
 import android.view.KeyEvent
 import android.view.Surface
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.Toast
 import com.example.foodivore.R
 import com.example.foodivore.scanner.customview.OverlayView
+import com.example.foodivore.scanner.deepmodel.Classifier
 import com.example.foodivore.scanner.env.ImageUtils
 
 abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.PreviewCallback {
@@ -69,6 +71,7 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
                 else -> return 0
             }
         }
+
     //private val layoutId: Int =
     protected abstract val desiredPreviewFrameSize: Size
 
@@ -76,12 +79,24 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
         return yuvBytes[0]
     }
 
+    // Views
+    private lateinit var captureButton: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(ImageUtils.TAG, "onCreate " + this)
         super.onCreate(null)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContentView(R.layout.tfe_od_activity_camera)
+
+        captureButton = findViewById(R.id.button_capture_image_camera)
+        captureButton.setOnClickListener {
+            val cameraFragment =
+                fragmentManager.findFragmentByTag("CameraFragment") as CameraConnectionFragment
+            captureResult()
+
+            cameraFragment.closeCamera()
+        }
 
         if (hasPermission()) {
             setFragment()
@@ -123,12 +138,14 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
         yuvBytes[0] = bytes
         luminanceStride = previewWidth
 
-        imageConverter = Runnable { ImageUtils.convertYUV420SPToARGB8888(
-            bytes,
-            previewWidth,
-            previewHeight,
-            rgbBytes!!
-        ) }
+        imageConverter = Runnable {
+            ImageUtils.convertYUV420SPToARGB8888(
+                bytes,
+                previewWidth,
+                previewHeight,
+                rgbBytes!!
+            )
+        }
 
         postInferenceCallback = Runnable {
             camera.addCallbackBuffer(bytes)
@@ -253,8 +270,9 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
     ) {
         if (requestCode == PERMISSIONS_REQUEST) {
             if (grantResults.size > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
+            ) {
                 setFragment()
             } else {
                 requestPermission()
@@ -276,7 +294,8 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA) || shouldShowRequestPermissionRationale(
                     PERMISSION_STORAGE
-                )) {
+                )
+            ) {
                 Toast.makeText(
                     this@CameraActivity,
                     "Camera AND storage permission are required for this demo", Toast.LENGTH_LONG
@@ -349,9 +368,9 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
 
 
         fragmentManager
-                .beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit()
+            .beginTransaction()
+            .replace(R.id.container, fragment, "CameraFragment")
+            .commit()
     }
 
     protected fun fillBytes(planes: Array<Plane>, yuvBytes: Array<ByteArray?>) {
@@ -381,7 +400,8 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP
-                || keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            || keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+        ) {
             isDebug = !isDebug
             requestRender()
             onSetDebug(isDebug)
@@ -397,6 +417,8 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
     }
 
     protected abstract fun processImage()
+
+    protected abstract fun captureResult()
 
     protected abstract fun onPreviewSizeChosen(size: Size, rotation: Int)
 

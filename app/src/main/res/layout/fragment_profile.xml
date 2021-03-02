@@ -1,14 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main.profile.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/layout_circle_toolbar_profile"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/bg_circle"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Halo, Naufal Afif"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/layout_circle_toolbar_profile"
+                app:layout_constraintLeft_toRightOf="@id/layout_circle_toolbar_profile"
+                app:layout_constraintTop_toTopOf="@id/layout_circle_toolbar_profile" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_subscribe_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="@color/green_500"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintTop_toBottomOf="@id/layout_circle_toolbar_profile">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/text_subscribe_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Free Member"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="\u2022 Mendapatkan rekomendasi 3 menu harian"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/text_subscribe_header" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_subscribe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:backgroundTint="@color/white"
+                        android:insetLeft="0dp"
+                        android:insetTop="0dp"
+                        android:insetRight="0dp"
+                        android:insetBottom="0dp"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:text="Lihat langganan"
+                        android:textAllCaps="false"
+                        android:textColor="@color/green_500"
+                        android:textSize="12sp"
+                        app:cornerRadius="8dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_private_information"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Informasi Pribadi"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_subscribe_profile" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_height_profile"
+                app:layout_constraintTop_toBottomOf="@id/text_private_information"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tinggi badan (cm)"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_height_value_profile"
+                app:layout_constraintTop_toTopOf="@id/text_height_profile"
+                app:layout_constraintBottom_toBottomOf="@id/text_height_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="160 cm"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_weight_profile"
+                app:layout_constraintTop_toBottomOf="@id/text_height_profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Berat badan (kg)"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_weight_value_profile"
+                app:layout_constraintTop_toTopOf="@id/text_weight_profile"
+                app:layout_constraintBottom_toBottomOf="@id/text_weight_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="55 kg"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_sex_profile"
+                app:layout_constraintTop_toBottomOf="@id/text_weight_profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jenis kelamin"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_sex_value_profile"
+                app:layout_constraintTop_toTopOf="@id/text_sex_profile"
+                app:layout_constraintBottom_toBottomOf="@id/text_sex_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pria"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_age_profile"
+                app:layout_constraintTop_toBottomOf="@id/text_sex_profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Umur"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_age_value_profile"
+                app:layout_constraintTop_toTopOf="@id/text_age_profile"
+                app:layout_constraintBottom_toBottomOf="@id/text_age_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="21"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_activity_profile"
+                app:layout_constraintTop_toBottomOf="@id/text_age_profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kegiatan"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_activity_value_profile"
+                app:layout_constraintTop_toTopOf="@id/text_activity_profile"
+                app:layout_constraintBottom_toBottomOf="@id/text_activity_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ringan"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_target_profile"
+                app:layout_constraintTop_toBottomOf="@id/text_activity_profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sasaran"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_target_value_profile"
+                app:layout_constraintTop_toTopOf="@id/text_target_profile"
+                app:layout_constraintBottom_toBottomOf="@id/text_target_profile"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/green_500"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Menambah BB"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Bantuan"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_target_profile" />
+
+            <ImageView
+                android:id="@+id/ic_faq_profile"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_help"
+                android:src="@color/green_500"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FAQ"
+                app:layout_constraintTop_toTopOf="@id/ic_faq_profile"
+                app:layout_constraintBottom_toBottomOf="@id/ic_faq_profile"
+                app:layout_constraintLeft_toRightOf="@id/ic_faq_profile"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                />
+
+            <ImageView
+                android:id="@+id/ic_contact_profile"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ic_faq_profile"
+                android:src="@color/green_500"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hubungi Kami"
+                app:layout_constraintTop_toTopOf="@id/ic_contact_profile"
+                app:layout_constraintBottom_toBottomOf="@id/ic_contact_profile"
+                app:layout_constraintLeft_toRightOf="@id/ic_contact_profile"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                />
+
+            <ImageView
+                android:id="@+id/ic_logout_profile"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ic_contact_profile"
+                android:src="@color/green_500"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keluar"
+                app:layout_constraintTop_toTopOf="@id/ic_logout_profile"
+                app:layout_constraintBottom_toBottomOf="@id/ic_logout_profile"
+                app:layout_constraintLeft_toRightOf="@id/ic_logout_profile"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </FrameLayout>
