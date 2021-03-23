@@ -1,20 +1,22 @@
 package com.example.foodivore.network
 
+import com.example.foodivore.repository.model.Food
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.Constants
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ApiServices {
 
     @POST(Constants.LOGIN_URL)
-    fun login(@Body request: User.LoginRequest): Call<User.LoginResponse>
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    suspend fun login(@Body request: User.LoginRequest): User.LoginResponse
 
     @POST(Constants.SIGNUP_URL)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun signup(@Body request: User.SignUpRequest): Call<User.SignUpResponse>
+
+    @GET(Constants.FOODS_URL)
+    fun fetchFoods(): Call<List<Food.FoodResponse>>
 
 }

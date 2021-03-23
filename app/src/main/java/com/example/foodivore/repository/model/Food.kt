@@ -5,23 +5,40 @@ import com.google.gson.annotations.SerializedName
 object Food {
 
     data class Catalogue(
+        var backgroundColor: Int,
+        var image: Int,
         var title: String,
+        var example: String,
+        var calorie: String,
         var data: ArrayList<Detail>
     )
 
     data class Detail(
+        @SerializedName("imageUrl")
         var imageUrl: String,
+
+        @SerializedName("name")
         var name: String,
+
+        @SerializedName("calorie")
         var calorie: Int,
+
+        @SerializedName("type")
         var type: String
     )
 
     data class FoodResponse(
-        @SerializedName("title")
+        @SerializedName("imageUrl")
+        var imageUrl: String,
+
+        @SerializedName("name")
         var title: String,
 
-        @SerializedName("description")
-        var description: String,
+        @SerializedName("calorie")
+        var calorie: Int,
+
+        @SerializedName("type")
+        var type: String,
 
         @SerializedName("createdAt")
         var createdAt: String,

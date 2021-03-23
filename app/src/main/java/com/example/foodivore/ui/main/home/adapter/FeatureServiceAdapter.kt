@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
@@ -22,6 +23,7 @@ class FeatureServiceAdapter(val context: Context, var dataset: List<Feature.Serv
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var text: MaterialTextView = itemView.findViewById(R.id.text_feature_item)
+        var image: ImageView = itemView.findViewById(R.id.image_feature_item)
         var layout: RelativeLayout = itemView.findViewById(R.id.layout_item_feature)
 
         fun bind(model: Feature.Service, listener: OnItemClickListener) {
@@ -41,6 +43,7 @@ class FeatureServiceAdapter(val context: Context, var dataset: List<Feature.Serv
         val data = dataset[position]
         holder.bind(data, onItemClickListener)
         holder.text.text = data.title
+        holder.image.setImageResource(data.imageId)
 
 
     }

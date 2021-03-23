@@ -12,13 +12,11 @@ import com.example.foodivore.utils.Constants
 class AuthActivity : AppCompatActivity() {
 
     lateinit var sessionManager: SessionManager
-    lateinit var apiClient: ApiClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
-        apiClient = ApiClient()
         sessionManager = SessionManager(this)
 
         val navHost = Navigation.findNavController(this, R.id.auth_nav_host_fragment)

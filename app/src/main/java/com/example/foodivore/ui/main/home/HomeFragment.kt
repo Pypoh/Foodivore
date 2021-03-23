@@ -8,6 +8,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentHomeBinding
 import com.example.foodivore.repository.model.Feature
@@ -28,9 +30,11 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class HomeFragment : Fragment() {
@@ -68,9 +72,12 @@ class HomeFragment : Fragment() {
         homeDataBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
+        // Fetch Data
+        fetchFoods()
+
         dummyDataCatalogue.add(
             Food.Catalogue(
-                "Title 1",
+                R.color.red_500, R.drawable.salad, "Sarapan", "Salad", "50-100 Kal",
                 arrayListOf(
                     Food.Detail("", "Food 1", 121, "Sarapan"),
                     Food.Detail("", "Food 2", 122, "Makan Siang"),
@@ -82,7 +89,19 @@ class HomeFragment : Fragment() {
 
         dummyDataCatalogue.add(
             Food.Catalogue(
-                "Title 2",
+                R.color.brown_500, R.drawable.meat, "Makan Siang", "Daging", "50-300 Kal",
+                arrayListOf(
+                    Food.Detail("", "Food 1", 121, "Sarapan"),
+                    Food.Detail("", "Food 2", 122, "Makan Siang"),
+                    Food.Detail("", "Food 3", 123, "Makan Malang"),
+                    Food.Detail("", "Food 4", 124, "Snack")
+                )
+            )
+        )
+
+        dummyDataCatalogue.add(
+            Food.Catalogue(
+                R.color.teal_500, R.drawable.milk, "Makan Malam", "Susu, Nasi Goreng", "50-300 Kal",
                 arrayListOf(
                     Food.Detail("", "Food 1", 121, "Sarapan"),
                     Food.Detail("", "Food 2", 122, "Makan Siang"),
@@ -93,16 +112,13 @@ class HomeFragment : Fragment() {
         )
 
         dummyDataFeature.add(
-            Feature.Service("Panduan")
+            Feature.Service("Panduan", R.drawable.ic_grid)
         )
         dummyDataFeature.add(
-            Feature.Service("Plans")
+            Feature.Service("Plans", R.drawable.ic_calendar)
         )
         dummyDataFeature.add(
-            Feature.Service("Panduan")
-        )
-        dummyDataFeature.add(
-            Feature.Service("Panduan")
+            Feature.Service("Artikel", R.drawable.ic_file_text)
         )
 
         setupViews(homeDataBinding.root)
@@ -110,6 +126,24 @@ class HomeFragment : Fragment() {
         setupChart()
 
         return homeDataBinding.root
+    }
+
+    private fun fetchFoods() {
+//        (activity as MainActivity).apiClient.getUserApiService(requireContext()).fetchFoods()
+//            .enqueue(object : Callback<List<Food.FoodResponse>> {
+//                override fun onResponse(
+//                    call: Call<List<Food.FoodResponse>>,
+//                    response: Response<List<Food.FoodResponse>>
+//                ) {
+//                    Log.d("HomeFragment", "${response.body()}")
+//                }
+//
+//                override fun onFailure(call: Call<List<Food.FoodResponse>>, t: Throwable) {
+//                    Log.d("HomeFragment", "${t.message}")
+//                }
+//
+//
+//            })
     }
 
     private fun setupChart() {
@@ -122,9 +156,9 @@ class HomeFragment : Fragment() {
         nutritionsChart.centerText = "472 cal"
 
         nutritionsChart.isDrawHoleEnabled = true
-        nutritionsChart.setHoleColor(resources.getColor(R.color.green_500))
+        nutritionsChart.setHoleColor(resources.getColor(R.color.orange_200))
 
-        nutritionsChart.setTransparentCircleColor(resources.getColor(R.color.green_500))
+        nutritionsChart.setTransparentCircleColor(resources.getColor(R.color.orange_200))
         nutritionsChart.setTransparentCircleAlpha(110)
 
         nutritionsChart.holeRadius = 74f
@@ -156,7 +190,11 @@ class HomeFragment : Fragment() {
 
         val colors: ArrayList<Int> = ArrayList()
 
-        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+//        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
+        colors.add(resources.getColor(R.color.orange_300))
+        colors.add(resources.getColor(R.color.red_300))
+        colors.add(resources.getColor(R.color.green_300))
 //
 //        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
 //

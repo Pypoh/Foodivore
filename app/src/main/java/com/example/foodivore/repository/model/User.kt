@@ -24,14 +24,17 @@ object User {
     )
 
     data class LoginResponse(
-        @SerializedName("status_code")
-        var statusCode: Int,
+        @SerializedName("id")
+        var id: String,
 
-        @SerializedName("auth_token")
-        var authToken: String,
+        @SerializedName("email")
+        var email: String,
 
-        @SerializedName("user")
-        var user: User
+        @SerializedName("roles")
+        var roles: List<String>,
+
+        @SerializedName("accessToken")
+        var accessToken: String,
     )
 
     data class SignUpRequest(

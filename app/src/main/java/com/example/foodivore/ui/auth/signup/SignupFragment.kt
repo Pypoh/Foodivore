@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import com.example.foodivore.R
-import com.example.foodivore.databinding.FragmentLoginBinding
 import com.example.foodivore.databinding.FragmentSignupBinding
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
@@ -57,7 +56,7 @@ class SignupFragment : Fragment() {
 
         signupButton.setOnClickListener {
             Log.d("AuthDebug", "Signup...")
-            (activity as AuthActivity).apiClient.getApiService().signup(
+            ApiClient.getUserApiService(requireContext()).signup(
                 User.SignUpRequest(
                     email = emailTextInput.text.toString(),
                     password = passwordTextInput.text.toString(),

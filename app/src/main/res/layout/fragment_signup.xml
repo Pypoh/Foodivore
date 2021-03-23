@@ -113,7 +113,7 @@
                 android:gravity="center"
                 android:text="@string/login_text"
                 android:textAllCaps="true"
-                android:textColor="@color/green_500"
+                android:textColor="@color/orange_500"
                 android:textStyle="bold"/>
 
         </LinearLayout>

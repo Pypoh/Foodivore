@@ -42,7 +42,7 @@
             android:id="@+id/button_user_login_auth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green_500"
+            android:backgroundTint="@color/orange_500"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:text="Login as Foodivore user"
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:backgroundTint="@color/yellow_500"
+            android:backgroundTint="@color/green_500"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:text="Login as Guest"
@@ -84,7 +84,7 @@
                 android:gravity="center"
                 android:text="@string/signup_text"
                 android:textAllCaps="true"
-                android:textColor="@color/green_500"
+                android:textColor="@color/orange_500"
                 android:textStyle="bold" />
 
         </LinearLayout>

@@ -29,5 +29,6 @@ class FoodCatalogueAdapter(val context: Context, var dataset: List<Food.Detail>)
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var image: ImageView = itemView.findViewById(R.id.image_food_item)
         var text: MaterialTextView = itemView.findViewById(R.id.text_food_item)
+
     }
 }

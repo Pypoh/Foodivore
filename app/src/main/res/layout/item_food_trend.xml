@@ -6,23 +6,28 @@
     android:layout_marginStart="16dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_food_trend_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:cardCornerRadius="4dp"
-        android:backgroundTint="#707070">
+        app:cardBackgroundColor="@color/red_500"
+        app:cardCornerRadius="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp">
+            android:padding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/image_food_item"
-                android:layout_width="108dp"
-                android:layout_height="108dp"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:padding="4dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/example_bakso"
+                android:src="@drawable/salad"
                 app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -34,9 +39,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:maxLines="2"
-                android:text="text_placeholder"
+                android:text="Sarapan"
                 android:textAlignment="textStart"
-                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image_food_item" />
 
@@ -44,13 +51,36 @@
                 android:id="@+id/text_title_food_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:maxLines="2"
-                android:text="text_placeholder"
+                android:text="Salad"
                 android:textAlignment="textStart"
-                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_title_type_item" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_title_food_item">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_fire" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_calorie_food_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="50-100 kal"
+                    android:textColor="@color/white"
+                    android:textSize="14dp" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
