@@ -1,4 +1,4 @@
-package com.example.foodivore.repository.datasource.auth.login
+package com.example.foodivore.repository.datasource.remote.auth.login
 
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.viewobject.Resource

@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodivore.MainActivity
 import com.example.foodivore.R
-import com.example.foodivore.repository.datasource.auth.other.AuthRepoImpl
+import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
 import com.example.foodivore.utils.Constants

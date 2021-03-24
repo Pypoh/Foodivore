@@ -15,7 +15,7 @@ import androidx.navigation.findNavController
 import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentLoginBinding
-import com.example.foodivore.repository.datasource.auth.login.LoginRepoImpl
+import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoImpl
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.AuthActivity
 import com.example.foodivore.ui.auth.login.domain.LoginImpl
@@ -75,10 +75,12 @@ class LoginFragment : Fragment() {
 
                     is Resource.Success -> {
                         Log.d("LoginFragment", task.data.toString())
-                        requireContext().toast("Success")
                         if (alertDialog.isShowing) alertDialog.dismiss()
-                        (activity as AuthActivity).sessionManager.saveAuthToken(task.data!!.accessToken)
-                        intentToMain()
+                        if (task.data!!.accessToken.isNotEmpty()) {
+                            requireContext().toast("Success")
+                            (activity as AuthActivity).sessionManager.saveAuthToken(task.data.accessToken)
+                            intentToMain()
+                        }
                     }
 
                     is Resource.Failure -> {
@@ -93,7 +95,6 @@ class LoginFragment : Fragment() {
                     }
                 }
             })
-
 
 
         }

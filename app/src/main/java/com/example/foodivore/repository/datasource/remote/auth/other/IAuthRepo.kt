@@ -1,4 +1,4 @@
-package com.example.foodivore.repository.datasource.auth.other
+package com.example.foodivore.repository.datasource.remote.auth.other
 
 import android.content.Context
 import com.example.foodivore.repository.model.User
