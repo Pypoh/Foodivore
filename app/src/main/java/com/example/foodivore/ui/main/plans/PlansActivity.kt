@@ -1,12 +1,30 @@
 package com.example.foodivore.ui.main.plans
 
 import android.graphics.Color
+import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityPlansBinding
+import com.example.foodivore.network.SessionManager
+import com.example.foodivore.repository.datasource.remote.plan.PlanRepoImpl
+import com.example.foodivore.repository.datasource.remote.pretest.PreTestRepoImpl
+import com.example.foodivore.ui.main.plans.adapter.AdapterFoodList
+import com.example.foodivore.ui.main.plans.domain.PlanImpl
+import com.example.foodivore.ui.pretest.PreTestVMFactory
+import com.example.foodivore.ui.pretest.PreTestViewModel
+import com.example.foodivore.ui.pretest.domain.PreTestImpl
+import com.example.foodivore.utils.toast
+import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -14,6 +32,11 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PlansActivity : AppCompatActivity() {
 
@@ -21,15 +44,83 @@ class PlansActivity : AppCompatActivity() {
 
     private lateinit var plansChart: PieChart
 
+    private lateinit var menuAutoComplete: AutoCompleteTextView
+
+    private lateinit var recyclerFoodList: RecyclerView
+    private lateinit var adapterFoodList: AdapterFoodList
+
+    private lateinit var calendarButton: ImageView
+
+    lateinit var sessionManager: SessionManager
+
+    private val plansViewModel: PlansViewModel by lazy {
+        ViewModelProvider(
+            this,
+            PlansVMFactory(PlanImpl(PlanRepoImpl()))
+        ).get(PlansViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plans)
+
+        sessionManager = SessionManager(this)
 
         plansDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_plans)
 
         setupViews(plansDataBinding.root)
 
-        setupChart()
+//        setupChart()
+
+        setupMenu()
+
+    }
+
+    private fun setupMenu() {
+        val items = listOf("Breakfast", "Lunch", "Dinner")
+        val menuAdapter =
+            ArrayAdapter(this, R.layout.item_list_food_type, R.id.text_item_list_food_type, items)
+        menuAutoComplete.setAdapter(menuAdapter)
+
+        recyclerFoodList.layoutManager = LinearLayoutManager(this)
+        adapterFoodList = AdapterFoodList(this, arrayListOf())
+        recyclerFoodList.adapter = adapterFoodList
+
+        val locale = Locale("in", "ID")
+        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss", locale)
+        val date = Calendar.getInstance().time
+
+        val currentDate = sdf.format(date)
+
+        val datePicker =
+            MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Pilih tanggal")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build()
+
+        datePicker.addOnPositiveButtonClickListener {
+            toast(sdf.format(it))
+            Log.d("PlanDebug", "$it")
+
+            plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it).observe(this, { task ->
+                when (task) {
+                    is Resource.Success -> {
+                        Log.d("PlanDebug", task.toString())
+                    }
+
+                    is Resource.Failure -> {
+//
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                }
+            })
+        }
+
+        calendarButton.setOnClickListener {
+            datePicker.show(supportFragmentManager, "DATE_PICKER_PLANS")
+        }
 
     }
 
@@ -107,6 +198,9 @@ class PlansActivity : AppCompatActivity() {
     }
 
     private fun setupViews(view: View) {
-        plansChart = view.findViewById(R.id.chart_plans)
+//        plansChart = view.findViewById(R.id.chart_plans)
+        menuAutoComplete = view.findViewById(R.id.menu_auto_complete_plans)
+        recyclerFoodList = view.findViewById(R.id.recycler_food_list_plans)
+        calendarButton = view.findViewById(R.id.button_calendar_plans)
     }
 }

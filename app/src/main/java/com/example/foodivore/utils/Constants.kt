@@ -12,10 +12,16 @@ class Constants {
         const val SIGN_UP_KEY: Int = 1000
         const val LOG_IN_KEY: Int = 1001
 
-        const val BASE_URL = "http://192.168.1.2:8080/"
+        const val BASE_URL = "http://192.168.1.3:8080/"
+
         const val LOGIN_URL = "api/auth/login"
         const val SIGNUP_URL = "api/auth/signup"
+
         const val FOODS_URL = "api/foods"
+
+        const val USER_URL = "api/user"
+
+        const val RECORD_URL = "api/user/record"
 
     }
 

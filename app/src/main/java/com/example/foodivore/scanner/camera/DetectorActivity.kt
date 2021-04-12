@@ -31,6 +31,7 @@ import com.example.foodivore.scanner.deepmodel.TFLiteObjectDetectionAPIModel
 import com.example.foodivore.scanner.env.BorderedText
 import com.example.foodivore.scanner.env.ImageUtils
 import com.example.foodivore.scanner.tracking.MultiBoxTracker
+import okhttp3.internal.wait
 import java.io.IOException
 import java.util.*
 
@@ -188,7 +189,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
                     result.location = location
                     mappedRecognitions.add(result)
                 }
-                Log.d("DetectionResult", "$result")
+//                Log.d("DetectionResult", "$result")
             }
             tracker!!.trackResults(mappedRecognitions, currTimestamp)
             trackingOverlay!!.postInvalidate()
@@ -204,16 +205,17 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
     }
 
     override fun captureResult() {
-        Log.d("DetectionResultCamera", "Capturing...")
-       runInBackground {
-           val results = detector!!.recognizeImage(
-               croppedBitmap!!
-           )
-           for (result in results!!) {
-               Log.d("DetectionResultCamera", "$result")
-           }
+        var results: List<Classifier.Recognition?>?
+        runInBackground {
+            results = detector!!.recognizeImage(
+                croppedBitmap!!
+            )
+//            for (result in results!!) {
+//                Log.d("DetectionResultCamera", "$result")
+//            }
+            super.toastResult(results)
+        }
 
-       }
     }
 
     protected fun getLayoutId(): Int {

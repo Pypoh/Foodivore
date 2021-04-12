@@ -9,6 +9,7 @@ import com.example.foodivore.R
 import com.example.foodivore.repository.model.Feature
 import com.example.foodivore.repository.model.Post
 import com.example.foodivore.ui.main.home.adapter.FeatureServiceAdapter
+import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.textview.MaterialTextView
 
 class ArticleAdapter(val context: Context, var dataset: List<Post.Article>) :
@@ -18,6 +19,7 @@ class ArticleAdapter(val context: Context, var dataset: List<Post.Article>) :
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var title: MaterialTextView = itemView.findViewById(R.id.text_title_item_pre_test)
         var subtitle: MaterialTextView = itemView.findViewById(R.id.text_subtitle_item_pre_test)
+        var radioButton: MaterialRadioButton = itemView.findViewById(R.id.radio_camera_dialog)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,6 +32,7 @@ class ArticleAdapter(val context: Context, var dataset: List<Post.Article>) :
         val data = dataset[position]
         holder.title.text = data.title
         holder.subtitle.text = data.subtitle
+        holder.radioButton.isChecked = true
     }
 
     override fun getItemCount(): Int = dataset.size

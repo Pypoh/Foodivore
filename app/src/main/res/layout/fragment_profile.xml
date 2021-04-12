@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,9 +10,7 @@
             type="com.example.foodivore.ui.main.profile.ProfileViewModel" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.main.profile.ProfileFragment">
@@ -38,6 +38,7 @@
                 </RelativeLayout>
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/text_name_toolbar_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -282,7 +283,7 @@
                     android:layout_height="36dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:src="@color/orange_500"
+                    android:src="@drawable/ic_md_question_mark_circle"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_help" />
 
@@ -302,7 +303,7 @@
                     android:layout_height="36dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:src="@color/orange_500"
+                    android:src="@drawable/ic_md_user_group"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ic_faq_profile" />
 
@@ -322,14 +323,14 @@
                     android:layout_height="36dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:src="@color/orange_500"
+                    android:src="@drawable/ic_logout"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ic_contact_profile" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
                     android:text="Keluar"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/ic_logout_profile"

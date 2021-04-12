@@ -1,8 +1,10 @@
 package com.example.foodivore.network
 
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.Constants
+import com.example.foodivore.utils.viewobject.Resource
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.*
@@ -19,5 +21,18 @@ interface ApiServices {
 
     @GET(Constants.FOODS_URL)
     fun fetchFoods(): Call<List<Food.FoodResponse>>
+
+    @POST(Constants.USER_URL + "/pretest/update")
+    fun postPreTest(@Body request: User.PreTestData): User.PreTestResponse
+
+    @GET(Constants.USER_URL)
+    suspend fun getUserData(): User.PreTestData
+
+    @GET(Constants.FOODS_URL)
+    fun getFoodByName(@Query("name") name: String): Call<List<Food.FoodResponse?>>
+
+    @GET(Constants.RECORD_URL)
+    suspend fun getRecordByDate(@Query("time") time: Long): List<Record.RecordResponse?>
+
 
 }

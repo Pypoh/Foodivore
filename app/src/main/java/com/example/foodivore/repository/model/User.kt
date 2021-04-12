@@ -53,4 +53,33 @@ object User {
         var message: String
     )
 
+    data class PreTestData(
+        @SerializedName("name")
+        var name: String,
+
+        @SerializedName("height")
+        var height: String,
+
+        @SerializedName("weight")
+        var weight: String,
+
+        @SerializedName("sex")
+        var sex: String,
+
+        @SerializedName("age")
+        var age: String,
+
+        @SerializedName("activity")
+        var activity: String,
+
+        @SerializedName("target")
+        var target: String,
+
+    )
+
+    data class PreTestResponse(
+        @SerializedName("message")
+        var message: String
+    )
+
 }

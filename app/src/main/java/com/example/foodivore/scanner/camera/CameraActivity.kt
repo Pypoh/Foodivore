@@ -16,7 +16,6 @@
 package com.example.foodivore.scanner.camera
 
 import android.Manifest
-import android.app.Activity
 import android.app.Fragment
 import android.content.Context
 import android.content.pm.PackageManager
@@ -35,12 +34,38 @@ import android.view.Surface
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
+import com.example.foodivore.network.ApiClient
+import com.example.foodivore.repository.datasource.remote.food.FoodRepoImpl
+import com.example.foodivore.repository.model.Food
+import com.example.foodivore.scanner.camera.adapter.AdapterFoodCameraDialog
 import com.example.foodivore.scanner.customview.OverlayView
 import com.example.foodivore.scanner.deepmodel.Classifier
 import com.example.foodivore.scanner.env.ImageUtils
+import com.example.foodivore.ui.food.domain.FoodImpl
+import com.example.foodivore.utils.viewobject.Resource
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.PreviewCallback {
+abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
+    Camera.PreviewCallback {
+
+    private val cameraViewModel: CameraViewModel by lazy {
+        ViewModelProvider(
+            this,
+            CameraVMFactory(FoodImpl(FoodRepoImpl()))
+        ).get(CameraViewModel::class.java)
+    }
+
+    // Views
+    private lateinit var recyclerCameraDialog: RecyclerView
+    private lateinit var adapterCameraDialog: AdapterFoodCameraDialog
 
     var isDebug = false
         private set
@@ -60,7 +85,6 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
     private var imageConverter: Runnable? = null
 
     private var lastPreviewFrame: ByteArray? = null
-
 
     protected val screenOrientation: Int
         get() {
@@ -93,7 +117,29 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
         captureButton.setOnClickListener {
             val cameraFragment =
                 fragmentManager.findFragmentByTag("CameraFragment") as CameraConnectionFragment
+
             captureResult()
+
+            cameraViewModel.result.observe(this, { task ->
+                when (task) {
+                    is Resource.Loading -> {
+                        Log.d("CameraActivity", "Fetching data...")
+                    }
+
+                    is Resource.Success -> {
+                        Log.d("CameraActivity", "${task.data}")
+
+                    }
+
+                    is Resource.Failure -> {
+                        Log.d("CameraActivity", task.throwable.message.toString())
+                    }
+
+                    else -> {
+
+                    }
+                }
+            })
 
             cameraFragment.closeCamera()
         }
@@ -104,6 +150,57 @@ abstract class CameraActivity : Activity(), OnImageAvailableListener, Camera.Pre
             requestPermission()
         }
     }
+
+    fun toastResult(results: List<Classifier.Recognition?>?) {
+
+        if (results != null) {
+            if (results.isNotEmpty()) {
+                results.sortedWith(compareBy { it!!.confidence })
+
+                Log.d(
+                    "DetectionResultActivty",
+                    "Getting Data ${results.first()!!.title.toString()}"
+                )
+
+//                cameraViewModel.getFoodByName(results.first()!!.title.toString())
+
+                val name = results.first()!!.title.toString()
+
+                ApiClient.getApiService().getFoodByName(name)
+                    .enqueue(object : Callback<List<Food.FoodResponse?>> {
+                        override fun onResponse(
+                            call: Call<List<Food.FoodResponse?>>,
+                            response: Response<List<Food.FoodResponse?>>
+                        ) {
+                            Log.d("CameraActivity", "${response.body()}")
+                            showBottomDialog(response.body())
+                        }
+
+                        override fun onFailure(call: Call<List<Food.FoodResponse?>>, t: Throwable) {
+                            Log.d("CameraActivity", "${t.message}")
+
+                        }
+
+                    })
+
+            }
+        }
+
+    }
+
+    private fun showBottomDialog(foods: List<Food.FoodResponse?>?) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(R.layout.dialog_bottom_camera)
+
+        recyclerCameraDialog = bottomSheetDialog.findViewById(R.id.recycler_camera_dialog)!!
+        recyclerCameraDialog.layoutManager = LinearLayoutManager(this)
+        adapterCameraDialog = AdapterFoodCameraDialog(this, foods)
+        recyclerCameraDialog.adapter = adapterCameraDialog
+
+
+        bottomSheetDialog.show()
+    }
+
 
     protected fun getRgbBytes(): IntArray? {
         imageConverter!!.run()

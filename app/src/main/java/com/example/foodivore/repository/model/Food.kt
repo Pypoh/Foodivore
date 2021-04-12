@@ -2,7 +2,7 @@ package com.example.foodivore.repository.model
 
 import com.google.gson.annotations.SerializedName
 
-object Food {
+object  Food {
 
     data class Catalogue(
         var backgroundColor: Int,
@@ -36,6 +36,15 @@ object Food {
 
         @SerializedName("calorie")
         var calorie: Int,
+
+        @SerializedName("fat")
+        var fat: Float,
+
+        @SerializedName("carb")
+        var carb: Float,
+
+        @SerializedName("prot")
+        var prot: Float,
 
         @SerializedName("type")
         var type: String,

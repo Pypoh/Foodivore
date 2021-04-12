@@ -26,6 +26,22 @@ object ApiClient {
         return apiService
     }
 
+    fun getUserApiService(jwtToken: String?): ApiServices {
+
+        // Initialize ApiService if not initialized yet
+        if (!::apiService.isInitialized) {
+            val retrofit = Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okhttpClient(jwtToken!!))
+                .build()
+
+            apiService = retrofit.create(ApiServices::class.java)
+        }
+
+        return apiService
+    }
+
     fun getApiService(): ApiServices {
 
         // Initialize ApiService if not initialized yet
@@ -44,6 +60,12 @@ object ApiClient {
     private fun okhttpClient(context: Context): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor(context))
+            .build()
+    }
+
+    private fun okhttpClient(jwtToken: String?): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(jwtToken!!))
             .build()
     }
 

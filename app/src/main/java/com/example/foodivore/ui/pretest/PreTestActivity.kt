@@ -9,24 +9,43 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityPreTestBinding
+import com.example.foodivore.network.SessionManager
+import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoImpl
+import com.example.foodivore.repository.datasource.remote.pretest.PreTestRepoImpl
 import com.example.foodivore.repository.model.Post
+import com.example.foodivore.ui.auth.login.LoginVMFactory
+import com.example.foodivore.ui.auth.login.LoginViewModel
+import com.example.foodivore.ui.auth.login.domain.LoginImpl
 import com.example.foodivore.ui.pretest.adapter.ArticleAdapter
+import com.example.foodivore.ui.pretest.domain.PreTestImpl
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 
 class PreTestActivity : AppCompatActivity() {
 
+    lateinit var sessionManager: SessionManager
+
     private lateinit var preTestBinding: ActivityPreTestBinding
+
+    private val preTestViewModel: PreTestViewModel by lazy {
+        ViewModelProvider(
+            this,
+            PreTestVMFactory(PreTestImpl(PreTestRepoImpl()))
+        ).get(PreTestViewModel::class.java)
+    }
 
     private var pageState: Int = 0
 
     private lateinit var titleToolbar: MaterialTextView
     private lateinit var backArrowToolbar: ImageView
 
+    // Layout
     private lateinit var nameLayout: RelativeLayout
     private lateinit var heightLayout: RelativeLayout
     private lateinit var weightLayout: RelativeLayout
@@ -35,6 +54,13 @@ class PreTestActivity : AppCompatActivity() {
     private lateinit var activeLayout: RelativeLayout
     private lateinit var purposeLayout: RelativeLayout
 
+    // Input
+    private lateinit var nameInput: TextInputEditText
+    private lateinit var heightInput: TextInputEditText
+    private lateinit var weightInput: TextInputEditText
+    private lateinit var ageInput: TextInputEditText
+
+    // Button
     private lateinit var nameButton: MaterialButton
     private lateinit var heightButton: MaterialButton
     private lateinit var weightButton: MaterialButton
@@ -58,6 +84,8 @@ class PreTestActivity : AppCompatActivity() {
         setContentView(R.layout.activity_pre_test)
 
         preTestBinding = DataBindingUtil.setContentView(this, R.layout.activity_pre_test)
+
+        sessionManager = SessionManager(this)
 
         setupViews(preTestBinding.root)
 
