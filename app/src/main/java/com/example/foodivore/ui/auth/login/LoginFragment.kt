@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -16,9 +17,11 @@ import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentLoginBinding
 import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoImpl
+import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.AuthActivity
 import com.example.foodivore.ui.auth.login.domain.LoginImpl
+import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
@@ -35,7 +38,7 @@ class LoginFragment : Fragment() {
     private val loginViewModel: LoginViewModel by lazy {
         ViewModelProvider(
             this,
-            LoginVMFactory(LoginImpl(LoginRepoImpl()))
+            LoginVMFactory(LoginImpl(LoginRepoImpl()), ProfileImpl(ProfileRepoImpl()))
         ).get(LoginViewModel::class.java)
     }
 
@@ -66,25 +69,27 @@ class LoginFragment : Fragment() {
 
     private fun setupButtonListener() {
         loginButton.setOnClickListener {
-            loginViewModel.loginWithEmailAndPassword()
-            loginViewModel.result.observe(viewLifecycleOwner, { task ->
+            loginViewModel.loginWithEmailAndPassword().removeObservers(viewLifecycleOwner)
+            loginViewModel.loginWithEmailAndPassword().observe(viewLifecycleOwner, { task ->
                 when (task) {
                     is Resource.Loading -> {
                         if (!alertDialog.isShowing) alertDialog.show()
                     }
 
                     is Resource.Success -> {
-                        Log.d("LoginFragment", task.data.toString())
                         if (alertDialog.isShowing) alertDialog.dismiss()
                         if (task.data!!.accessToken.isNotEmpty()) {
-                            requireContext().toast("Success")
                             (activity as AuthActivity).sessionManager.saveAuthToken(task.data.accessToken)
-                            intentToMain()
+
+//                            profileCheck(task.data.accessToken)
+                            if (task.data.calorieNeeds == 0) {
+                                Log.d("LoginFragment", "User ${task.data.id} has not been initialized")
+                            }
+
                         }
                     }
 
                     is Resource.Failure -> {
-                        Log.d("LoginFragment", task.throwable.message.toString())
                         if (alertDialog.isShowing) alertDialog.dismiss()
                         requireContext().toast(task.throwable.message.toString())
                     }
@@ -102,6 +107,31 @@ class LoginFragment : Fragment() {
         toSignupButton.setOnClickListener {
             moveToSignUp()
         }
+    }
+
+    private fun profileCheck(jwtToken: String) {
+        loginViewModel.profileChecker(jwtToken).removeObservers(viewLifecycleOwner)
+        loginViewModel.profileChecker(jwtToken).observe(viewLifecycleOwner, { task ->
+            when (task) {
+                is Resource.Loading -> {
+                }
+
+                is Resource.Success -> {
+                    Log.d("LoginFragment", "user calorie : ${task.data}")
+                    if (task.data!!.calorieNeeds == 0) {
+
+                    }
+                }
+
+                is Resource.Failure -> {
+
+                }
+
+                else -> {
+
+                }
+            }
+        })
     }
 
     private fun setupViews(view: View) {

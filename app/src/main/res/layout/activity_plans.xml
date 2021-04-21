@@ -223,7 +223,7 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:hint="Pilih Jadwal"
+                    android:hint="Filter Jadwal"
                     app:boxBackgroundColor="@color/white"
                     app:boxStrokeWidth="0dp"
                     app:layout_constraintLeft_toLeftOf="parent"

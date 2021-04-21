@@ -38,6 +38,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_rescan_dialog_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -52,6 +53,7 @@
             app:cornerRadius="0dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_select_dialog_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"

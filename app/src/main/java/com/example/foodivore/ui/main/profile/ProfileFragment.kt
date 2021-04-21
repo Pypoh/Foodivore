@@ -76,6 +76,7 @@ class ProfileFragment : Fragment() {
                 is Resource.Success -> {
                     Log.d("ProfileFragment", task.data.toString())
                     initViews(task.data)
+                    profileViewModel.result.removeObservers(viewLifecycleOwner)
                 }
 
                 is Resource.Failure -> {

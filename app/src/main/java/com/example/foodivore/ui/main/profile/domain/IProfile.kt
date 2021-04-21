@@ -5,4 +5,6 @@ import com.example.foodivore.utils.viewobject.Resource
 
 interface IProfile {
     suspend fun getUserData(jwtToken: String): Resource<User.PreTestData>
+    suspend fun getUserCalorie(jwtToken: String): Resource<User.CalorieNeedsResponse>
+
 }

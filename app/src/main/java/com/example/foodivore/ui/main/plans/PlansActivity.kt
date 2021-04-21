@@ -77,7 +77,7 @@ class PlansActivity : AppCompatActivity() {
     }
 
     private fun setupMenu() {
-        val items = listOf("Breakfast", "Lunch", "Dinner")
+        val items = listOf("Semua", "Breakfast", "Lunch", "Dinner")
         val menuAdapter =
             ArrayAdapter(this, R.layout.item_list_food_type, R.id.text_item_list_food_type, items)
         menuAutoComplete.setAdapter(menuAdapter)
@@ -88,9 +88,26 @@ class PlansActivity : AppCompatActivity() {
 
         val locale = Locale("in", "ID")
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss", locale)
-        val date = Calendar.getInstance().time
 
-        val currentDate = sdf.format(date)
+        plansViewModel.getPlanByDate(
+            sessionManager.fetchAuthToken()!!,
+            Calendar.getInstance().timeInMillis
+        ).observe(this, { task ->
+            when (task) {
+                is Resource.Success -> {
+                    Log.d("PlanDebug", task.toString())
+                    adapterFoodList.setData(task.data)
+                    adapterFoodList.notifyDataSetChanged()
+                }
+
+                is Resource.Failure -> {
+//
+                }
+                is Resource.Loading -> {
+
+                }
+            }
+        })
 
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
@@ -99,23 +116,32 @@ class PlansActivity : AppCompatActivity() {
                 .build()
 
         datePicker.addOnPositiveButtonClickListener {
-            toast(sdf.format(it))
-            Log.d("PlanDebug", "$it")
+            if (plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                    .hasActiveObservers()
+            ) {
+                plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                    .removeObservers(this)
+            }
 
-            plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it).observe(this, { task ->
-                when (task) {
-                    is Resource.Success -> {
-                        Log.d("PlanDebug", task.toString())
-                    }
+            Log.d("PlansActivity", "time: $it")
+            plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                .observe(this, { task ->
+                    when (task) {
+                        is Resource.Success -> {
+                            Log.d("PlanDebug", "Fetched data")
+                            adapterFoodList.setData(task.data)
+                            adapterFoodList.notifyDataSetChanged()
 
-                    is Resource.Failure -> {
+                        }
+
+                        is Resource.Failure -> {
 //
-                    }
-                    is Resource.Loading -> {
+                        }
+                        is Resource.Loading -> {
 
+                        }
                     }
-                }
-            })
+                })
         }
 
         calendarButton.setOnClickListener {

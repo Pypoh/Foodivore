@@ -34,4 +34,8 @@ class AdapterFoodList(val context: Context, var dataset: List<Food.FoodResponse?
     }
 
     override fun getItemCount(): Int = dataset!!.size
+
+    fun setData(data: List<Food.FoodResponse?>?) {
+        this.dataset = data
+    }
 }

@@ -11,8 +11,8 @@ object Record {
         @SerializedName("foodId")
         var foodId: String,
 
-        @SerializedName("type")
-        var type: String,
+        @SerializedName("consumedAt")
+        var consumedAt: String,
 
         @SerializedName("createdAt")
         var createdAt: String,
@@ -22,5 +22,13 @@ object Record {
 
         @SerializedName("id")
         var id: String
+    )
+
+    data class RecordRequest(
+        @SerializedName("foodId")
+        var foodId: String,
+
+        @SerializedName("type")
+        var type: String
     )
 }

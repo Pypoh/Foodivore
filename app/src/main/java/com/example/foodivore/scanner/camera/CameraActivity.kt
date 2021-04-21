@@ -40,8 +40,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.network.ApiClient
+import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.food.FoodRepoImpl
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.scanner.camera.adapter.AdapterFoodCameraDialog
 import com.example.foodivore.scanner.customview.OverlayView
 import com.example.foodivore.scanner.deepmodel.Classifier
@@ -49,6 +51,7 @@ import com.example.foodivore.scanner.env.ImageUtils
 import com.example.foodivore.ui.food.domain.FoodImpl
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,9 +66,13 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
         ).get(CameraViewModel::class.java)
     }
 
+    lateinit var sessionManager: SessionManager
+
     // Views
     private lateinit var recyclerCameraDialog: RecyclerView
     private lateinit var adapterCameraDialog: AdapterFoodCameraDialog
+    private lateinit var selectFoodButtonDialog: MaterialButton
+    private lateinit var rescanFoodButtonDialog: MaterialButton
 
     var isDebug = false
         private set
@@ -112,6 +119,8 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContentView(R.layout.tfe_od_activity_camera)
+
+        sessionManager = SessionManager(this)
 
         captureButton = findViewById(R.id.button_capture_image_camera)
         captureButton.setOnClickListener {
@@ -166,23 +175,30 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
 
                 val name = results.first()!!.title.toString()
 
-                ApiClient.getApiService().getFoodByName(name)
-                    .enqueue(object : Callback<List<Food.FoodResponse?>> {
-                        override fun onResponse(
-                            call: Call<List<Food.FoodResponse?>>,
-                            response: Response<List<Food.FoodResponse?>>
-                        ) {
-                            Log.d("CameraActivity", "${response.body()}")
-                            showBottomDialog(response.body())
-                        }
+                try {
+                    ApiClient.getApiService().getFoodByName(name)
+                        .enqueue(object : Callback<List<Food.FoodResponse?>> {
+                            override fun onResponse(
+                                call: Call<List<Food.FoodResponse?>>,
+                                response: Response<List<Food.FoodResponse?>>
+                            ) {
+                                Log.d("CameraActivity", "${response.body()}")
+                                showBottomDialog(response.body())
+                            }
 
-                        override fun onFailure(call: Call<List<Food.FoodResponse?>>, t: Throwable) {
-                            Log.d("CameraActivity", "${t.message}")
+                            override fun onFailure(
+                                call: Call<List<Food.FoodResponse?>>,
+                                t: Throwable
+                            ) {
+                                Log.d("CameraActivity", "${t.message}")
 
-                        }
+                            }
 
-                    })
+                        })
 
+                } catch (e: Exception) {
+
+                }
             }
         }
 
@@ -196,6 +212,42 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
         recyclerCameraDialog.layoutManager = LinearLayoutManager(this)
         adapterCameraDialog = AdapterFoodCameraDialog(this, foods)
         recyclerCameraDialog.adapter = adapterCameraDialog
+
+        selectFoodButtonDialog = bottomSheetDialog.findViewById(R.id.button_select_dialog_camera)!!
+        selectFoodButtonDialog.setOnClickListener {
+            adapterCameraDialog.getItemByPosition(adapterCameraDialog.getLastCheckedItem())
+                .let { data ->
+                    if (data != null) {
+                        val record = Record.RecordRequest(data.id, data.type)
+                        Log.d("CameraActivity", "data: ${record}, token: ${sessionManager.fetchAuthToken()}")
+                        try {
+                            ApiClient.getUserApiService(sessionManager.fetchAuthToken())
+                                .postRecord(record)
+                                .enqueue(object : Callback<Record.RecordResponse> {
+                                    override fun onResponse(
+                                        call: Call<Record.RecordResponse>,
+                                        response: Response<Record.RecordResponse>
+                                    ) {
+                                        Log.d("CameraActivity", "response: ${response.body()}, code: ${response.code()}")
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<Record.RecordResponse>,
+                                        t: Throwable
+                                    ) {
+                                        Log.d("CameraActivity", "error: ${t.message}")
+                                    }
+
+                                })
+                        } catch (e: Exception) {
+
+                        }
+                    }
+
+                }
+        }
+
+        rescanFoodButtonDialog = bottomSheetDialog.findViewById(R.id.button_rescan_dialog_camera)!!
 
 
         bottomSheetDialog.show()

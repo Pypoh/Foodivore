@@ -32,7 +32,15 @@ interface ApiServices {
     fun getFoodByName(@Query("name") name: String): Call<List<Food.FoodResponse?>>
 
     @GET(Constants.RECORD_URL)
-    suspend fun getRecordByDate(@Query("time") time: Long): List<Record.RecordResponse?>
+    suspend fun getRecordByDate(@Query("time") time: Long): List<Food.FoodResponse?>
+
+    @POST(Constants.RECORD_URL)
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    fun postRecord(@Body request: Record.RecordRequest): Call<Record.RecordResponse>
+
+    @GET(Constants.CALORIE_URL)
+    suspend fun getUserCalorie(): User.CalorieNeedsResponse
+
 
 
 }

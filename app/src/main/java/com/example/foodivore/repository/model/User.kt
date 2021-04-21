@@ -35,6 +35,9 @@ object User {
 
         @SerializedName("accessToken")
         var accessToken: String,
+
+        @SerializedName("calorieNeeds")
+        var calorieNeeds: Int
     )
 
     data class SignUpRequest(
@@ -80,6 +83,11 @@ object User {
     data class PreTestResponse(
         @SerializedName("message")
         var message: String
+    )
+
+    data class CalorieNeedsResponse(
+        @SerializedName("calorieNeeds")
+        var calorieNeeds: Int
     )
 
 }
