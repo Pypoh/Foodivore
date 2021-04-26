@@ -1,5 +1,6 @@
 package com.example.foodivore.repository.datasource.remote.pretest
 
+import android.util.Log
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.model.User
@@ -9,10 +10,13 @@ import java.lang.Exception
 
 class PreTestRepoImpl : IPreTestRepo {
 
-    override suspend fun postPreTestData(userPreTest: User.PreTestData): Resource<User.PreTestResponse> {
+    override suspend fun postPreTestData(
+        userPreTest: User.PreTestData,
+        jwtToken: String
+    ): Resource<User.PreTestResponse> {
         return try {
             val userData =
-                ApiClient.getUserApiService(PreTestActivity().applicationContext).postPreTest(
+                ApiClient.getUserApiService(jwtToken).postPreTest(
                     User.PreTestData(
                         name = userPreTest.name,
                         height = userPreTest.height,
@@ -23,6 +27,8 @@ class PreTestRepoImpl : IPreTestRepo {
                         target = userPreTest.target
                     )
                 )
+
+            Log.d("PreTestActivity", "Uploading Data.....")
 
             Resource.Success(userData)
         } catch (e: Exception) {

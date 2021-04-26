@@ -5,5 +5,5 @@ import com.example.foodivore.utils.viewobject.Resource
 
 interface ISignupRepo {
 
-    suspend fun registerWithEmailAndPassword(email: String, password: String): Resource<User.UserData?>
+    suspend fun registerWithEmailAndPassword(email: String, password: String): Resource<User.SignUpResponse?>
 }

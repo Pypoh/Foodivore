@@ -1,29 +1,39 @@
 package com.example.foodivore.ui.auth.signup
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentSignupBinding
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
-import com.example.foodivore.repository.model.User
+import com.example.foodivore.repository.datasource.remote.auth.signup.SignupRepoImpl
 import com.example.foodivore.ui.auth.AuthActivity
+import com.example.foodivore.ui.auth.InBoardingActivity
+import com.example.foodivore.ui.auth.signup.domain.SignUpImpl
+import com.example.foodivore.ui.pretest.PreTestActivity
+import com.example.foodivore.utils.toast
+import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SignupFragment : Fragment() {
 
     private lateinit var signupDataBinding: FragmentSignupBinding
+
+    private val signUpViewModel: SignupViewModel by lazy {
+        ViewModelProvider(
+            this,
+            SignupVMFactory(SignUpImpl(SignupRepoImpl()))
+        ).get(SignupViewModel::class.java)
+    }
 
     // Views
     private lateinit var emailTextInput: TextInputEditText
@@ -38,7 +48,7 @@ class SignupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         signupDataBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_signup, container, false)
@@ -55,32 +65,25 @@ class SignupFragment : Fragment() {
         signupButton = view.findViewById(R.id.btn_signup_signup)
 
         signupButton.setOnClickListener {
-            Log.d("AuthDebug", "Signup...")
-            ApiClient.getUserApiService(requireContext()).signup(
-                User.SignUpRequest(
-                    email = emailTextInput.text.toString(),
-                    password = passwordTextInput.text.toString(),
-                )
-            ).enqueue(object : Callback<User.SignUpResponse> {
-                override fun onResponse(
-                    call: Call<User.SignUpResponse>,
-                    response: Response<User.SignUpResponse>
-                ) {
-                    val signupResponse = response.body()
-                    Log.d("AuthDebug", "Signup response: $signupResponse")
-                    Log.d("AuthDebug", "Signup Url: ${response.raw().request.url}")
+            signUpViewModel.signUpWithEmailAndPassword().removeObservers(viewLifecycleOwner)
+            signUpViewModel.signUpWithEmailAndPassword().observe(viewLifecycleOwner, { task ->
+                when (task) {
+                    is Resource.Loading -> {
+                    }
 
-//                    if (signupResponse?.statusCode == 200) {
-//                        (activity as AuthActivity).sessionManager.saveAuthToken(signupResponse.authToken)
-//                    } else {
-//                        // Error logging in
-//                    }
+                    is Resource.Success -> {
+                        (activity as AuthActivity).sessionManager.saveAuthToken(task.data!!.accessToken)
+                        intentToPreTest()
+                    }
+
+                    is Resource.Failure -> {
+                    }
+
+                    else -> {
+                        // do nothing
+                        requireContext().toast(task.toString())
+                    }
                 }
-
-                override fun onFailure(call: Call<User.SignUpResponse>, t: Throwable) {
-                    Log.d("AuthDebug", "Signup failure: ${t.message}")
-                }
-
             })
         }
 
@@ -93,5 +96,11 @@ class SignupFragment : Fragment() {
 
     private fun moveToLogin() {
         requireView().findNavController().navigate(R.id.navigation_login)
+    }
+
+    private fun intentToPreTest() {
+        startActivity(Intent(requireContext(), PreTestActivity::class.java))
+        requireActivity().finish()
+
     }
 }

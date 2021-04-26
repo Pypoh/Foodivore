@@ -20,8 +20,10 @@ import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoIm
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.AuthActivity
+import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.login.domain.LoginImpl
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
+import com.example.foodivore.ui.pretest.PreTestActivity
 import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
@@ -83,7 +85,13 @@ class LoginFragment : Fragment() {
 
 //                            profileCheck(task.data.accessToken)
                             if (task.data.calorieNeeds == 0) {
-                                Log.d("LoginFragment", "User ${task.data.id} has not been initialized")
+                                Log.d(
+                                    "LoginFragment",
+                                    "User ${task.data.id} has not been initialized"
+                                )
+                                intentToPreTest()
+                            } else {
+                                intentToMain()
                             }
 
                         }
@@ -119,7 +127,9 @@ class LoginFragment : Fragment() {
                 is Resource.Success -> {
                     Log.d("LoginFragment", "user calorie : ${task.data}")
                     if (task.data!!.calorieNeeds == 0) {
-
+                        intentToPreTest()
+                    } else {
+                        intentToMain()
                     }
                 }
 
@@ -148,6 +158,12 @@ class LoginFragment : Fragment() {
     private fun intentToMain() {
         startActivity(Intent(requireContext(), MainActivity::class.java))
         requireActivity().finish()
+    }
+
+    private fun intentToPreTest() {
+        startActivity(Intent(requireContext(), PreTestActivity::class.java))
+        requireActivity().finish()
+
     }
 
     private fun initProgressDialog() {

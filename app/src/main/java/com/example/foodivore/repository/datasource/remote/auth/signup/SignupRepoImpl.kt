@@ -1,5 +1,7 @@
 package com.example.foodivore.repository.datasource.remote.auth.signup
 
+import com.example.foodivore.network.ApiClient
+import com.example.foodivore.network.ApiServices
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.viewobject.Resource
 import java.lang.Exception
@@ -8,14 +10,11 @@ class SignupRepoImpl : ISignupRepo {
     override suspend fun registerWithEmailAndPassword(
         email: String,
         password: String
-    ): Resource<User.UserData?> {
+    ): Resource<User.SignUpResponse?> {
         return try {
-            // Dummy User
-            val data = User.UserData(email, password)
+            val signUpResult = ApiClient.getApiService().signup(User.SignUpRequest(email, password))
 
-            /* Return Success Dummy Data, later will change into JSON parser because the server will
-            response with JSON from API request */
-            Resource.Success(data)
+            Resource.Success(signUpResult)
         } catch (e: Exception) {
             Resource.Failure(e)
         }

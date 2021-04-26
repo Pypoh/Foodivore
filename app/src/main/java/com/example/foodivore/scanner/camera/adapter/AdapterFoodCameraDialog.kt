@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.repository.model.Food
 import com.example.foodivore.repository.model.Post
-import com.example.foodivore.ui.pretest.adapter.ArticleAdapter
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.textview.MaterialTextView
 

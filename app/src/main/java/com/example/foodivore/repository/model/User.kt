@@ -49,11 +49,20 @@ object User {
     )
 
     data class SignUpResponse(
-        @SerializedName("status_code")
-        var statusCode: Int,
+        @SerializedName("id")
+        var id: String,
 
-        @SerializedName("message")
-        var message: String
+        @SerializedName("email")
+        var email: String,
+
+        @SerializedName("roles")
+        var roles: List<String>,
+
+        @SerializedName("accessToken")
+        var accessToken: String,
+
+        @SerializedName("calorieNeeds")
+        var calorieNeeds: Int
     )
 
     data class PreTestData(

@@ -17,13 +17,13 @@ interface ApiServices {
 
     @POST(Constants.SIGNUP_URL)
     @Headers("Content-Type: application/json;charset=UTF-8")
-    fun signup(@Body request: User.SignUpRequest): Call<User.SignUpResponse>
+    suspend fun signup(@Body request: User.SignUpRequest): User.SignUpResponse
 
     @GET(Constants.FOODS_URL)
     fun fetchFoods(): Call<List<Food.FoodResponse>>
 
     @POST(Constants.USER_URL + "/pretest/update")
-    fun postPreTest(@Body request: User.PreTestData): User.PreTestResponse
+    suspend fun postPreTest(@Body request: User.PreTestData): User.PreTestResponse
 
     @GET(Constants.USER_URL)
     suspend fun getUserData(): User.PreTestData
