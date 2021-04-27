@@ -2,6 +2,7 @@ package com.example.foodivore.ui.auth.signup
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.example.foodivore.databinding.FragmentSignupBinding
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.auth.signup.SignupRepoImpl
+import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.AuthActivity
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.signup.domain.SignUpImpl
@@ -23,6 +25,9 @@ import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignupFragment : Fragment() {
 
@@ -52,6 +57,7 @@ class SignupFragment : Fragment() {
 
         signupDataBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_signup, container, false)
+        signupDataBinding.signupViewModel = signUpViewModel
 
         setupViews(signupDataBinding.root)
 
@@ -65,8 +71,9 @@ class SignupFragment : Fragment() {
         signupButton = view.findViewById(R.id.btn_signup_signup)
 
         signupButton.setOnClickListener {
-            signUpViewModel.signUpWithEmailAndPassword().removeObservers(viewLifecycleOwner)
-            signUpViewModel.signUpWithEmailAndPassword().observe(viewLifecycleOwner, { task ->
+//            signUpViewModel.signUpWithEmailAndPassword().removeObservers(viewLifecycleOwner)
+            signUpViewModel.signUpWithEmailAndPassword()
+            signUpViewModel.result.observe(viewLifecycleOwner, { task ->
                 when (task) {
                     is Resource.Loading -> {
                     }
@@ -77,6 +84,7 @@ class SignupFragment : Fragment() {
                     }
 
                     is Resource.Failure -> {
+                        Log.d("SignupFragment", task.throwable.message.toString())
                     }
 
                     else -> {

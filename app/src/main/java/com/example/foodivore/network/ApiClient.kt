@@ -10,21 +10,21 @@ object ApiClient {
     private lateinit var apiService: ApiServices
     private lateinit var userApiService: ApiServices
 
-    fun getUserApiService(context: Context?): ApiServices {
-
-        // Initialize ApiService if not initialized yet
-        if (!::apiService.isInitialized) {
-            val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okhttpClient(context!!))
-                .build()
-
-            apiService = retrofit.create(ApiServices::class.java)
-        }
-
-        return apiService
-    }
+//    fun getUserApiService(context: Context?): ApiServices {
+//
+//        // Initialize ApiService if not initialized yet
+//        if (!::apiService.isInitialized) {
+//            val retrofit = Retrofit.Builder()
+//                .baseUrl(Constants.BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .client(okhttpClient(context!!))
+//                .build()
+//
+//            apiService = retrofit.create(ApiServices::class.java)
+//        }
+//
+//        return apiService
+//    }
 
     fun getUserApiService(jwtToken: String?): ApiServices {
 

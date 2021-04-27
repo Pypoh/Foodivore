@@ -165,7 +165,7 @@ class PreTestActivity : AppCompatActivity() {
 
         if (pageState == 6) {
             try {
-                Log.d("PreTestActivity", "Preparing to upload data...")
+                Log.d("PreTestActivity", "User : ${sessionManager.fetchAuthToken()!!} Preparing to upload data...")
                 preTestViewModel.postPreTestData(
                     User.PreTestData(
                         name = nameInput.text.toString(),

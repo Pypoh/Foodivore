@@ -71,7 +71,7 @@ class LoginFragment : Fragment() {
 
     private fun setupButtonListener() {
         loginButton.setOnClickListener {
-            loginViewModel.loginWithEmailAndPassword().removeObservers(viewLifecycleOwner)
+//            loginViewModel.loginWithEmailAndPassword().removeObservers(viewLifecycleOwner)
             loginViewModel.loginWithEmailAndPassword().observe(viewLifecycleOwner, { task ->
                 when (task) {
                     is Resource.Loading -> {
@@ -118,7 +118,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun profileCheck(jwtToken: String) {
-        loginViewModel.profileChecker(jwtToken).removeObservers(viewLifecycleOwner)
+//        loginViewModel.profileChecker(jwtToken).removeObservers(viewLifecycleOwner)
         loginViewModel.profileChecker(jwtToken).observe(viewLifecycleOwner, { task ->
             when (task) {
                 is Resource.Loading -> {

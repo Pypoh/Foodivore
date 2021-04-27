@@ -55,9 +55,6 @@ object User {
         @SerializedName("email")
         var email: String,
 
-        @SerializedName("roles")
-        var roles: List<String>,
-
         @SerializedName("accessToken")
         var accessToken: String,
 
