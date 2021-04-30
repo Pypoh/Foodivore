@@ -15,6 +15,8 @@ class PreTestRepoImpl : IPreTestRepo {
         jwtToken: String
     ): Resource<User.PreTestResponse> {
         return try {
+            Log.d("PreTestActivity", "Uploading with token $jwtToken")
+
             val userData =
                 ApiClient.getUserApiService(jwtToken).postPreTest(
                     User.PreTestData(
@@ -27,8 +29,6 @@ class PreTestRepoImpl : IPreTestRepo {
                         target = userPreTest.target
                     )
                 )
-
-            Log.d("PreTestActivity", "Uploading Data.....")
 
             Resource.Success(userData)
         } catch (e: Exception) {

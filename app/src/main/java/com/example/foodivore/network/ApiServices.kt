@@ -27,6 +27,7 @@ interface ApiServices {
     fun fetchFoods(): Call<List<Food.FoodResponse>>
 
     @POST(Constants.USER_URL + "/pretest/update")
+    @Headers("Content-Type: application/json;charset=UTF-8")
     suspend fun postPreTest(@Body request: User.PreTestData): User.PreTestResponse
 
     @GET(Constants.USER_URL)
