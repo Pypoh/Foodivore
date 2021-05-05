@@ -35,14 +35,13 @@
             android:id="@+id/text_name_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="Naufal Afif Bunyamin" />
+            android:layout_marginBottom="4dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_schedule_status_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Makan siang dalam 3 jam" />
+            android:text="Jadwal makan tidak ditemukan"/>
 
     </LinearLayout>
 

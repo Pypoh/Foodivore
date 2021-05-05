@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentProfileBinding
+import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
@@ -43,7 +44,7 @@ class ProfileFragment : Fragment() {
 
     private val profileViewModel: ProfileViewModel by lazy {
         ViewModelProvider(
-            this,
+            requireActivity(),
             ProfileVMFactory(
                 ProfileImpl(ProfileRepoImpl()),
                 AuthImpl(AuthRepoImpl()),
@@ -67,7 +68,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun fetchData() {
-        (activity as MainActivity).sessionManager.fetchAuthToken()?.let { profileViewModel.getUserProfileData(it) }
+//        profileViewModel.getUserProfileData((activity as MainActivity).sessionManager.fetchAuthToken()!!)
         profileViewModel.result.observe(viewLifecycleOwner, { task ->
             when (task) {
                 is Resource.Loading -> {
@@ -115,8 +116,7 @@ class ProfileFragment : Fragment() {
             (activity as MainActivity).sessionManager.deleteAuthToken()
             startActivity(Intent(requireContext(), InBoardingActivity::class.java))
             (activity as MainActivity).finish()
+            ApiClient.removeInitializedApiServices()
         }
     }
-
-
 }

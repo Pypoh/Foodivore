@@ -14,17 +14,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentHomeBinding
+import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
+import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.Feature
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.ui.auth.domain.AuthImpl
 import com.example.foodivore.ui.main.home.adapter.FeatureServiceAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodRecyclerAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodTrendRecyclerAdapter
 import com.example.foodivore.ui.main.plans.PlansActivity
+import com.example.foodivore.ui.main.profile.ProfileVMFactory
+import com.example.foodivore.ui.main.profile.ProfileViewModel
+import com.example.foodivore.ui.main.profile.domain.ProfileImpl
+import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -32,6 +40,7 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
+import com.google.android.material.textview.MaterialTextView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,6 +57,16 @@ class HomeFragment : Fragment() {
 //        ).get(HomeViewModel::class.java)
 //    }
 
+    private val sharedProfileViewModel: ProfileViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            ProfileVMFactory(
+                ProfileImpl(ProfileRepoImpl()),
+                AuthImpl(AuthRepoImpl()),
+            )
+        ).get(ProfileViewModel::class.java)
+    }
+
     private lateinit var recyclerFoodCatalogue: RecyclerView
     private lateinit var foodRecyclerAdapter: FoodRecyclerAdapter
 
@@ -62,6 +81,9 @@ class HomeFragment : Fragment() {
     private var dummyDataFeature = arrayListOf<Feature.Service>()
 
     private lateinit var nutritionsChart: PieChart
+
+    // Views
+    private lateinit var usernameToolbar: MaterialTextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -125,7 +147,30 @@ class HomeFragment : Fragment() {
 
         setupChart()
 
+        updateLayoutData()
+
         return homeDataBinding.root
+    }
+
+    private fun updateLayoutData() {
+        sharedProfileViewModel.result.observe(viewLifecycleOwner, { task ->
+            when (task) {
+                is Resource.Loading -> {
+                }
+
+                is Resource.Success -> {
+                    if (task.data != null) {
+                        usernameToolbar.text = task.data.name
+                    }
+                }
+
+                is Resource.Failure -> {
+                }
+
+                else -> {
+                }
+            }
+        })
     }
 
     private fun fetchFoods() {
@@ -153,7 +198,7 @@ class HomeFragment : Fragment() {
         nutritionsChart.dragDecelerationFrictionCoef = 0.95f
 
 //        nutritionsChart.setCenterTextTypeface()
-        nutritionsChart.centerText = "472 cal"
+        nutritionsChart.centerText = "0 cal"
 
         nutritionsChart.isDrawHoleEnabled = true
         nutritionsChart.setHoleColor(resources.getColor(R.color.orange_200))
@@ -178,9 +223,9 @@ class HomeFragment : Fragment() {
 
         // set data
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(56f))
-        entries.add(PieEntry(13f))
-        entries.add(PieEntry(36f))
+        entries.add(PieEntry(0f)) // Karb
+        entries.add(PieEntry(0f)) // Lemak
+        entries.add(PieEntry(0f)) // Protein
 
         val dataSet = PieDataSet(entries, "Nutritions")
 
@@ -259,6 +304,8 @@ class HomeFragment : Fragment() {
         recyclerFeature.adapter = featureServiceAdapter
 
         nutritionsChart = view.findViewById(R.id.piechart_nutrition)
+
+        usernameToolbar = view.findViewById(R.id.text_name_toolbar)
 
 
     }

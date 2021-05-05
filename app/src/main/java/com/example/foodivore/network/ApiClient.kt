@@ -7,8 +7,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private lateinit var apiService: ApiServices
-    private lateinit var userApiService: ApiServices
+    private var apiService: ApiServices? = null
+    private var userApiService: ApiServices? = null
 
 //    fun getUserApiService(context: Context?): ApiServices {
 //
@@ -29,23 +29,23 @@ object ApiClient {
     fun getUserApiService(jwtToken: String?): ApiServices {
 
         // Initialize ApiService if not initialized yet
-        if (!::apiService.isInitialized) {
+        if (userApiService == null) {
             val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okhttpClient(jwtToken!!))
                 .build()
 
-            apiService = retrofit.create(ApiServices::class.java)
+            userApiService = retrofit.create(ApiServices::class.java)
         }
 
-        return apiService
+        return userApiService!!
     }
 
     fun getApiService(): ApiServices {
 
         // Initialize ApiService if not initialized yet
-        if (!::apiService.isInitialized) {
+        if (apiService == null) {
             val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -54,7 +54,12 @@ object ApiClient {
             apiService = retrofit.create(ApiServices::class.java)
         }
 
-        return apiService
+        return apiService!!
+    }
+
+    fun removeInitializedApiServices() {
+        apiService = null
+        userApiService = null
     }
 
     private fun okhttpClient(context: Context): OkHttpClient {

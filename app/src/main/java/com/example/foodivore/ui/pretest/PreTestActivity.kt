@@ -1,6 +1,7 @@
 package com.example.foodivore.ui.pretest
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityPreTestBinding
 import com.example.foodivore.network.SessionManager
@@ -195,6 +197,8 @@ class PreTestActivity : AppCompatActivity() {
 
                         is Resource.Success -> {
                             Log.d("PreTestActivity", task.data!!.message)
+
+                            intentToMain()
                         }
 
                         is Resource.Failure -> {
@@ -337,5 +341,10 @@ class PreTestActivity : AppCompatActivity() {
             activeLayout,
             purposeLayout
         )
+    }
+
+    private fun intentToMain() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

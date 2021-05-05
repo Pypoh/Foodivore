@@ -84,7 +84,7 @@ class LoginFragment : Fragment() {
                             (activity as AuthActivity).sessionManager.saveAuthToken(task.data.accessToken)
 
 //                            profileCheck(task.data.accessToken)
-                            if (task.data.calorieNeeds == 0) {
+                            if (task.data.calorieNeeds == 0f) {
                                 Log.d(
                                     "LoginFragment",
                                     "User ${task.data.id} has not been initialized"
@@ -126,7 +126,7 @@ class LoginFragment : Fragment() {
 
                 is Resource.Success -> {
                     Log.d("LoginFragment", "user calorie : ${task.data}")
-                    if (task.data!!.calorieNeeds == 0) {
+                    if (task.data!!.calorieNeeds == 0f) {
                         intentToPreTest()
                     } else {
                         intentToMain()

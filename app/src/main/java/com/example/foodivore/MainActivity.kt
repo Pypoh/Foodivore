@@ -5,12 +5,19 @@ import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
+import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
+import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.scanner.camera.DetectorActivity
+import com.example.foodivore.ui.auth.domain.AuthImpl
+import com.example.foodivore.ui.main.profile.ProfileVMFactory
+import com.example.foodivore.ui.main.profile.ProfileViewModel
+import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +26,16 @@ class MainActivity : AppCompatActivity() {
 //    lateinit var apiClient: ApiClient
 
     private lateinit var navAddButton: FloatingActionButton
+
+    private val sharedProfileViewModel: ProfileViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ProfileVMFactory(
+                ProfileImpl(ProfileRepoImpl()),
+                AuthImpl(AuthRepoImpl()),
+            )
+        ).get(ProfileViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +57,9 @@ class MainActivity : AppCompatActivity() {
 
 //        apiClient = ApiClient()
         sessionManager = SessionManager(this)
+
+        sessionManager.fetchAuthToken()?.let { sharedProfileViewModel.getUserProfileData(it) }
+
 
     }
 

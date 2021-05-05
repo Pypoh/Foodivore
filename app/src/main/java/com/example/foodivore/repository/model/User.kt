@@ -37,7 +37,7 @@ object User {
         var accessToken: String,
 
         @SerializedName("calorieNeeds")
-        var calorieNeeds: Int
+        var calorieNeeds: Float
     )
 
     data class SignUpRequest(
@@ -59,7 +59,7 @@ object User {
         var accessToken: String,
 
         @SerializedName("calorieNeeds")
-        var calorieNeeds: Int
+        var calorieNeeds: Float
     )
 
     data class PreTestData(
@@ -93,7 +93,7 @@ object User {
 
     data class CalorieNeedsResponse(
         @SerializedName("calorieNeeds")
-        var calorieNeeds: Int
+        var calorieNeeds: Float
     )
 
 }

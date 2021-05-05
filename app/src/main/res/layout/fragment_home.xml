@@ -107,7 +107,7 @@
                             android:id="@+id/text_value_lemak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="13 gram"
+                            android:text=" gram"
                             app:layout_constraintBottom_toBottomOf="@id/piechart_nutrition"
                             app:layout_constraintLeft_toLeftOf="@id/view_marker_lemak"
                             app:layout_constraintRight_toRightOf="@id/view_marker_lemak" />
@@ -138,7 +138,7 @@
                             android:id="@+id/text_value_karb"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="56 gram"
+                            android:text=" gram"
                             app:layout_constraintBottom_toBottomOf="@id/piechart_nutrition"
                             app:layout_constraintLeft_toLeftOf="@id/view_marker_karb"
                             app:layout_constraintRight_toRightOf="@id/view_marker_karb" />
@@ -168,7 +168,7 @@
                             android:id="@+id/text_value_protein"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="36 gram"
+                            android:text=" gram"
                             app:layout_constraintBottom_toBottomOf="@id/piechart_nutrition"
                             app:layout_constraintLeft_toLeftOf="@id/view_marker_protein"
                             app:layout_constraintRight_toRightOf="@id/view_marker_protein" />

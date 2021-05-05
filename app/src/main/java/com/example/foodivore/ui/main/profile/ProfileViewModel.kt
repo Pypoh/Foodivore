@@ -12,19 +12,23 @@ import kotlinx.coroutines.Dispatchers
 import okhttp3.internal.userAgent
 import java.lang.Exception
 
-class ProfileViewModel(private val useCaseProfile: IProfile, private val useCaseAuth: IAuth) : ViewModel() {
+class ProfileViewModel(private val useCaseProfile: IProfile, private val useCaseAuth: IAuth) :
+    ViewModel() {
 
     lateinit var result: LiveData<Resource<User.PreTestData?>>
 
     fun getUserProfileData(jwtToken: String) {
-        result = liveData(Dispatchers.IO) {
-            emit(Resource.Loading())
-            try {
-                val userDataResult: Resource<User.PreTestData?> = useCaseProfile.getUserData(jwtToken)
+        if (!::result.isInitialized) {
+            result = liveData(Dispatchers.IO) {
+                emit(Resource.Loading())
+                try {
+                    val userDataResult: Resource<User.PreTestData?> =
+                        useCaseProfile.getUserData(jwtToken)
 
-                emit(userDataResult)
-            } catch (e: Exception) {
-                emit(Resource.Failure(e))
+                    emit(userDataResult)
+                } catch (e: Exception) {
+                    emit(Resource.Failure(e))
+                }
             }
         }
     }
