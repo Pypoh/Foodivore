@@ -8,7 +8,6 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +16,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentHomeBinding
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.Feature
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.domain.AuthImpl
+import com.example.foodivore.ui.main.article.ArticleActivity
 import com.example.foodivore.ui.main.home.adapter.FeatureServiceAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodRecyclerAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodTrendRecyclerAdapter
@@ -41,9 +41,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.textview.MaterialTextView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.gson.Gson
 
 
 class HomeFragment : Fragment() {
@@ -295,8 +293,25 @@ class HomeFragment : Fragment() {
         featureServiceAdapter.setOnItemClickListener(object :
             FeatureServiceAdapter.OnItemClickListener {
             override fun onItemClick(featureModel: Feature.Service) {
-                if (featureModel.title == "Plans") {
-                    intentToPlans()
+                when (featureModel.title) {
+                    "Plans" -> {
+                        if (sharedProfileViewModel.result.value != null) {
+                            sharedProfileViewModel.result.value?.let {
+                                when (it) {
+                                    is Resource.Success -> {
+                                        intentToPlans(it.data!!)
+                                    }
+                                    else -> {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    "Artikel" -> {
+                        intentToArticle()
+                    }
                 }
             }
 
@@ -310,10 +325,17 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun intentToPlans() {
+    private fun intentToPlans(value: User.PreTestData) {
         val intent = Intent(this.context, PlansActivity::class.java)
+        intent.putExtra("USERDATA", Gson().toJson(value))
         requireContext().startActivity(intent)
     }
+
+    private fun intentToArticle() {
+        val intent = Intent(this.context, ArticleActivity::class.java)
+        requireContext().startActivity(intent)
+    }
+
 
     private fun generateCenterSpannableText(): SpannableString? {
         val s = SpannableString("MPAndroidChart\ndeveloped by Philipp Jahoda")

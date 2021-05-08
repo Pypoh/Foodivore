@@ -186,7 +186,8 @@ class PreTestActivity : AppCompatActivity() {
                             }
                         },
                         activity = adapterActive.getLastCheckedItem()!!.title,
-                        target = adapterPurpose.getLastCheckedItem()!!.title
+                        target = adapterPurpose.getLastCheckedItem()!!.title,
+                        calorieNeeds = 0f
                     ),
                     sessionManager.fetchAuthToken()!!
                 ).observe(this, { task ->

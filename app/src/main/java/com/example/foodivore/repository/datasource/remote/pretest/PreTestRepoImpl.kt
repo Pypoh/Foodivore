@@ -26,7 +26,8 @@ class PreTestRepoImpl : IPreTestRepo {
                         sex = userPreTest.sex,
                         age = userPreTest.age,
                         activity = userPreTest.activity,
-                        target = userPreTest.target
+                        target = userPreTest.target,
+                        calorieNeeds = 0f
                     )
                 )
 

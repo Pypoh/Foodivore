@@ -35,7 +35,7 @@ object  Food {
         var title: String,
 
         @SerializedName("calorie")
-        var calorie: Int,
+        var calorie: Float,
 
         @SerializedName("fat")
         var fat: Float,

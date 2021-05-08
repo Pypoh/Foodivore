@@ -84,6 +84,9 @@ object User {
         @SerializedName("target")
         var target: String,
 
+        @SerializedName("calorieNeeds")
+        var calorieNeeds: Float
+
     )
 
     data class PreTestResponse(

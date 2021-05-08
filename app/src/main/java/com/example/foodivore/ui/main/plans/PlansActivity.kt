@@ -1,7 +1,6 @@
 package com.example.foodivore.ui.main.plans
 
 import android.graphics.Color
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +8,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,13 +17,10 @@ import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityPlansBinding
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.plan.PlanRepoImpl
-import com.example.foodivore.repository.datasource.remote.pretest.PreTestRepoImpl
+import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.main.plans.adapter.AdapterFoodList
 import com.example.foodivore.ui.main.plans.domain.PlanImpl
-import com.example.foodivore.ui.pretest.PreTestVMFactory
-import com.example.foodivore.ui.pretest.PreTestViewModel
-import com.example.foodivore.ui.pretest.domain.PreTestImpl
-import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -33,8 +30,10 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.MaterialTextInputPicker
+import com.google.android.material.textview.MaterialTextView
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -60,6 +59,19 @@ class PlansActivity : AppCompatActivity() {
         ).get(PlansViewModel::class.java)
     }
 
+    private lateinit var userData: User.PreTestData
+
+    var totalCalorie = 0f
+    var totalCarb = 0f
+    var totalFat = 0f
+    var totalProtein = 0f
+
+    // Views
+    private lateinit var calorieProgressBar: ProgressBar
+    private lateinit var carbText: MaterialTextView
+    private lateinit var fatText: MaterialTextView
+    private lateinit var protText: MaterialTextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plans)
@@ -68,12 +80,28 @@ class PlansActivity : AppCompatActivity() {
 
         plansDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_plans)
 
+        userData = Gson().fromJson(intent.getStringExtra("USERDATA"), User.PreTestData::class.java)
+
         setupViews(plansDataBinding.root)
 
 //        setupChart()
 
         setupMenu()
 
+//        initViews()
+
+    }
+
+    private fun initViews() {
+        val progressBarValue = (totalCalorie / userData.calorieNeeds) * 100
+        if (progressBarValue <= 100) {
+            calorieProgressBar.progress = progressBarValue.toInt()
+        } else {
+            calorieProgressBar.progress = 100
+        }
+        carbText.text = "$totalCarb gram"
+        fatText.text = "$totalFat gram"
+        protText.text = "$totalProtein gram"
     }
 
     private fun setupMenu() {
@@ -89,15 +117,19 @@ class PlansActivity : AppCompatActivity() {
         val locale = Locale("in", "ID")
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss", locale)
 
+        val currentTime = Calendar.getInstance()
+        currentTime.set(Calendar.HOUR_OF_DAY, 0)
+
         plansViewModel.getPlanByDate(
             sessionManager.fetchAuthToken()!!,
-            Calendar.getInstance().timeInMillis
+            currentTime.timeInMillis
         ).observe(this, { task ->
             when (task) {
                 is Resource.Success -> {
                     Log.d("PlanDebug", task.toString())
                     adapterFoodList.setData(task.data)
                     adapterFoodList.notifyDataSetChanged()
+                    calculateCurrentCalories(task.data!!)
                 }
 
                 is Resource.Failure -> {
@@ -123,12 +155,10 @@ class PlansActivity : AppCompatActivity() {
                     .removeObservers(this)
             }
 
-            Log.d("PlansActivity", "time: $it")
             plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
                 .observe(this, { task ->
                     when (task) {
                         is Resource.Success -> {
-                            Log.d("PlanDebug", "Fetched data")
                             adapterFoodList.setData(task.data)
                             adapterFoodList.notifyDataSetChanged()
 
@@ -137,6 +167,7 @@ class PlansActivity : AppCompatActivity() {
                         is Resource.Failure -> {
 //
                         }
+
                         is Resource.Loading -> {
 
                         }
@@ -148,6 +179,32 @@ class PlansActivity : AppCompatActivity() {
             datePicker.show(supportFragmentManager, "DATE_PICKER_PLANS")
         }
 
+    }
+
+    private fun calculateCurrentCalories(data: List<Food.FoodResponse?>?) {
+        if (data != null) {
+            for (item in data) {
+                item?.let {
+                    totalCalorie += it.calorie
+                    totalCarb += it.carb
+                    totalFat += it.fat
+                    totalProtein += it.prot
+                }
+            }
+        }
+        initViews()
+    }
+
+    private fun setupViews(view: View) {
+//        plansChart = view.findViewById(R.id.chart_plans)
+        menuAutoComplete = view.findViewById(R.id.menu_auto_complete_plans)
+        recyclerFoodList = view.findViewById(R.id.recycler_food_list_plans)
+        calendarButton = view.findViewById(R.id.button_calendar_plans)
+
+        calorieProgressBar = view.findViewById(R.id.progress_bar_plans)
+        fatText = view.findViewById(R.id.text_value_lemak)
+        carbText = view.findViewById(R.id.text_value_karb)
+        protText = view.findViewById(R.id.text_value_protein)
     }
 
     private fun setupChart() {
@@ -181,10 +238,10 @@ class PlansActivity : AppCompatActivity() {
 
         // set data
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(56f, "Makanan Pokok"))
-        entries.add(PieEntry(13f, "Buah"))
-        entries.add(PieEntry(36f, "Sayuran"))
-        entries.add(PieEntry(48f, "Lauk Pauk"))
+        entries.add(PieEntry(0f, "Makanan Pokok"))
+        entries.add(PieEntry(0f, "Buah"))
+        entries.add(PieEntry(0f, "Sayuran"))
+        entries.add(PieEntry(0f, "Lauk Pauk"))
 
         val dataSet = PieDataSet(entries, "Nutritions")
 
@@ -223,10 +280,5 @@ class PlansActivity : AppCompatActivity() {
 
     }
 
-    private fun setupViews(view: View) {
-//        plansChart = view.findViewById(R.id.chart_plans)
-        menuAutoComplete = view.findViewById(R.id.menu_auto_complete_plans)
-        recyclerFoodList = view.findViewById(R.id.recycler_food_list_plans)
-        calendarButton = view.findViewById(R.id.button_calendar_plans)
-    }
+
 }
