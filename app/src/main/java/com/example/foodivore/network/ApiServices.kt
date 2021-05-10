@@ -1,5 +1,6 @@
 package com.example.foodivore.network
 
+import com.example.foodivore.repository.model.Article
 import com.example.foodivore.repository.model.Food
 import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
@@ -46,6 +47,8 @@ interface ApiServices {
     @GET(Constants.CALORIE_URL)
     suspend fun getUserCalorie(): User.CalorieNeedsResponse
 
+    @GET(Constants.ARTICLE_URL)
+    suspend fun getArticleCategory(): Article.Category
 
 
 }

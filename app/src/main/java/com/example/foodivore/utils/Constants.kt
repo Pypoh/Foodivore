@@ -23,6 +23,8 @@ class Constants {
         const val USER_URL = "api/user"
         const val CALORIE_URL = "api/user/calorie"
 
+        const val ARTICLE_URL = "api/article"
+
         const val RECORD_URL = "api/user/record"
 
     }
