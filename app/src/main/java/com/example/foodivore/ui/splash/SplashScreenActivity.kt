@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodivore.MainActivity
 import com.example.foodivore.R
+import com.example.foodivore.notification.data.DataUtils
+import com.example.foodivore.notification.data.ReminderDatabase
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
@@ -17,6 +19,8 @@ import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 
 class SplashScreenActivity : AppCompatActivity() {
+
+    private val db = ReminderDatabase(this)
 
     private val splashScreenViewModel: SplashScreenViewModel by lazy {
         ViewModelProvider(
@@ -30,6 +34,8 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.activity_splash_screen)
+
+        splashScreenViewModel.checkScheduledReminderData(db, this)
 
         splashScreenViewModel.checkAuthInstance(this)
 
@@ -62,4 +68,5 @@ class SplashScreenActivity : AppCompatActivity() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
+
 }

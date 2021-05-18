@@ -1,6 +1,7 @@
 package com.example.foodivore.ui.main.article
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -19,8 +20,13 @@ import com.example.foodivore.ui.main.article.ui.main.SectionsPagerAdapter
 import com.example.foodivore.ui.pretest.PreTestVMFactory
 import com.example.foodivore.ui.pretest.PreTestViewModel
 import com.example.foodivore.ui.pretest.domain.PreTestImpl
+import com.example.foodivore.utils.viewobject.Resource
 
 class ArticleActivity : AppCompatActivity() {
+
+    private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
+    private lateinit var viewPager: ViewPager
+    private lateinit var tabs: TabLayout
 
     private val articleViewModel: ArticleViewModel by lazy {
         ViewModelProvider(
@@ -35,16 +41,32 @@ class ArticleActivity : AppCompatActivity() {
 
         getCategoryData()
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
-        viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = findViewById(R.id.tabs)
-        tabs.setupWithViewPager(viewPager)
-
-
     }
 
     private fun getCategoryData() {
+        articleViewModel.getArticleCategory()
+        articleViewModel.categoryResult.observe(this, { task ->
+            when (task) {
+                is Resource.Loading -> {
+                }
 
+                is Resource.Success -> {
+                    Log.d("ArticleActivity", "data: ${task.data}")
+                    sectionsPagerAdapter =
+                        SectionsPagerAdapter(this, supportFragmentManager, task.data)
+                    viewPager = findViewById(R.id.view_pager)
+                    viewPager.adapter = sectionsPagerAdapter
+                    tabs = findViewById(R.id.tabs)
+                    tabs.setupWithViewPager(viewPager)
+                }
+
+                is Resource.Failure -> {
+                    Log.d("ArticleActivity", "error: ${task.throwable.message}")
+                }
+
+                else -> {
+                }
+            }
+        })
     }
 }

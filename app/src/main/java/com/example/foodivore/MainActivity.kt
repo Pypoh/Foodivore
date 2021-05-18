@@ -7,10 +7,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.example.foodivore.network.ApiClient
 import com.example.foodivore.network.SessionManager
+import com.example.foodivore.notification.data.DataUtils
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.scanner.camera.DetectorActivity
@@ -59,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
 
         sessionManager.fetchAuthToken()?.let { sharedProfileViewModel.getUserProfileData(it) }
-
 
     }
 

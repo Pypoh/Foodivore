@@ -1,19 +1,16 @@
 package com.example.foodivore.ui.splash
 
-import android.app.Application
 import android.content.Context
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
+import com.example.foodivore.notification.data.DataUtils
+import com.example.foodivore.notification.data.ReminderDatabase
 import com.example.foodivore.ui.auth.domain.IAuth
 import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.Exception
-import kotlin.coroutines.coroutineContext
 
 class SplashScreenViewModel(private val useCase: IAuth) : ViewModel() {
 
@@ -27,6 +24,22 @@ class SplashScreenViewModel(private val useCase: IAuth) : ViewModel() {
                 emit(authResult)
             } catch (e: Exception) {
                 emit(Resource.Failure(e.cause!!))
+            }
+        }
+    }
+
+    fun checkScheduledReminderData(db: ReminderDatabase, context: Context) {
+        viewModelScope.launch {
+            try {
+                if (db.reminderDao().getAll().isEmpty()) {
+                    for (reminder in DataUtils.getDefaultData()) {
+                        db.reminderDao().insert(reminder)
+                    }
+
+                    DataUtils.scheduleAlarmsForData(context, DataUtils.getDefaultData())
+                }
+            } catch (e: Exception) {
+
             }
         }
     }

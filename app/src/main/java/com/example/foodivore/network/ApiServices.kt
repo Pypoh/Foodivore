@@ -47,8 +47,11 @@ interface ApiServices {
     @GET(Constants.CALORIE_URL)
     suspend fun getUserCalorie(): User.CalorieNeedsResponse
 
+    @GET(Constants.ARTICLE_URL + "/category")
+    suspend fun getArticleCategory(): List<Article.Category>
+
     @GET(Constants.ARTICLE_URL)
-    suspend fun getArticleCategory(): Article.Category
+    suspend fun getArticleByCategory(@Query("category") category: String): List<Article.Post>
 
 
 }
