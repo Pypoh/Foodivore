@@ -15,7 +15,7 @@ object SampleDataHelper {
                 "Ini notifikasi untuk sarapan",
                 8,
                 0,
-                arrayOf(
+                arrayListOf(
                     "Monday",
                     "Tuesday",
                     "Wednesday",
@@ -36,7 +36,7 @@ object SampleDataHelper {
                 "Ini notifikasi untuk makan siang",
                 12,
                 30,
-                arrayOf(
+                arrayListOf(
                     "Monday",
                     "Tuesday",
                     "Wednesday",
@@ -57,7 +57,7 @@ object SampleDataHelper {
                 "Ini notifikasi untuk makan malam",
                 7,
                 0,
-                arrayOf(
+                arrayListOf(
                     "Monday",
                     "Tuesday",
                     "Wednesday",

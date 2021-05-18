@@ -34,7 +34,11 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "reminder_data")
 data class ReminderEntity(
@@ -64,7 +68,7 @@ data class ReminderEntity(
 
     @ColumnInfo(name = "days")
     @SerializedName("days")
-    var days: Array<String?>? = null,
+    var days: ArrayList<String?>? = null,
 
     @ColumnInfo(name = "completed")
     @SerializedName("completed")
@@ -91,43 +95,43 @@ data class ReminderEntity(
             writeString(desc)
             writeInt(hour)
             writeInt(minute)
-            writeStringArray(days)
+            writeStringList(days)
             writeInt(if (completed) 1 else 0)
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ReminderEntity
-
-        if (id != other.id) return false
-        if (name != other.name) return false
-        if (type != other.type) return false
-        if (desc != other.desc) return false
-        if (hour != other.hour) return false
-        if (minute != other.minute) return false
-        if (days != null) {
-            if (other.days == null) return false
-            if (!(days as Array).contentEquals(other.days as Array<out String>)) return false
-        } else if (other.days != null) return false
-        if (completed != other.completed) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + type.hashCode()
-        result = 31 * result + (desc?.hashCode() ?: 0)
-        result = 31 * result + hour
-        result = 31 * result + minute
-        result = 31 * result + (days?.contentHashCode() ?: 0)
-        result = 31 * result + completed.hashCode()
-        return result
-    }
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (javaClass != other?.javaClass) return false
+//
+//        other as ReminderEntity
+//
+//        if (id != other.id) return false
+//        if (name != other.name) return false
+//        if (type != other.type) return false
+//        if (desc != other.desc) return false
+//        if (hour != other.hour) return false
+//        if (minute != other.minute) return false
+//        if (days != null) {
+//            if (other.days == null) return false
+//            if (!(days as ArrayList).contentEquals(other.days as Array<out String>)) return false
+//        } else if (other.days != null) return false
+//        if (completed != other.completed) return false
+//
+//        return true
+//    }
+//
+//    override fun hashCode(): Int {
+//        var result = id
+//        result = 31 * result + (name?.hashCode() ?: 0)
+//        result = 31 * result + type.hashCode()
+//        result = 31 * result + (desc?.hashCode() ?: 0)
+//        result = 31 * result + hour
+//        result = 31 * result + minute
+//        result = 31 * result + (days?.contentHashCode() ?: 0)
+//        result = 31 * result + completed.hashCode()
+//        return result
+//    }
 
     companion object CREATOR : Parcelable.Creator<ReminderEntity> {
         override fun createFromParcel(source: Parcel): ReminderEntity {
@@ -138,7 +142,7 @@ data class ReminderEntity(
                 desc = source.readString()
                 hour = source.readInt()
                 minute = source.readInt()
-                days?.let { source.readStringArray(it) }
+                days?.let { source.readStringList(it) }
                 completed = source.readInt() == 1
             }
         }
@@ -148,5 +152,56 @@ data class ReminderEntity(
         }
     }
 
+
+}
+
+class ReminderConverter {
+
+    companion object {
+        private val gson = Gson()
+
+        @TypeConverter
+        @JvmStatic
+        fun mealTypeToString(mealType: ReminderEntity.MealType): String = mealType.name
+
+
+        @TypeConverter
+        @JvmStatic
+        fun stringToMealType(mealType: String): ReminderEntity.MealType =
+            enumValueOf<ReminderEntity.MealType>(mealType)
+
+//        @TypeConverter
+//        @JvmStatic
+//        fun daysArrayToString(days: ArrayList<String?>?): String {
+//            val stringBuilder = StringBuilder()
+//            if (days != null) {
+//                for (day in days) {
+//                    stringBuilder.append(day).append(",")
+//                }
+//                return stringBuilder.toString()
+//            }
+//            return ""
+//        }
+//
+//        @TypeConverter
+//        @JvmStatic
+//        fun stringToDaysArray(days: String): ArrayList<String> {
+//            val stringBuilder = StringBuilder()
+//            return days.split(",").toList() as ArrayList<String>
+//        }
+
+        @TypeConverter
+        @JvmStatic
+        fun daysListToString(days: ArrayList<String?>?): String = gson.toJson(days)
+
+        @TypeConverter
+        @JvmStatic
+        fun stringToDaysList(days: String): ArrayList<String> {
+            val listType = object : TypeToken<ArrayList<String>>() {}.type
+            return gson.fromJson(days ,listType)
+        }
+
+
+    }
 
 }

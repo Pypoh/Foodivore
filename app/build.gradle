@@ -60,10 +60,11 @@ dependencies {
 
     // Room
     implementation "androidx.room:room-runtime:$room_version"
+    implementation("androidx.room:room-ktx:$room_version")
     kapt "androidx.room:room-compiler:$room_version"
 
-    implementation 'androidx.camera:camera-core:1.1.0-alpha02'
-    implementation 'androidx.camera:camera-camera2:1.1.0-alpha02'
+    implementation 'androidx.camera:camera-core:1.1.0-alpha04'
+    implementation 'androidx.camera:camera-camera2:1.1.0-alpha04'
 
     // Task API
     implementation "com.google.android.gms:play-services-tasks:17.2.1"

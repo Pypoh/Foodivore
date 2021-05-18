@@ -20,7 +20,7 @@ import com.example.foodivore.utils.viewobject.Resource
 
 class SplashScreenActivity : AppCompatActivity() {
 
-    private val db = ReminderDatabase(this)
+    private lateinit var db: ReminderDatabase
 
     private val splashScreenViewModel: SplashScreenViewModel by lazy {
         ViewModelProvider(
@@ -34,6 +34,8 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.activity_splash_screen)
+
+        db = ReminderDatabase(this)
 
         splashScreenViewModel.checkScheduledReminderData(db, this)
 
