@@ -7,4 +7,7 @@ interface IProfile {
     suspend fun getUserData(jwtToken: String): Resource<User.PreTestData>
     suspend fun getUserCalorie(jwtToken: String): Resource<User.CalorieNeedsResponse>
 
+    suspend fun postPreTestData(userPreTest: User.PreTestData, jwtToken: String): Resource<User.PreTestResponse>
+
+
 }

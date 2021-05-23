@@ -10,4 +10,7 @@ class ProfileImpl(private val profileRepository: IProfileRepo) : IProfile {
 
     override suspend fun getUserCalorie(jwtToken: String): Resource<User.CalorieNeedsResponse> =
         profileRepository.getUserCalorie(jwtToken)
+
+    override suspend fun postPreTestData(userPreTest: User.PreTestData, jwtToken: String): Resource<User.PreTestResponse> =
+        profileRepository.postPreTestData(userPreTest, jwtToken)
 }

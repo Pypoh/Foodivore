@@ -20,12 +20,14 @@ import com.example.foodivore.databinding.ActivityPreTestBinding
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoImpl
 import com.example.foodivore.repository.datasource.remote.pretest.PreTestRepoImpl
+import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.Post
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.AuthActivity
 import com.example.foodivore.ui.auth.login.LoginVMFactory
 import com.example.foodivore.ui.auth.login.LoginViewModel
 import com.example.foodivore.ui.auth.login.domain.LoginImpl
+import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.ui.pretest.adapter.ArticleAdapter
 import com.example.foodivore.ui.pretest.domain.PreTestImpl
 import com.example.foodivore.utils.toast
@@ -42,7 +44,7 @@ class PreTestActivity : AppCompatActivity() {
     private val preTestViewModel: PreTestViewModel by lazy {
         ViewModelProvider(
             this,
-            PreTestVMFactory(PreTestImpl(PreTestRepoImpl()))
+            PreTestVMFactory(ProfileImpl(ProfileRepoImpl()))
         ).get(PreTestViewModel::class.java)
     }
 

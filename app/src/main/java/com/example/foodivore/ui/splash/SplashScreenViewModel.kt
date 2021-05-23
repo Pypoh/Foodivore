@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.foodivore.notification.data.DataUtils
 import com.example.foodivore.notification.data.ReminderDatabase
+import com.example.foodivore.notification.data.domain.IReminderDbHelper
 import com.example.foodivore.ui.auth.domain.IAuth
 import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
@@ -13,7 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class SplashScreenViewModel(private val useCase: IAuth) : ViewModel() {
+class SplashScreenViewModel(private val useCase: IAuth, private val useCaseDatabase: IReminderDbHelper) : ViewModel() {
 
     lateinit var authInstance: LiveData<Resource<String?>>
 
@@ -33,11 +34,12 @@ class SplashScreenViewModel(private val useCase: IAuth) : ViewModel() {
         viewModelScope.launch {
             try {
                 Log.d("SplashScreenViewModel", "getting saved schedule")
-                val data = db.reminderDao().getAll()
+//                val data = db.reminderDao().getAll()
+                val data = useCaseDatabase.getAll()
                 Log.d("SplashScreenViewModel", "saved schedule: $data")
-                if (db.reminderDao().getAll().isEmpty()) {
+                if (useCaseDatabase.getAll().isEmpty()) {
                     for (reminder in DataUtils.getDefaultData()) {
-                        db.reminderDao().insert(reminder)
+                        useCaseDatabase.insert(reminder)
                         Log.d("SplashScreenViewModel", "scheduled a reminder for $reminder")
                     }
                     DataUtils.scheduleAlarmsForData(context, DataUtils.getDefaultData())

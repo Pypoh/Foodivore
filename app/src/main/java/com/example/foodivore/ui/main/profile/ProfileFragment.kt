@@ -23,6 +23,7 @@ import com.example.foodivore.ui.auth.AuthActivity
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
+import com.example.foodivore.ui.setting.SettingActivity
 import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.textview.MaterialTextView
@@ -39,6 +40,7 @@ class ProfileFragment : Fragment() {
     private lateinit var targetText: MaterialTextView
 
     private lateinit var logoutButton: ImageView
+    private lateinit var settingButton: ImageView
 
     private lateinit var profileDataBinding: FragmentProfileBinding
 
@@ -118,5 +120,16 @@ class ProfileFragment : Fragment() {
             (activity as MainActivity).finish()
             ApiClient.removeInitializedApiServices()
         }
+
+        settingButton = view.findViewById(R.id.button_setting_profile)
+        settingButton.setOnClickListener {
+            intentToSetting()
+        }
     }
+
+    private fun intentToSetting() {
+        startActivity(Intent(requireContext(), SettingActivity::class.java))
+    }
+
+
 }

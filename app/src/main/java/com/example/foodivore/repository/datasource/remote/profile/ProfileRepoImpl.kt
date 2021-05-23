@@ -30,4 +30,33 @@ class ProfileRepoImpl : IProfileRepo {
             Resource.Failure(e)
         }
     }
+
+    override suspend fun postPreTestData(
+        userPreTest: User.PreTestData,
+        jwtToken: String
+    ): Resource<User.PreTestResponse> {
+        return try {
+            Log.d("PreTestActivity", "Uploading with token $jwtToken")
+
+            val userData =
+                ApiClient.getUserApiService(jwtToken).postPreTest(
+                    User.PreTestData(
+                        name = userPreTest.name,
+                        height = userPreTest.height,
+                        weight = userPreTest.weight,
+                        sex = userPreTest.sex,
+                        age = userPreTest.age,
+                        activity = userPreTest.activity,
+                        target = userPreTest.target,
+                        calorieNeeds = 0f
+                    )
+                )
+
+            Resource.Success(userData)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+
+
+    }
 }

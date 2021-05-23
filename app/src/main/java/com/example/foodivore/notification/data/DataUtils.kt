@@ -38,8 +38,8 @@ object DataUtils {
             "Test Notifikasi",
             ReminderEntity.MealType.Lunch,
             "Cuma buat uji coba development notif",
-            18,
-            3,
+            17,
+            7,
             arrayListOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
             false
         )

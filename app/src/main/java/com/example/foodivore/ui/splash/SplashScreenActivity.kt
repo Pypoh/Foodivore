@@ -12,6 +12,7 @@ import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.notification.data.DataUtils
 import com.example.foodivore.notification.data.ReminderDatabase
+import com.example.foodivore.notification.data.domain.ReminderDbHelperImpl
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
@@ -25,7 +26,7 @@ class SplashScreenActivity : AppCompatActivity() {
     private val splashScreenViewModel: SplashScreenViewModel by lazy {
         ViewModelProvider(
             this,
-            SplashScreenVMFactory(AuthImpl(AuthRepoImpl()))
+            SplashScreenVMFactory(AuthImpl(AuthRepoImpl()), ReminderDbHelperImpl(db))
         ).get(SplashScreenViewModel::class.java)
     }
 
