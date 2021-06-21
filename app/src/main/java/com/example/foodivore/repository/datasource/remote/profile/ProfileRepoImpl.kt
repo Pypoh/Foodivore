@@ -1,7 +1,6 @@
 package com.example.foodivore.repository.datasource.remote.profile
 
 import android.util.Log
-import com.example.foodivore.MainActivity
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.viewobject.Resource

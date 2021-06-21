@@ -1,26 +1,21 @@
 package com.example.foodivore.ui.main.article
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodivore.R
 import com.example.foodivore.repository.datasource.remote.article.ArticleRepoImpl
-import com.example.foodivore.repository.datasource.remote.pretest.PreTestRepoImpl
-import com.example.foodivore.ui.main.article.ui.ArticleViewModel
-import com.example.foodivore.ui.main.article.ui.domain.ArticleImpl
-import com.example.foodivore.ui.main.article.ui.main.ArticleVMFactory
-import com.example.foodivore.ui.main.article.ui.main.SectionsPagerAdapter
-import com.example.foodivore.ui.pretest.PreTestVMFactory
-import com.example.foodivore.ui.pretest.PreTestViewModel
-import com.example.foodivore.ui.pretest.domain.PreTestImpl
+import com.example.foodivore.repository.model.Article
+import com.example.foodivore.repository.model.User
+import com.example.foodivore.ui.main.article.detail.ArticleDetailActivity
+import com.example.foodivore.ui.main.article.domain.ArticleImpl
+import com.example.foodivore.ui.recommendation.RecommendationActivity
 import com.example.foodivore.utils.viewobject.Resource
+import com.google.gson.Gson
 
 class ArticleActivity : AppCompatActivity() {
 
@@ -52,8 +47,14 @@ class ArticleActivity : AppCompatActivity() {
 
                 is Resource.Success -> {
                     Log.d("ArticleActivity", "data: ${task.data}")
+                    val finalData = arrayListOf<Article.Category>()
+                    for (item in task.data) {
+                        if (item!!.name != "System") {
+                            finalData.add(item)
+                        }
+                    }
                     sectionsPagerAdapter =
-                        SectionsPagerAdapter(this, supportFragmentManager, task.data)
+                        SectionsPagerAdapter(this, supportFragmentManager, finalData)
                     viewPager = findViewById(R.id.view_pager)
                     viewPager.adapter = sectionsPagerAdapter
                     tabs = findViewById(R.id.tabs)
@@ -69,4 +70,6 @@ class ArticleActivity : AppCompatActivity() {
             }
         })
     }
+
+
 }

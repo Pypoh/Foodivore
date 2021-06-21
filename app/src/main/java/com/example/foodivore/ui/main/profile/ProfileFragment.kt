@@ -8,26 +8,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.example.foodivore.MainActivity
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentProfileBinding
 import com.example.foodivore.network.ApiClient
-import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.User
-import com.example.foodivore.ui.auth.AuthActivity
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.ui.setting.SettingActivity
-import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.textview.MaterialTextView
-import kotlin.math.log
 
 class ProfileFragment : Fragment() {
 

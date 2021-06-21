@@ -8,9 +8,11 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,20 +20,32 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentHomeBinding
+import com.example.foodivore.repository.datasource.local.data.domain.ReminderDbHelperImpl
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
+import com.example.foodivore.repository.datasource.remote.food.FoodRepoImpl
+import com.example.foodivore.repository.datasource.remote.plan.PlanRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.Feature
 import com.example.foodivore.repository.model.Food
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.domain.AuthImpl
+import com.example.foodivore.ui.food.catalogue.FoodCatalogueActivity
+import com.example.foodivore.ui.food.domain.FoodImpl
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.ui.main.article.ArticleActivity
+import com.example.foodivore.ui.main.article.detail.ArticleDetailActivity
 import com.example.foodivore.ui.main.home.adapter.FeatureServiceAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodRecyclerAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodTrendRecyclerAdapter
+import com.example.foodivore.ui.main.home.decoration.HorizontalSpaceItemDecoration
+import com.example.foodivore.ui.main.home.decoration.RecyclerViewItemDecoration
+import com.example.foodivore.ui.main.home.domain.HomeImpl
 import com.example.foodivore.ui.main.plans.PlansActivity
 import com.example.foodivore.ui.main.profile.ProfileVMFactory
 import com.example.foodivore.ui.main.profile.ProfileViewModel
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
+import com.example.foodivore.ui.recommendation.RecommendationActivity
+import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -40,8 +54,11 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
@@ -65,6 +82,19 @@ class HomeFragment : Fragment() {
         ).get(ProfileViewModel::class.java)
     }
 
+    private val homeViewModel: HomeViewModel by lazy {
+        ViewModelProvider(
+            this,
+            HomeVMFactory(
+                HomeImpl(PlanRepoImpl()),
+                ReminderDbHelperImpl((activity as MainActivity).db),
+                FoodImpl(FoodRepoImpl())
+            )
+        ).get(HomeViewModel::class.java)
+    }
+
+    private lateinit var horizontalItemDecoration: HorizontalSpaceItemDecoration
+
     private lateinit var recyclerFoodCatalogue: RecyclerView
     private lateinit var foodRecyclerAdapter: FoodRecyclerAdapter
 
@@ -82,6 +112,18 @@ class HomeFragment : Fragment() {
 
     // Views
     private lateinit var usernameToolbar: MaterialTextView
+    private lateinit var nextScheduleText: MaterialTextView
+
+    private lateinit var textValueCarb: MaterialTextView
+    private lateinit var textValueFat: MaterialTextView
+    private lateinit var textValueProt: MaterialTextView
+
+    private lateinit var buttonRecommendation: MaterialButton
+
+    var totalCalorie = 0f
+    var totalCarb = 0f
+    var totalFat = 0f
+    var totalProtein = 0f
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,62 +134,109 @@ class HomeFragment : Fragment() {
         homeDataBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
-        // Fetch Data
-        fetchFoods()
-
-        dummyDataCatalogue.add(
-            Food.Catalogue(
-                R.color.red_500, R.drawable.salad, "Sarapan", "Salad", "50-100 Kal",
-                arrayListOf(
-                    Food.Detail("", "Food 1", 121, "Sarapan"),
-                    Food.Detail("", "Food 2", 122, "Makan Siang"),
-                    Food.Detail("", "Food 3", 123, "Makan Malang"),
-                    Food.Detail("", "Food 4", 124, "Snack")
-                )
-            )
-        )
-
-        dummyDataCatalogue.add(
-            Food.Catalogue(
-                R.color.brown_500, R.drawable.meat, "Makan Siang", "Daging", "50-300 Kal",
-                arrayListOf(
-                    Food.Detail("", "Food 1", 121, "Sarapan"),
-                    Food.Detail("", "Food 2", 122, "Makan Siang"),
-                    Food.Detail("", "Food 3", 123, "Makan Malang"),
-                    Food.Detail("", "Food 4", 124, "Snack")
-                )
-            )
-        )
-
-        dummyDataCatalogue.add(
-            Food.Catalogue(
-                R.color.teal_500, R.drawable.milk, "Makan Malam", "Susu, Nasi Goreng", "50-300 Kal",
-                arrayListOf(
-                    Food.Detail("", "Food 1", 121, "Sarapan"),
-                    Food.Detail("", "Food 2", 122, "Makan Siang"),
-                    Food.Detail("", "Food 3", 123, "Makan Malang"),
-                    Food.Detail("", "Food 4", 124, "Snack")
-                )
-            )
-        )
-
-        dummyDataFeature.add(
-            Feature.Service("Panduan", R.drawable.ic_grid)
-        )
-        dummyDataFeature.add(
-            Feature.Service("Plans", R.drawable.ic_calendar)
-        )
-        dummyDataFeature.add(
-            Feature.Service("Artikel", R.drawable.ic_file_text)
-        )
+        setupDummyData()
 
         setupViews(homeDataBinding.root)
 
-        setupChart()
+        val currentTime = Calendar.getInstance()
+        currentTime.set(Calendar.HOUR_OF_DAY, 0)
+
+        homeViewModel.getPlanByDate(
+            (activity as MainActivity).sessionManager.fetchAuthToken()!!,
+            currentTime.timeInMillis
+        ).observe(viewLifecycleOwner, { task ->
+            when (task) {
+                is Resource.Success -> {
+                    calculateCurrentCalories(task.data)
+                    setupChart(task.data)
+                }
+
+                is Resource.Failure -> {
+
+                }
+                is Resource.Loading -> {
+
+                }
+            }
+        })
 
         updateLayoutData()
 
+        checkNextMealSchedule()
+
+        fetchFoods()
+
         return homeDataBinding.root
+    }
+
+    private fun checkNextMealSchedule() {
+        val currentTime = Calendar.getInstance()
+        val currentHour = currentTime.get(Calendar.HOUR_OF_DAY)
+
+        homeViewModel.getAllReminders().observe(viewLifecycleOwner, { task ->
+            when (task) {
+                is Resource.Success -> {
+                    for (data in task.data!!) {
+                        if (currentHour < data.hour) {
+                            val range = data.hour - currentHour
+                            nextScheduleText.text = "${data.name} dalam $range jam"
+                            break
+                        }
+                        val range = 24 - currentHour + task.data.first().hour
+                        nextScheduleText.text = "${task.data.first().name} dalam $range jam"
+                    }
+                }
+
+                is Resource.Failure -> {
+
+                }
+                is Resource.Loading -> {
+
+                }
+            }
+        })
+
+    }
+
+    private fun setupDummyData() {
+        if (dummyDataCatalogue.isEmpty()) {
+            dummyDataCatalogue.add(
+                Food.Catalogue(
+                    R.color.red_500, R.drawable.salad, "Sarapan", "Salad", "200-300 Kal",
+                    arrayListOf()
+                )
+            )
+
+            dummyDataCatalogue.add(
+                Food.Catalogue(
+                    R.color.brown_500, R.drawable.meat, "Makan Siang", "Daging", "300-500 Kal",
+                    arrayListOf()
+                )
+            )
+
+            dummyDataCatalogue.add(
+                Food.Catalogue(
+                    R.color.teal_500,
+                    R.drawable.milk,
+                    "Makan Malam",
+                    "Susu, Nasi Goreng",
+                    "250-400 Kal",
+                    arrayListOf()
+                )
+            )
+        }
+
+        if (dummyDataFeature.isEmpty()) {
+            dummyDataFeature.add(
+                Feature.Service("Panduan", R.drawable.ic_grid)
+            )
+            dummyDataFeature.add(
+                Feature.Service("Plans", R.drawable.ic_calendar)
+            )
+            dummyDataFeature.add(
+                Feature.Service("Artikel", R.drawable.ic_file_text)
+            )
+        }
     }
 
     private fun updateLayoutData() {
@@ -172,31 +261,40 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchFoods() {
-//        (activity as MainActivity).apiClient.getUserApiService(requireContext()).fetchFoods()
-//            .enqueue(object : Callback<List<Food.FoodResponse>> {
-//                override fun onResponse(
-//                    call: Call<List<Food.FoodResponse>>,
-//                    response: Response<List<Food.FoodResponse>>
-//                ) {
-//                    Log.d("HomeFragment", "${response.body()}")
-//                }
-//
-//                override fun onFailure(call: Call<List<Food.FoodResponse>>, t: Throwable) {
-//                    Log.d("HomeFragment", "${t.message}")
-//                }
-//
-//
-//            })
+        homeViewModel.getFoods().observe(viewLifecycleOwner, { task ->
+            when (task) {
+                is Resource.Loading -> {
+                }
+
+                is Resource.Success -> {
+                    foodRecyclerAdapter.dataset = homeViewModel.splitListBySchedule(task.data!!)
+                    Log.d("HomeFragment", foodRecyclerAdapter.dataset.toString())
+                    Log.d("HomeFragment", foodRecyclerAdapter.dataset.size.toString())
+                    foodRecyclerAdapter.notifyDataSetChanged()
+                }
+
+                is Resource.Failure -> {
+                }
+
+                else -> {
+                }
+            }
+        })
     }
 
-    private fun setupChart() {
+    private fun setupChart(data: List<Food.FoodResponse?>?) {
 //        nutritionsChart.setUsePercentValues(true)
         nutritionsChart.description.isEnabled = false
         nutritionsChart.legend.isEnabled = false
         nutritionsChart.dragDecelerationFrictionCoef = 0.95f
 
 //        nutritionsChart.setCenterTextTypeface()
-        nutritionsChart.centerText = "0 cal"
+        nutritionsChart.centerText = "$totalCalorie cal"
+//        if (totalCalorie <= 0) {
+//            nutritionsChart.centerText = "0 cal"
+//        } else {
+//            nutritionsChart.centerText = "$totalCalorie cal"
+//        }
 
         nutritionsChart.isDrawHoleEnabled = true
         nutritionsChart.setHoleColor(resources.getColor(R.color.orange_200))
@@ -217,13 +315,13 @@ class HomeFragment : Fragment() {
         // add a selection listener
 //        nutritionsChart.setOnChartValueSelectedListener(this)
 
-        nutritionsChart.animateY(1400, Easing.EaseInOutQuad);
+        nutritionsChart.animateY(1400, Easing.EaseInOutQuad)
 
         // set data
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(0f)) // Karb
-        entries.add(PieEntry(0f)) // Lemak
-        entries.add(PieEntry(0f)) // Protein
+        entries.add(PieEntry(totalCarb)) // Karb
+        entries.add(PieEntry(totalFat)) // Lemak
+        entries.add(PieEntry(totalProtein)) // Protein
 
         val dataSet = PieDataSet(entries, "Nutritions")
 
@@ -259,22 +357,39 @@ class HomeFragment : Fragment() {
         data.setDrawValues(false)
         nutritionsChart.data = data
 
-        // undo all highlights
-
-        // undo all highlights
         nutritionsChart.highlightValues(null)
 
         nutritionsChart.invalidate()
+
+        // Setup Nutrition Text
+        textValueCarb.text = "$totalCarb gram"
+        textValueFat.text = "$totalFat gram"
+        textValueProt.text = "$totalProtein gram"
+    }
+
+    private fun calculateCurrentCalories(data: List<Food.FoodResponse?>?) {
+        if (data != null) {
+            for (item in data) {
+                item?.let {
+                    totalCalorie += it.calorie
+                    totalCarb += it.carb
+                    totalFat += it.fat
+                    totalProtein += it.prot
+                }
+            }
+        }
     }
 
     private fun setupViews(view: View) {
+//        horizontalItemDecoration = HorizontalSpaceItemDecoration(requireContext(), R.dimen.margin_16, R.dimen.margin_16)
+
         recyclerFoodCatalogue = view.findViewById(R.id.recycler_food_catalogue_home)
         recyclerFoodCatalogue.layoutManager = LinearLayoutManager(
             requireContext(),
-            RecyclerView.HORIZONTAL,
-            false
         )
-        foodRecyclerAdapter = FoodRecyclerAdapter(requireContext(), dummyDataCatalogue)
+
+        recyclerFoodCatalogue.addItemDecoration(RecyclerViewItemDecoration(24, 1))
+        foodRecyclerAdapter = FoodRecyclerAdapter(requireContext(), arrayListOf())
         recyclerFoodCatalogue.adapter = foodRecyclerAdapter
 
         recyclerFoodTrend = view.findViewById(R.id.recycler_food_trend_home)
@@ -283,12 +398,20 @@ class HomeFragment : Fragment() {
             RecyclerView.HORIZONTAL,
             false
         )
+        recyclerFoodTrend.addItemDecoration(RecyclerViewItemDecoration(24, 0))
         foodTrendRecyclerAdapter = FoodTrendRecyclerAdapter(requireContext(), dummyDataCatalogue)
+        foodTrendRecyclerAdapter.setOnItemClickListener(object :
+            FoodTrendRecyclerAdapter.OnItemClickListener {
+            override fun onItemClick(food: Food.Catalogue) {
+                intentToFoodCatalogue(food.title)
+            }
+        })
         recyclerFoodTrend.adapter = foodTrendRecyclerAdapter
 
         recyclerFeature = view.findViewById(R.id.recycler_feature_home)
         recyclerFeature.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        recyclerFeature.addItemDecoration(RecyclerViewItemDecoration(24, 0))
         featureServiceAdapter = FeatureServiceAdapter(requireContext(), dummyDataFeature)
         featureServiceAdapter.setOnItemClickListener(object :
             FeatureServiceAdapter.OnItemClickListener {
@@ -309,6 +432,10 @@ class HomeFragment : Fragment() {
                         }
                     }
 
+                    "Panduan" -> {
+                        intentToPanduan()
+                    }
+
                     "Artikel" -> {
                         intentToArticle()
                     }
@@ -321,8 +448,24 @@ class HomeFragment : Fragment() {
         nutritionsChart = view.findViewById(R.id.piechart_nutrition)
 
         usernameToolbar = view.findViewById(R.id.text_name_toolbar)
+        nextScheduleText = view.findViewById(R.id.text_schedule_status_toolbar)
 
+        textValueCarb = view.findViewById(R.id.text_value_karb)
+        textValueFat = view.findViewById(R.id.text_value_lemak)
+        textValueProt = view.findViewById(R.id.text_value_protein)
 
+        buttonRecommendation = view.findViewById(R.id.button_recommendation)
+        buttonRecommendation.setOnClickListener {
+            sharedProfileViewModel.result.value?.let {
+                when (it) {
+                    is Resource.Success -> {
+                        intentToRecommendation(it.data!!)
+                    }
+                    else -> {
+                    }
+                }
+            }
+        }
     }
 
     private fun intentToPlans(value: User.PreTestData) {
@@ -333,6 +476,24 @@ class HomeFragment : Fragment() {
 
     private fun intentToArticle() {
         val intent = Intent(this.context, ArticleActivity::class.java)
+        requireContext().startActivity(intent)
+    }
+
+    private fun intentToPanduan() {
+        val intent = Intent(this.context, ArticleDetailActivity::class.java)
+        intent.putExtra(Constants.PANDUAN_KEY, "Panduan Gizi Seimbang")
+        requireContext().startActivity(intent)
+    }
+
+    private fun intentToRecommendation(value: User.PreTestData) {
+        val intent = Intent(this.context, RecommendationActivity::class.java)
+        intent.putExtra("USERDATA", Gson().toJson(value))
+        requireContext().startActivity(intent)
+    }
+
+    private fun intentToFoodCatalogue(schedule: String) {
+        val intent = Intent(this.context, FoodCatalogueActivity::class.java)
+        intent.putExtra("SCHEDULE", schedule)
         requireContext().startActivity(intent)
     }
 

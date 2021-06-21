@@ -8,4 +8,6 @@ interface IArticleRepo {
     suspend fun getCategory() : Resource<List<Article.Category?>>
     suspend fun getArticleByCategory(category: String) : Resource<List<Article.Post?>>
 
+    suspend fun getArticleByTitle(title: String) : Resource<List<Article.Post?>>
+
 }

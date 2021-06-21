@@ -17,7 +17,9 @@ class PlanRepoImpl : IPlanRepo {
             Log.d("PlanDebugREpo", recordResult.toString())
             Resource.Success(recordResult)
         } catch (e: Exception) {
+            Log.d("PlanDebugREpo", e.message!!)
             Resource.Failure(e)
+
         }
     }
 }

@@ -42,7 +42,7 @@ class BorderedText
      *
      * @param textSize text size in pixels
      */
-    constructor(textSize: Float) : this(Color.WHITE, Color.BLACK, textSize) {}
+    constructor(textSize: Float) : this(Color.WHITE, Color.BLACK, textSize)
 
     init {
         interiorPaint = Paint()

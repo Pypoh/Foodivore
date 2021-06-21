@@ -107,7 +107,7 @@
                             android:id="@+id/text_value_lemak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=" gram"
+                            android:text="0 gram"
                             app:layout_constraintBottom_toBottomOf="@id/piechart_nutrition"
                             app:layout_constraintLeft_toLeftOf="@id/view_marker_lemak"
                             app:layout_constraintRight_toRightOf="@id/view_marker_lemak" />
@@ -138,7 +138,7 @@
                             android:id="@+id/text_value_karb"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=" gram"
+                            android:text="0 gram"
                             app:layout_constraintBottom_toBottomOf="@id/piechart_nutrition"
                             app:layout_constraintLeft_toLeftOf="@id/view_marker_karb"
                             app:layout_constraintRight_toRightOf="@id/view_marker_karb" />
@@ -168,7 +168,7 @@
                             android:id="@+id/text_value_protein"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=" gram"
+                            android:text="0 gram"
                             app:layout_constraintBottom_toBottomOf="@id/piechart_nutrition"
                             app:layout_constraintLeft_toLeftOf="@id/view_marker_protein"
                             app:layout_constraintRight_toRightOf="@id/view_marker_protein" />
@@ -204,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:text="MENU MAKANAN"
+                    android:text="KATEGORI MAKANAN"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:text="OLAHAN DAGING"
+                    android:text="MENU MAKANAN"
                     android:textColor="@color/black_500"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -235,6 +235,7 @@
                     app:layout_constraintTop_toBottomOf="@id/recycler_food_trend_home" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="16dp"
                     android:id="@+id/recycler_food_catalogue_home"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

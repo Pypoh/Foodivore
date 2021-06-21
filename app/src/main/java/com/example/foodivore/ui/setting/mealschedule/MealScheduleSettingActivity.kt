@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
-import com.example.foodivore.notification.data.ReminderDatabase
-import com.example.foodivore.notification.data.ReminderEntity
-import com.example.foodivore.notification.data.domain.ReminderDbHelperImpl
+import com.example.foodivore.repository.datasource.local.data.ReminderDatabase
+import com.example.foodivore.repository.datasource.local.data.ReminderEntity
+import com.example.foodivore.repository.datasource.local.data.domain.ReminderDbHelperImpl
 import com.example.foodivore.ui.setting.mealschedule.adapter.AdapterMealSchedule
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.textview.MaterialTextView
@@ -84,7 +84,7 @@ class MealScheduleSettingActivity : AppCompatActivity() {
                     .setMinute(data.minute)
                     .build()
 
-                materialTimePicker.addOnNegativeButtonClickListener {
+                materialTimePicker.addOnPositiveButtonClickListener {
                     data.hour = materialTimePicker.hour
                     data.minute = materialTimePicker.minute
                     mealScheduleViewModel.updateReminder(data)

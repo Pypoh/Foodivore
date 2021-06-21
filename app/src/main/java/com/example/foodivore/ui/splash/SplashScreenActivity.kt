@@ -1,22 +1,18 @@
 package com.example.foodivore.ui.splash
 
-import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.foodivore.MainActivity
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.R
-import com.example.foodivore.notification.data.DataUtils
-import com.example.foodivore.notification.data.ReminderDatabase
-import com.example.foodivore.notification.data.domain.ReminderDbHelperImpl
+import com.example.foodivore.repository.datasource.local.data.ReminderDatabase
+import com.example.foodivore.repository.datasource.local.data.domain.ReminderDbHelperImpl
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
-import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -57,7 +53,9 @@ class SplashScreenActivity : AppCompatActivity() {
 //                    navigateToMainActivity()
                     Log.d("SplashScreen", "Fetch Token: ${it.throwable.message}")
                 }
-                is Resource.Loading -> TODO()
+                is Resource.Loading -> {
+
+                }
             }
         })
     }

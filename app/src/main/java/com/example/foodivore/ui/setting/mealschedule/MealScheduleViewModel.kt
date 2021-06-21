@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.example.foodivore.notification.data.ReminderEntity
-import com.example.foodivore.notification.data.domain.IReminderDbHelper
+import com.example.foodivore.repository.datasource.local.data.ReminderEntity
+import com.example.foodivore.repository.datasource.local.data.domain.IReminderDbHelper
 import com.example.foodivore.utils.viewobject.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

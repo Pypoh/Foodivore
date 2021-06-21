@@ -295,10 +295,6 @@ class CameraConnectionFragment : Fragment {
         textureView = view.findViewById(R.id.texture) as AutoFitTextureView
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onResume() {
         super.onResume()
         startBackgroundThread()

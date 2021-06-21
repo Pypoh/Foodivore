@@ -34,8 +34,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
 import com.example.foodivore.R
-import com.example.foodivore.notification.notif.AlarmScheduler
-import com.google.android.gms.common.util.DataUtils
 
 class AppGlobalReceiver : BroadcastReceiver() {
 

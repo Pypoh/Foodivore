@@ -3,9 +3,9 @@ package com.example.foodivore.ui.splash
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.foodivore.notification.data.DataUtils
-import com.example.foodivore.notification.data.ReminderDatabase
-import com.example.foodivore.notification.data.domain.IReminderDbHelper
+import com.example.foodivore.notification.DataUtils
+import com.example.foodivore.repository.datasource.local.data.ReminderDatabase
+import com.example.foodivore.repository.datasource.local.data.domain.IReminderDbHelper
 import com.example.foodivore.ui.auth.domain.IAuth
 import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource

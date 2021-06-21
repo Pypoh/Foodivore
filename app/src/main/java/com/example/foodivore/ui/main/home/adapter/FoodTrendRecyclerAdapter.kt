@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
+import com.example.foodivore.repository.model.Feature
 import com.example.foodivore.repository.model.Food
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
@@ -15,6 +16,11 @@ import com.google.android.material.textview.MaterialTextView
 class FoodTrendRecyclerAdapter(val context: Context, var dataset: List<Food.Catalogue>) :
     RecyclerView.Adapter<FoodTrendRecyclerAdapter.ViewHolder>() {
 
+    private lateinit var onItemClickListener: OnItemClickListener
+
+    interface OnItemClickListener {
+        fun onItemClick(food: Food.Catalogue)
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var card: MaterialCardView = itemView.findViewById(R.id.card_food_trend_item)
@@ -22,6 +28,12 @@ class FoodTrendRecyclerAdapter(val context: Context, var dataset: List<Food.Cata
         var titleText: MaterialTextView = itemView.findViewById(R.id.text_title_type_item)
         var exampleText: MaterialTextView = itemView.findViewById(R.id.text_title_food_item)
         var calorieText: MaterialTextView = itemView.findViewById(R.id.text_calorie_food_item)
+
+        fun bind(model: Food.Catalogue, listener: OnItemClickListener) {
+            card.setOnClickListener {
+                listener.onItemClick(model)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,12 +44,18 @@ class FoodTrendRecyclerAdapter(val context: Context, var dataset: List<Food.Cata
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataset[position]
+        holder.bind(data, onItemClickListener)
         holder.card.setCardBackgroundColor(ContextCompat.getColor(context, data.backgroundColor))
         holder.image.setImageResource(data.image)
         holder.titleText.text = data.title
         holder.exampleText.text = data.example
         holder.calorieText.text = data.calorie
     }
+
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
+        this.onItemClickListener = onItemClickListener
+    }
+
 
     override fun getItemCount(): Int = dataset.size
 }

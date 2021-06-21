@@ -7,20 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.example.foodivore.MainActivity
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentLoginBinding
 import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
-import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.AuthActivity
-import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.login.domain.LoginImpl
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.ui.pretest.PreTestActivity
@@ -29,9 +25,6 @@ import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginFragment : Fragment() {
 
@@ -50,7 +43,6 @@ class LoginFragment : Fragment() {
     private lateinit var loginButton: MaterialButton
     private lateinit var toSignupButton: MaterialTextView
     private lateinit var alertDialog: AlertDialog
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

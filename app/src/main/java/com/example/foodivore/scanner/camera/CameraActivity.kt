@@ -176,7 +176,7 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
                 val name = results.first()!!.title.toString()
 
                 try {
-                    ApiClient.getApiService().getFoodByName(name)
+                    ApiClient.getApiService().getFoodByNameAsync(name)
                         .enqueue(object : Callback<List<Food.FoodResponse?>> {
                             override fun onResponse(
                                 call: Call<List<Food.FoodResponse?>>,
@@ -218,8 +218,11 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
             adapterCameraDialog.getItemByPosition(adapterCameraDialog.getLastCheckedItem())
                 .let { data ->
                     if (data != null) {
-                        val record = Record.RecordRequest(data.id, data.type)
-                        Log.d("CameraActivity", "data: ${record}, token: ${sessionManager.fetchAuthToken()}")
+                        val record = Record.RecordRequest(data.id, data.schedule.name)
+                        Log.d(
+                            "CameraActivity",
+                            "data: ${record}, token: ${sessionManager.fetchAuthToken()}"
+                        )
                         try {
                             ApiClient.getUserApiService(sessionManager.fetchAuthToken())
                                 .postRecord(record)
@@ -228,7 +231,10 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
                                         call: Call<Record.RecordResponse>,
                                         response: Response<Record.RecordResponse>
                                     ) {
-                                        Log.d("CameraActivity", "response: ${response.body()}, code: ${response.code()}")
+                                        Log.d(
+                                            "CameraActivity",
+                                            "response: ${response.body()}, code: ${response.code()}"
+                                        )
                                     }
 
                                     override fun onFailure(
@@ -536,13 +542,13 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
     }
 
     fun requestRender() {
-        val overlay = findViewById(R.id.debug_overlay) as OverlayView
-        overlay?.postInvalidate()
+        val overlay = findViewById<OverlayView>(R.id.debug_overlay)
+        overlay.postInvalidate()
     }
 
     fun addCallback(callback: OverlayView.DrawCallback) {
-        val overlay = findViewById(R.id.debug_overlay) as OverlayView
-        overlay?.addCallback(callback)
+        val overlay = findViewById<OverlayView>(R.id.debug_overlay)
+        overlay.addCallback(callback)
     }
 
     open fun onSetDebug(debug: Boolean) {}

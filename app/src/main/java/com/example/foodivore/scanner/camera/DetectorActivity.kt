@@ -117,7 +117,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
         )
         cropToFrameTransform = Matrix()
         frameToCropTransform!!.invert(cropToFrameTransform)
-        trackingOverlay = findViewById(R.id.tracking_overlay) as OverlayView
+        trackingOverlay = findViewById<OverlayView>(R.id.tracking_overlay)
         trackingOverlay!!.addCallback(
             object : OverlayView.DrawCallback {
                 override fun drawCallback(canvas: Canvas) {
@@ -197,7 +197,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
             runOnUiThread {
                 showFrameInfo(previewWidth.toString() + "x" + previewHeight)
                 showCropInfo(
-                    cropCopyBitmap!!.getWidth().toString() + "x" + cropCopyBitmap!!.getHeight()
+                    cropCopyBitmap!!.width.toString() + "x" + cropCopyBitmap!!.height
                 )
                 showInference(lastProcessingTimeMs.toString() + "ms")
             }

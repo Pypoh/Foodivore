@@ -2,11 +2,9 @@ package com.example.foodivore.ui.pretest
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -14,23 +12,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodivore.MainActivity
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityPreTestBinding
 import com.example.foodivore.network.SessionManager
-import com.example.foodivore.repository.datasource.remote.auth.login.LoginRepoImpl
-import com.example.foodivore.repository.datasource.remote.pretest.PreTestRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.Post
 import com.example.foodivore.repository.model.User
-import com.example.foodivore.ui.auth.AuthActivity
-import com.example.foodivore.ui.auth.login.LoginVMFactory
-import com.example.foodivore.ui.auth.login.LoginViewModel
-import com.example.foodivore.ui.auth.login.domain.LoginImpl
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
-import com.example.foodivore.ui.pretest.adapter.ArticleAdapter
-import com.example.foodivore.ui.pretest.domain.PreTestImpl
-import com.example.foodivore.utils.toast
+import com.example.foodivore.ui.pretest.adapter.PreTestAdapter
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -86,9 +76,9 @@ class PreTestActivity : AppCompatActivity() {
     private lateinit var layoutArray: ArrayList<RelativeLayout>
 
     private lateinit var recyclerActive: RecyclerView
-    private lateinit var adapterActive: ArticleAdapter
+    private lateinit var adapterActive: PreTestAdapter
     private lateinit var recyclerPurpose: RecyclerView
-    private lateinit var adapterPurpose: ArticleAdapter
+    private lateinit var adapterPurpose: PreTestAdapter
 
     private var dummyActiveData: ArrayList<Post.Article> = arrayListOf()
     private var dummyPurposeData: ArrayList<Post.Article> = arrayListOf()
@@ -145,12 +135,12 @@ class PreTestActivity : AppCompatActivity() {
 
         recyclerActive = view.findViewById(R.id.recycler_active_pre_test)
         recyclerActive.layoutManager = LinearLayoutManager(this)
-        adapterActive = ArticleAdapter(this, dummyActiveData)
+        adapterActive = PreTestAdapter(this, dummyActiveData)
         recyclerActive.adapter = adapterActive
 
         recyclerPurpose = view.findViewById(R.id.recycler_purpose_pre_test)
         recyclerPurpose.layoutManager = LinearLayoutManager(this)
-        adapterPurpose = ArticleAdapter(this, dummyPurposeData)
+        adapterPurpose = PreTestAdapter(this, dummyPurposeData)
         recyclerPurpose.adapter = adapterPurpose
 
     }

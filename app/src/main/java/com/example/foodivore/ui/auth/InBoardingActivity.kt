@@ -3,8 +3,7 @@ package com.example.foodivore.ui.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.example.foodivore.MainActivity
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.utils.Constants
 import com.google.android.material.button.MaterialButton
@@ -14,7 +13,7 @@ class InBoardingActivity : AppCompatActivity() {
 
     private lateinit var buttonUserLogin: MaterialButton
     private lateinit var buttonGuestLogin: MaterialButton
-    private lateinit var buttonUserSignup: MaterialTextView
+    private lateinit var buttonUserSignup: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +29,9 @@ class InBoardingActivity : AppCompatActivity() {
         buttonUserLogin.setOnClickListener {
             navigateToAuthActivity(Constants.LOG_IN_KEY)
         }
-        buttonGuestLogin.setOnClickListener {
-            navigateToMainActivity()
-        }
+//        buttonGuestLogin.setOnClickListener {
+//            navigateToMainActivity()
+//        }
         buttonUserSignup.setOnClickListener {
             navigateToAuthActivity(Constants.SIGN_UP_KEY)
         }
@@ -40,8 +39,8 @@ class InBoardingActivity : AppCompatActivity() {
 
     private fun setupViews() {
         buttonUserLogin = findViewById(R.id.button_user_login_auth)
-        buttonGuestLogin = findViewById(R.id.button_guest_login_auth)
-        buttonUserSignup = findViewById(R.id.text_to_signup)
+//        buttonGuestLogin = findViewById(R.id.button_guest_login_auth)
+        buttonUserSignup = findViewById(R.id.button_signup_auth)
     }
 
     private fun navigateToMainActivity() {

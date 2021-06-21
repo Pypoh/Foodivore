@@ -142,7 +142,6 @@ class TFLiteObjectDetectionAPIModel private constructor(): Classifier {
     override fun enableStatLogging(logStats: Boolean) {}
 
     override val statString: String = ""
-        get() = field
 
 
     override fun close() {}

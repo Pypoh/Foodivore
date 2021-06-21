@@ -7,13 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
-import com.example.foodivore.notification.data.ReminderEntity
-import com.example.foodivore.repository.model.Post
-import com.example.foodivore.ui.pretest.adapter.ArticleAdapter
-import com.google.android.material.card.MaterialCardView
+import com.example.foodivore.repository.datasource.local.data.ReminderEntity
 import com.google.android.material.textview.MaterialTextView
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 
 class AdapterMealSchedule(val context: Context, var dataset: List<ReminderEntity>) :
     RecyclerView.Adapter<AdapterMealSchedule.ViewHolder>() {

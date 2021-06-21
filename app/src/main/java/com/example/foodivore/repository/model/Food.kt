@@ -23,8 +23,8 @@ object  Food {
         @SerializedName("calorie")
         var calorie: Int,
 
-        @SerializedName("type")
-        var type: String
+        @SerializedName("schedule")
+        var schedule: String
     )
 
     data class FoodResponse(
@@ -46,8 +46,8 @@ object  Food {
         @SerializedName("prot")
         var prot: Float,
 
-        @SerializedName("type")
-        var type: String,
+        @SerializedName("schedule")
+        var schedule: Schedule,
 
         @SerializedName("createdAt")
         var createdAt: String,
@@ -59,5 +59,23 @@ object  Food {
         var id: String
     )
 
+    data class Schedule(
+        @SerializedName("_id")
+        var _id: String,
+
+        @SerializedName("name")
+        var name: String,
+
+        @SerializedName("scala")
+        var scala: Float,
+    )
+/*
+    data class Menu(
+        @SerializedName("schedule")
+        var schedule: String,
+
+        @SerializedName("foods")
+        var food: List<FoodResponse>
+    )*/
 
 }

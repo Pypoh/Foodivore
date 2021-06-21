@@ -3,8 +3,7 @@ package com.example.foodivore.notification
 import android.app.Application
 import androidx.core.app.NotificationManagerCompat
 import com.example.foodivore.R
-import com.example.foodivore.notification.data.ReminderEntity
-import com.example.foodivore.notification.notif.NotificationHelper
+import com.example.foodivore.repository.datasource.local.data.ReminderEntity
 
 class Foodivore : Application(){
 

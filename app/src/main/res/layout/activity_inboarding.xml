@@ -50,44 +50,44 @@
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_guest_login_auth"
+            android:id="@+id/button_signup_auth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/green_500"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:text="Login as Guest"
+            android:text="Signup Here"
             android:textSize="16sp"
             app:cornerRadius="10dp" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:orientation="horizontal">-->
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center"
-                android:text="@string/login_text_signup" />
+<!--            <com.google.android.material.textview.MaterialTextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/login_text_signup" />-->
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/text_to_signup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="@string/signup_text"
-                android:textAllCaps="true"
-                android:textColor="@color/orange_500"
-                android:textStyle="bold" />
+<!--            <com.google.android.material.textview.MaterialTextView-->
+<!--                android:id="@+id/text_to_signup"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/signup_text"-->
+<!--                android:textAllCaps="true"-->
+<!--                android:textColor="@color/orange_500"-->
+<!--                android:textStyle="bold" />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
     </LinearLayout>
 

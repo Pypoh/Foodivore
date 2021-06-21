@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.RelativeLayout
-import com.example.foodivore.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.ui.setting.mealschedule.MealScheduleSettingActivity
 import com.example.foodivore.ui.setting.profilesetting.ProfileSettingActivity

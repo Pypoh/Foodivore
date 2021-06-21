@@ -1,10 +1,67 @@
 package com.example.foodivore.ui.main.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.foodivore.repository.datasource.local.data.ReminderEntity
+import com.example.foodivore.repository.datasource.local.data.domain.IReminderDbHelper
+import com.example.foodivore.repository.model.Food
+import com.example.foodivore.ui.food.domain.IFood
+import com.example.foodivore.ui.main.home.domain.IHome
+import com.example.foodivore.utils.viewobject.Resource
+import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val useCase: IHome,
+    private val useCaseDatabase: IReminderDbHelper,
+    private val useCaseFood: IFood
+) :
+    ViewModel() {
+
+    fun getPlanByDate(jwtToken: String, time: Long): LiveData<Resource<List<Food.FoodResponse?>?>> {
+        return liveData(Dispatchers.IO) {
+            emit(Resource.Loading())
+            try {
+                val recordResult = useCase.getRecordByDate(jwtToken, time)
+
+                emit(recordResult)
+            } catch (e: Exception) {
+                emit(Resource.Failure(e))
+            }
+        }
+    }
+
+    fun getAllReminders(): LiveData<Resource<List<ReminderEntity>?>> {
+        return liveData(Dispatchers.IO) {
+            emit(Resource.Loading())
+            try {
+                val data = useCaseDatabase.getAll()
+
+                emit(Resource.Success(data))
+            } catch (e: Exception) {
+                emit(Resource.Failure(e))
+            }
+        }
+    }
+
+    fun getFoods(): LiveData<Resource<List<Food.FoodResponse>?>> {
+        return liveData(Dispatchers.IO) {
+            emit(Resource.Loading())
+            try {
+                val data = useCaseFood.getFoods()
+                
+
+                emit(data)
+            } catch (e: Exception) {
+                emit(Resource.Failure(e))
+            }
+        }
+    }
+
+    fun splitListBySchedule(data: List<Food.FoodResponse>): List<Pair<String, List<Food.FoodResponse>>> {
+        val bySchedule = data.groupBy { it.schedule.name }
+
+        return bySchedule.toList()
+    }
 
 
 }

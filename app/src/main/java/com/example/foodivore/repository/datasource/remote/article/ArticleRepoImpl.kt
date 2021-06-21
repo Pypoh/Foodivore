@@ -25,5 +25,14 @@ class ArticleRepoImpl : IArticleRepo {
         }
     }
 
+    override suspend fun getArticleByTitle(title: String): Resource<List<Article.Post?>> {
+        return try {
+            val articleResult = ApiClient.getApiService().getArticleByTitle(title)
+            Resource.Success(articleResult)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
 
 }

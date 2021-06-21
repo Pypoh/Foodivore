@@ -35,7 +35,16 @@ interface ApiServices {
     suspend fun getUserData(): User.PreTestData
 
     @GET(Constants.FOODS_URL)
-    fun getFoodByName(@Query("name") name: String): Call<List<Food.FoodResponse?>>
+    suspend fun getFoods(): List<Food.FoodResponse>?
+
+    @GET(Constants.FOODS_URL)
+    suspend fun getFoodByName(@Query("name") name: String): List<Food.FoodResponse?>
+
+    @GET(Constants.FOODS_URL)
+    fun getFoodByNameAsync(@Query("name") name: String): Call<List<Food.FoodResponse?>>
+
+    @GET(Constants.FOODS_URL)
+    suspend fun getFoodBySchedule(@Query("schedule") schedule: String): List<Food.FoodResponse>?
 
     @GET(Constants.RECORD_URL)
     suspend fun getRecordByDate(@Query("time") time: Long): List<Food.FoodResponse?>
@@ -53,5 +62,9 @@ interface ApiServices {
     @GET(Constants.ARTICLE_URL)
     suspend fun getArticleByCategory(@Query("category") category: String): List<Article.Post>
 
+    @GET(Constants.ARTICLE_URL)
+    suspend fun getArticleByTitle(@Query("title") title: String): List<Article.Post>
 
+    @GET(Constants.RECOMMENDATION_URL)
+    suspend fun getRecommendation(@Query("schedule") schedule: String): List<Food.FoodResponse>?
 }
