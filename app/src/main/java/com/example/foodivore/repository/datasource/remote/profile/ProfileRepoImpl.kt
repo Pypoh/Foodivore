@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.foodivore.network.ApiClient
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.viewobject.Resource
+import okhttp3.MultipartBody
 import java.lang.Exception
 
 class ProfileRepoImpl : IProfileRepo {
@@ -33,7 +34,7 @@ class ProfileRepoImpl : IProfileRepo {
     override suspend fun postPreTestData(
         userPreTest: User.PreTestData,
         jwtToken: String
-    ): Resource<User.PreTestResponse> {
+    ): Resource<User.DefaultResponse> {
         return try {
             Log.d("PreTestActivity", "Uploading with token $jwtToken")
 
@@ -57,5 +58,20 @@ class ProfileRepoImpl : IProfileRepo {
         }
 
 
+    }
+
+    override suspend fun uploadImage(
+        file: MultipartBody.Part,
+        jwtToken: String
+    ): Resource<User.DefaultResponse> {
+        return try {
+            val result = ApiClient.getUserApiService(jwtToken).uploadProfileImage(file)
+
+            Resource.Success(result)
+        } catch (e: Exception) {
+            Log.d("ProfileSettingActivity", "error repo: ${e.message}")
+
+            Resource.Failure(e)
+        }
     }
 }

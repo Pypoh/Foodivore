@@ -2,6 +2,7 @@ package com.example.foodivore.ui.food
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.foodivore.R
@@ -27,6 +28,10 @@ class FoodDetailActivity : AppCompatActivity() {
     private lateinit var textValueCarb: MaterialTextView
     private lateinit var textValueFat: MaterialTextView
     private lateinit var textValueProt: MaterialTextView
+
+    private lateinit var toolbar: View
+    private lateinit var toolbarText: MaterialTextView
+    private lateinit var backButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +65,7 @@ class FoodDetailActivity : AppCompatActivity() {
         nutritionsChart.centerText = "${foodData.calorie} cal"
 
         nutritionsChart.isDrawHoleEnabled = true
-        nutritionsChart.setHoleColor(resources.getColor(R.color.orange_200))
+        nutritionsChart.setHoleColor(resources.getColor(R.color.white))
 
         nutritionsChart.setTransparentCircleColor(resources.getColor(R.color.orange_200))
         nutritionsChart.setTransparentCircleAlpha(110)
@@ -112,5 +117,12 @@ class FoodDetailActivity : AppCompatActivity() {
         textValueCarb = findViewById(R.id.text_value_karb)
         textValueFat = findViewById(R.id.text_value_lemak)
         textValueProt = findViewById(R.id.text_value_protein)
+        toolbar = findViewById(R.id.toolbar_food_detail)
+        toolbarText = toolbar.findViewById(R.id.title_toolbar)
+        toolbarText.text = "Detail Makanan"
+        backButton = toolbar.findViewById(R.id.back_arrow_toolbar)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
     }
 }

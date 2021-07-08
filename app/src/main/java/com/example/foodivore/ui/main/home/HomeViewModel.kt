@@ -1,5 +1,6 @@
 package com.example.foodivore.ui.main.home
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.foodivore.repository.datasource.local.data.ReminderEntity
 import com.example.foodivore.repository.datasource.local.data.domain.IReminderDbHelper
@@ -35,9 +36,13 @@ class HomeViewModel(
             emit(Resource.Loading())
             try {
                 val data = useCaseDatabase.getAll()
+                Log.d("HomeViewModelDebug", data.toString())
+
 
                 emit(Resource.Success(data))
             } catch (e: Exception) {
+                Log.d("MainActivityDebug", e.message!!)
+
                 emit(Resource.Failure(e))
             }
         }
@@ -48,10 +53,10 @@ class HomeViewModel(
             emit(Resource.Loading())
             try {
                 val data = useCaseFood.getFoods()
-                
-
+                Log.d("HomeFragment", "data: $data")
                 emit(data)
             } catch (e: Exception) {
+                Log.d("HomeFragment", "error: ${e.message}")
                 emit(Resource.Failure(e))
             }
         }
@@ -59,7 +64,6 @@ class HomeViewModel(
 
     fun splitListBySchedule(data: List<Food.FoodResponse>): List<Pair<String, List<Food.FoodResponse>>> {
         val bySchedule = data.groupBy { it.schedule.name }
-
         return bySchedule.toList()
     }
 

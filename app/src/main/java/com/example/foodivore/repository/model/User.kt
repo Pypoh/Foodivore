@@ -85,11 +85,14 @@ object User {
         var target: String,
 
         @SerializedName("calorieNeeds")
-        var calorieNeeds: Float
+        var calorieNeeds: Float,
+
+        @SerializedName("imageUrl")
+        var imageUrl: String = ""
 
     )
 
-    data class PreTestResponse(
+    data class DefaultResponse(
         @SerializedName("message")
         var message: String
     )

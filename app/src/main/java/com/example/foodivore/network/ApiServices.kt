@@ -5,8 +5,7 @@ import com.example.foodivore.repository.model.Food
 import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.Constants
-import com.example.foodivore.utils.viewobject.Resource
-import kotlinx.coroutines.Deferred
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -29,7 +28,11 @@ interface ApiServices {
 
     @POST(Constants.USER_URL + "/pretest/update")
     @Headers("Content-Type: application/json;charset=UTF-8")
-    suspend fun postPreTest(@Body request: User.PreTestData): User.PreTestResponse
+    suspend fun postPreTest(@Body request: User.PreTestData): User.DefaultResponse
+
+    @Multipart
+    @POST(Constants.USER_URL + "/image")
+    suspend fun uploadProfileImage(@Part file: MultipartBody.Part): User.DefaultResponse
 
     @GET(Constants.USER_URL)
     suspend fun getUserData(): User.PreTestData
@@ -45,6 +48,12 @@ interface ApiServices {
 
     @GET(Constants.FOODS_URL)
     suspend fun getFoodBySchedule(@Query("schedule") schedule: String): List<Food.FoodResponse>?
+
+    @GET(Constants.INGREDIENT_URL)
+    suspend fun getIngredients(): List<Food.IngredientResponse>?
+
+    @GET(Constants.INGREDIENT_URL)
+    suspend fun getIngredientByType(@Query("type") type: String): List<Food.IngredientResponse>?
 
     @GET(Constants.RECORD_URL)
     suspend fun getRecordByDate(@Query("time") time: Long): List<Food.FoodResponse?>
@@ -67,4 +76,6 @@ interface ApiServices {
 
     @GET(Constants.RECOMMENDATION_URL)
     suspend fun getRecommendation(@Query("schedule") schedule: String): List<Food.FoodResponse>?
+
+
 }

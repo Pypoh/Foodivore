@@ -20,6 +20,7 @@ class Constants {
         const val SIGNUP_URL = "api/auth/signup"
         const val PRETEST_URL = ""
         const val FOODS_URL = "api/foods"
+        const val INGREDIENT_URL ="api/ingredients"
         const val USER_URL = "api/user"
         const val CALORIE_URL = "api/user/calorie"
         const val ARTICLE_URL = "api/articles"

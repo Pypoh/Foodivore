@@ -6,14 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.main.profile.domain.IProfile
-import com.example.foodivore.ui.pretest.domain.IPreTest
 import com.example.foodivore.utils.viewobject.Resource
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 
 class PreTestViewModel(private val useCase: IProfile) : ViewModel() {
 
-    fun postPreTestData(preTestData: User.PreTestData, jwtToken: String): LiveData<Resource<User.PreTestResponse?>> {
+    fun postPreTestData(preTestData: User.PreTestData, jwtToken: String): LiveData<Resource<User.DefaultResponse?>> {
         return liveData(Dispatchers.IO) {
             Log.d("PreTestActivity", "UserData: $preTestData")
             emit(Resource.Loading())

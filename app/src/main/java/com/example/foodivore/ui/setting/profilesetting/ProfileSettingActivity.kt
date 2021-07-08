@@ -1,6 +1,10 @@
 package com.example.foodivore.ui.setting.profilesetting
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.FileUtils
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -12,12 +16,24 @@ import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImp
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.domain.AuthImpl
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
+import com.example.foodivore.utils.getFileName
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import de.hdodenhof.circleimageview.CircleImageView
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
-class ProfileSettingActivity : AppCompatActivity() {
+class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCallback{
+
+    val REQUEST_CODE: Int = 100
 
     private val profileViewModel: ProfileSettingViewModel by lazy {
         ViewModelProvider(
@@ -40,6 +56,8 @@ class ProfileSettingActivity : AppCompatActivity() {
     private lateinit var weightTextInput: TextInputEditText
     private lateinit var sexTextInput: TextInputEditText
     private lateinit var ageTextInput: TextInputEditText
+    private lateinit var circleImage: CircleImageView
+    private lateinit var chooseImageText: MaterialTextView
 
     private var userData: User.PreTestData? = null
 
@@ -143,6 +161,65 @@ class ProfileSettingActivity : AppCompatActivity() {
         weightTextInput = findViewById(R.id.iet_weight_profile_setting)
         sexTextInput = findViewById(R.id.iet_sex_profile_setting)
         ageTextInput = findViewById(R.id.iet_age_profile_setting)
+        circleImage = findViewById(R.id.image_profile_setting)
+
+        chooseImageText = findViewById(R.id.text_change_pic_profile_setting)
+        chooseImageText.setOnClickListener {
+            openGalleryForImage()
+        }
+
+    }
+
+    private fun openGalleryForImage() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            circleImage.setImageURI(data?.data) // handle chosen image
+            data?.data?.let { uploadImageFile(it) }
+        }
+    }
+
+    fun uploadImageFile(fileUri: Uri) {
+        val parcelFileDescriptor =
+            contentResolver.openFileDescriptor(fileUri!!, "r", null) ?: return
+        val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
+        val file = File(cacheDir, contentResolver.getFileName(fileUri))
+        val outputStream = FileOutputStream(file)
+        inputStream.copyTo(outputStream)
+
+        val body = UploadRequestBody(file, "image", this)
+
+        val part = MultipartBody.Part.createFormData("file", file.name, body)
+
+        profileViewModel.uploadImage(part, sessionManager.fetchAuthToken()!!)
+            .observe(this, { task ->
+                when (task) {
+                    is Resource.Loading -> {
+
+                    }
+
+                    is Resource.Success -> {
+                        Log.d("ProfileSettingActivity", task.data.toString())
+
+                    }
+
+                    is Resource.Failure -> {
+                        Log.d("ProfileSettingActivity", task.throwable.message.toString())
+                    }
+
+                    else -> {
+
+                    }
+                }
+            })
+    }
+
+    override fun onProgressUpdate(percentage: Int) {
 
     }
 

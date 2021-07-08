@@ -21,14 +21,17 @@ object Record {
         var updated: String,
 
         @SerializedName("id")
-        var id: String
+        var id: String,
+
+        @SerializedName("ingredient")
+        var ingredient: ArrayList<String> = arrayListOf()
     )
 
     data class RecordRequest(
         @SerializedName("foodId")
         var foodId: String,
 
-        @SerializedName("type")
+        @SerializedName("schedule")
         var type: String
     )
 }

@@ -36,5 +36,25 @@ class FoodRepoImpl : IFoodRepo {
         }
     }
 
+    override suspend fun getIngredients(): Resource<List<Food.IngredientResponse>?> {
+        return try {
+            val ingredientResponse = ApiClient.getApiService().getIngredients()
+
+            Resource.Success(ingredientResponse)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+    override suspend fun getIngredientByType(type: String): Resource<List<Food.IngredientResponse>?> {
+        return try {
+            val ingredientResponse = ApiClient.getApiService().getIngredientByType(type)
+
+            Resource.Success(ingredientResponse)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
 
 }

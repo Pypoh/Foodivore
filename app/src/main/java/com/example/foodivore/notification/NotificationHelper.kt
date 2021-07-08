@@ -129,6 +129,29 @@ object NotificationHelper {
         }
     }
 
+    fun showNotificationOreo(context: Context) {
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel("default", "default", NotificationManager.IMPORTANCE_DEFAULT)
+            manager.createNotificationChannel(channel)
+        }
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+        with(NotificationCompat.Builder(context, "default")) {
+            setSmallIcon(R.drawable.logo_only)
+            setContentTitle("Custom Title")
+            setContentText("Tap to start the application")
+            setContentIntent(pendingIntent)
+            setAutoCancel(true)
+            manager.notify(87, build())
+        }
+    }
+
     private fun createPendingIntentForAction(context: Context, reminderEntity: ReminderEntity): PendingIntent? {
         /*
             Create an Intent to update the ReminderData if Administer action is clicked

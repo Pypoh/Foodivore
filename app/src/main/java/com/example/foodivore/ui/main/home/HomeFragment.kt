@@ -3,7 +3,10 @@ package com.example.foodivore.ui.main.home
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
@@ -12,12 +15,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentHomeBinding
 import com.example.foodivore.repository.datasource.local.data.domain.ReminderDbHelperImpl
@@ -57,11 +62,14 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
+import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
+
+    private val ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE: Int = 19
 
     private lateinit var homeDataBinding: FragmentHomeBinding
 
@@ -120,6 +128,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var buttonRecommendation: MaterialButton
 
+    private lateinit var circleProfileImage: CircleImageView
+    private lateinit var toolbar: View
+
     var totalCalorie = 0f
     var totalCarb = 0f
     var totalFat = 0f
@@ -165,6 +176,10 @@ class HomeFragment : Fragment() {
         checkNextMealSchedule()
 
         fetchFoods()
+
+        setupChart(null)
+
+//        requestPermission()
 
         return homeDataBinding.root
     }
@@ -247,7 +262,15 @@ class HomeFragment : Fragment() {
 
                 is Resource.Success -> {
                     if (task.data != null) {
-                        usernameToolbar.text = task.data.name
+                        usernameToolbar.text = if (task.data.name.isEmpty()) {
+                            "Kamu belum login :("
+                        } else {
+                            task.data.name
+                        }
+                        Glide.with(this)
+                            .load(task.data.imageUrl)
+                            .placeholder(R.drawable.person)
+                            .into(circleProfileImage)
                     }
                 }
 
@@ -268,8 +291,8 @@ class HomeFragment : Fragment() {
 
                 is Resource.Success -> {
                     foodRecyclerAdapter.dataset = homeViewModel.splitListBySchedule(task.data!!)
-                    Log.d("HomeFragment", foodRecyclerAdapter.dataset.toString())
-                    Log.d("HomeFragment", foodRecyclerAdapter.dataset.size.toString())
+//                    Log.d("HomeFragment", foodRecyclerAdapter.dataset.toString())
+//                    Log.d("HomeFragment", foodRecyclerAdapter.dataset.size.toString())
                     foodRecyclerAdapter.notifyDataSetChanged()
                 }
 
@@ -317,11 +340,18 @@ class HomeFragment : Fragment() {
 
         nutritionsChart.animateY(1400, Easing.EaseInOutQuad)
 
-        // set data
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(totalCarb)) // Karb
-        entries.add(PieEntry(totalFat)) // Lemak
-        entries.add(PieEntry(totalProtein)) // Protein
+
+        if (totalCalorie == 0f) {
+            entries.clear()
+            entries.add(PieEntry(100f))
+        } else {
+            // set data
+            entries.clear()
+            entries.add(PieEntry(totalCarb)) // Karb
+            entries.add(PieEntry(totalFat)) // Lemak
+            entries.add(PieEntry(totalProtein)) // Protein
+        }
 
         val dataSet = PieDataSet(entries, "Nutritions")
 
@@ -333,9 +363,15 @@ class HomeFragment : Fragment() {
 
 //        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
 
-        colors.add(resources.getColor(R.color.orange_300))
-        colors.add(resources.getColor(R.color.red_300))
-        colors.add(resources.getColor(R.color.green_300))
+       if (totalCalorie == 0f) {
+           colors.clear()
+           colors.add(ContextCompat.getColor(requireContext(), R.color.white))
+       } else {
+           colors.clear()
+           colors.add(ContextCompat.getColor(requireContext(), R.color.orange_300))
+           colors.add(ContextCompat.getColor(requireContext(), R.color.red_300))
+           colors.add(ContextCompat.getColor(requireContext(), R.color.green_300))
+       }
 //
 //        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
 //
@@ -408,42 +444,45 @@ class HomeFragment : Fragment() {
         })
         recyclerFoodTrend.adapter = foodTrendRecyclerAdapter
 
-        recyclerFeature = view.findViewById(R.id.recycler_feature_home)
-        recyclerFeature.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        recyclerFeature.addItemDecoration(RecyclerViewItemDecoration(24, 0))
-        featureServiceAdapter = FeatureServiceAdapter(requireContext(), dummyDataFeature)
-        featureServiceAdapter.setOnItemClickListener(object :
-            FeatureServiceAdapter.OnItemClickListener {
-            override fun onItemClick(featureModel: Feature.Service) {
-                when (featureModel.title) {
-                    "Plans" -> {
-                        if (sharedProfileViewModel.result.value != null) {
-                            sharedProfileViewModel.result.value?.let {
-                                when (it) {
-                                    is Resource.Success -> {
-                                        intentToPlans(it.data!!)
-                                    }
-                                    else -> {
+        toolbar = view.findViewById(R.id.toolbar_home)
+        circleProfileImage = toolbar.findViewById(R.id.image_profile_toolbar)
 
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    "Panduan" -> {
-                        intentToPanduan()
-                    }
-
-                    "Artikel" -> {
-                        intentToArticle()
-                    }
-                }
-            }
-
-        })
-        recyclerFeature.adapter = featureServiceAdapter
+//        recyclerFeature = view.findViewById(R.id.recycler_feature_home)
+//        recyclerFeature.layoutManager =
+//            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+//        recyclerFeature.addItemDecoration(RecyclerViewItemDecoration(24, 0))
+//        featureServiceAdapter = FeatureServiceAdapter(requireContext(), dummyDataFeature)
+//        featureServiceAdapter.setOnItemClickListener(object :
+//            FeatureServiceAdapter.OnItemClickListener {
+//            override fun onItemClick(featureModel: Feature.Service) {
+//                when (featureModel.title) {
+//                    "Plans" -> {
+//                        if (sharedProfileViewModel.result.value != null) {
+//                            sharedProfileViewModel.result.value?.let {
+//                                when (it) {
+//                                    is Resource.Success -> {
+//                                        intentToPlans(it.data!!)
+//                                    }
+//                                    else -> {
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    "Panduan" -> {
+//                        intentToPanduan()
+//                    }
+//
+//                    "Artikel" -> {
+//                        intentToArticle()
+//                    }
+//                }
+//            }
+//
+//        })
+//        recyclerFeature.adapter = featureServiceAdapter
 
         nutritionsChart = view.findViewById(R.id.piechart_nutrition)
 
@@ -468,22 +507,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun intentToPlans(value: User.PreTestData) {
-        val intent = Intent(this.context, PlansActivity::class.java)
-        intent.putExtra("USERDATA", Gson().toJson(value))
-        requireContext().startActivity(intent)
-    }
-
-    private fun intentToArticle() {
-        val intent = Intent(this.context, ArticleActivity::class.java)
-        requireContext().startActivity(intent)
-    }
-
-    private fun intentToPanduan() {
-        val intent = Intent(this.context, ArticleDetailActivity::class.java)
-        intent.putExtra(Constants.PANDUAN_KEY, "Panduan Gizi Seimbang")
-        requireContext().startActivity(intent)
-    }
 
     private fun intentToRecommendation(value: User.PreTestData) {
         val intent = Intent(this.context, RecommendationActivity::class.java)
@@ -507,5 +530,37 @@ class HomeFragment : Fragment() {
         s.setSpan(StyleSpan(Typeface.ITALIC), s.length - 14, s.length, 0)
         s.setSpan(ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length - 14, s.length, 0)
         return s
+    }
+
+    fun requestPermission() {
+        // Check if Android M or higher
+        // Check if Android M or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Show alert dialog to the user saying a separate permission is needed
+            // Launch the settings activity if the user prefers
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + requireActivity().packageName)
+            )
+            startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(context)) {
+//                    PermissionDenied();
+                } else {
+                    //Permission Granted-System will work
+                }
+
+            }
+        }
     }
 }

@@ -13,7 +13,15 @@ object DataUtils {
             "Jadwal untuk makan pagi",
             8,
             0,
-            arrayListOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+            arrayListOf(
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ),
             false
         ), ReminderEntity(
             1,
@@ -22,7 +30,15 @@ object DataUtils {
             "Jadwal untuk makan siang",
             12,
             30,
-            arrayListOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+            arrayListOf(
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ),
             false
         ), ReminderEntity(
             2,
@@ -31,7 +47,15 @@ object DataUtils {
             "Jadwal untuk makan malam",
             19,
             0,
-            arrayListOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+            arrayListOf(
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ),
             false
         ), ReminderEntity(
             3,
@@ -40,7 +64,15 @@ object DataUtils {
             "Cuma buat uji coba development notif",
             17,
             7,
-            arrayListOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+            arrayListOf(
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ),
             false
         )
     )
@@ -61,6 +93,11 @@ object DataUtils {
             AlarmScheduler.scheduleAlarmsForReminder(context, reminderData)
         }
     }
+
+    fun updateAlarm(context: Context, data: ReminderEntity) {
+        AlarmScheduler.updateAlarmsForReminder(context, data)
+    }
+
 
     fun getDefaultData(): List<ReminderEntity> = defaultData
 }

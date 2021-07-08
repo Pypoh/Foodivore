@@ -13,4 +13,10 @@ class FoodImpl(private val foodRepository: IFoodRepo) : IFood {
 
     override suspend fun getFoods(): Resource<List<Food.FoodResponse>?> =
         foodRepository.getFoods()
+
+    override suspend fun getIngredients(): Resource<List<Food.IngredientResponse>?> =
+        foodRepository.getIngredients()
+
+    override suspend fun getIngredientByType(type: String): Resource<List<Food.IngredientResponse>?> =
+        foodRepository.getIngredientByType(type)
 }

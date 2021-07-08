@@ -7,9 +7,9 @@ import androidx.lifecycle.liveData
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.domain.IAuth
 import com.example.foodivore.ui.main.profile.domain.IProfile
-import com.example.foodivore.ui.pretest.domain.IPreTest
 import com.example.foodivore.utils.viewobject.Resource
 import kotlinx.coroutines.Dispatchers
+import okhttp3.MultipartBody
 
 class ProfileSettingViewModel(
     private val useCaseProfile: IProfile,
@@ -33,7 +33,7 @@ class ProfileSettingViewModel(
         }
     }
 
-    fun postPreTestData(preTestData: User.PreTestData, jwtToken: String): LiveData<Resource<User.PreTestResponse?>> {
+    fun postPreTestData(preTestData: User.PreTestData, jwtToken: String): LiveData<Resource<User.DefaultResponse?>> {
         return liveData(Dispatchers.IO) {
             emit(Resource.Loading())
             try {
@@ -44,4 +44,18 @@ class ProfileSettingViewModel(
             }
         }
     }
+
+    fun uploadImage(file: MultipartBody.Part, jwtToken: String): LiveData<Resource<User.DefaultResponse?>> {
+        return liveData(Dispatchers.IO) {
+            emit(Resource.Loading())
+            try {
+                val postResult = useCaseProfile.uploadImage(file, jwtToken)
+                emit(postResult)
+            } catch (e: java.lang.Exception) {
+                emit(Resource.Failure(e))
+            }
+        }
+    }
+
+
 }

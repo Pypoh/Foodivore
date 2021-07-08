@@ -56,11 +56,11 @@ class ArticleDetailActivity : AppCompatActivity() {
 
         if (!titleRequest.isNullOrEmpty()) {
             fetchArticleDataByTitle(titleRequest)
+        } else {
+            articleData =
+                Gson().fromJson(intent.getStringExtra("ARTICLEDATA"), Article.Post::class.java)
+            initViews(arrayListOf(articleData))
         }
-
-        articleData = Gson().fromJson(intent.getStringExtra("ARTICLEDATA"), Article.Post::class.java)
-
-        initViews(arrayListOf(articleData))
     }
 
     private fun setupViews(view: View) {
@@ -76,6 +76,7 @@ class ArticleDetailActivity : AppCompatActivity() {
                 }
 
                 is Resource.Success -> {
+                    Log.d("ArticleDetailActivity", "data: ${task.data}")
                     initViews(task.data)
                 }
 

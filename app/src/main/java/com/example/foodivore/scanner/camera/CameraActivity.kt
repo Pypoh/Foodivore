@@ -35,6 +35,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +53,7 @@ import com.example.foodivore.ui.food.domain.FoodImpl
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textview.MaterialTextView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -73,6 +75,8 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
     private lateinit var adapterCameraDialog: AdapterFoodCameraDialog
     private lateinit var selectFoodButtonDialog: MaterialButton
     private lateinit var rescanFoodButtonDialog: MaterialButton
+    private lateinit var layoutSchedule: ConstraintLayout
+    private lateinit var scheduleText: MaterialTextView
 
     var isDebug = false
         private set
@@ -158,6 +162,11 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
         } else {
             requestPermission()
         }
+
+        layoutSchedule = findViewById(R.id.layout_schedule_camera)
+        scheduleText = findViewById(R.id.text_schedule_camera)
+
+        scheduleText.text = intent.getStringExtra("SCHEDULE")
     }
 
     fun toastResult(results: List<Classifier.Recognition?>?) {

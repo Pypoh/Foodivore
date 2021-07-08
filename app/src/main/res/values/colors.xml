@@ -10,13 +10,17 @@
 
     <color name="tfe_semi_transparent">#66000000</color>
 
+    <color name="black_transparent_30">#48000000</color>
+
     <color name="black_500">#333333</color>
 
     <color name="orange_500">#FBA628</color>
-    <color name="green_500">#8AB766</color>
-    <color name="orange_200">#FFEEB1</color>
-
     <color name="orange_300">#FFC542</color>
+    <color name="orange_200">#FFEEB1</color>
+    <color name="orange_50">#FFD1A6</color>
+
+    <color name="green_500">#8AB766</color>
+
     <color name="red_300">#FF575F</color>
     <color name="green_300">#3DD598</color>
 

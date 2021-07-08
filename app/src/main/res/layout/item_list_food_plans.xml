@@ -5,18 +5,20 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_food_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="16dp"
@@ -26,20 +28,20 @@
                 android:id="@+id/image_item_list_plans"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_marginStart="16dp"
                 android:src="@drawable/bg_circle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="16dp"
                 app:tint="@color/green_300" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/text_item_title_plans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="Text Sample"
                 android:textSize="18sp"
-                android:layout_marginStart="16dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/image_item_list_plans"
@@ -49,10 +51,10 @@
                 android:id="@+id/text_item_calorie_plans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:text="444 kkal"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/image_logo_cal_camera_dialog"
                 app:layout_constraintTop_toTopOf="parent" />

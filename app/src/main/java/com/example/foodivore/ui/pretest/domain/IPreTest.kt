@@ -4,5 +4,5 @@ import com.example.foodivore.repository.model.User
 import com.example.foodivore.utils.viewobject.Resource
 
 interface IPreTest {
-    suspend fun postPreTestData(userPreTest: User.PreTestData, jwtToken: String): Resource<User.PreTestResponse>
+    suspend fun postPreTestData(userPreTest: User.PreTestData, jwtToken: String): Resource<User.DefaultResponse>
 }

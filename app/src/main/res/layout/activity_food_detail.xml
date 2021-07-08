@@ -10,6 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <include
+            android:id="@+id/toolbar_food_detail"
+            layout="@layout/toolbar_transparent" />
+
         <ImageView
             android:id="@+id/image_food_detail"
             android:layout_width="match_parent"
@@ -52,6 +56,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_shape_nutrition"
+                android:backgroundTint="@color/red_300"
                 app:layout_constraintBottom_toTopOf="@id/text_protein"
                 app:layout_constraintLeft_toRightOf="@id/view_marker_karb"
                 app:layout_constraintRight_toLeftOf="@id/view_marker_protein"
@@ -82,6 +87,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_shape_nutrition"
+                android:backgroundTint="@color/orange_300"
                 app:layout_constraintBottom_toTopOf="@id/text_protein"
                 app:layout_constraintLeft_toRightOf="@id/piechart_nutrition"
                 app:layout_constraintRight_toLeftOf="@id/view_marker_lemak"
@@ -112,6 +118,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_shape_nutrition"
+                android:backgroundTint="@color/green_300"
                 app:layout_constraintBottom_toTopOf="@id/text_protein"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/piechart_nutrition" />
@@ -139,7 +146,7 @@
         <View
             android:id="@+id/border_nutrition"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="#707070"
             app:layout_constraintTop_toBottomOf="@id/layout_nutrition_food_detail" />

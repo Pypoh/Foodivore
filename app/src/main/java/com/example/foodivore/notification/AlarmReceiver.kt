@@ -32,6 +32,7 @@ package com.example.foodivore.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import com.example.foodivore.R
 
@@ -41,6 +42,23 @@ class AlarmReceiver : BroadcastReceiver() {
 
   override fun onReceive(context: Context?, intent: Intent?) {
     Log.d(TAG, "onReceive() called with: context = [$context], intent = [$intent]")
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      NotificationHelper.showNotificationOreo(context!!)
+    } else {
+      if (context != null && intent != null && intent.action != null) {
+        if (intent.action!!.equals(context.getString(R.string.action_notify_meal_time), ignoreCase = true)) {
+          if (intent.extras != null) {
+            val reminderData = DataUtils.getReminderById(intent.extras!!.getInt("id"))
+            Log.d(TAG, "reminderData: $reminderData")
+            if (reminderData != null) {
+              NotificationHelper.createNotificationForMeal(context, reminderData)
+            }
+          }
+        }
+      }
+    }
+
     if (context != null && intent != null && intent.action != null) {
       if (intent.action!!.equals(context.getString(R.string.action_notify_meal_time), ignoreCase = true)) {
         if (intent.extras != null) {

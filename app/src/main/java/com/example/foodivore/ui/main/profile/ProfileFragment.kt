@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.R
 import com.example.foodivore.databinding.FragmentProfileBinding
@@ -19,10 +21,16 @@ import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImp
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.InBoardingActivity
 import com.example.foodivore.ui.auth.domain.AuthImpl
+import com.example.foodivore.ui.main.article.ArticleActivity
+import com.example.foodivore.ui.main.article.detail.ArticleDetailActivity
+import com.example.foodivore.ui.main.plans.PlansActivity
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.ui.setting.SettingActivity
+import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.textview.MaterialTextView
+import com.google.gson.Gson
+import de.hdodenhof.circleimageview.CircleImageView
 
 class ProfileFragment : Fragment() {
 
@@ -33,11 +41,16 @@ class ProfileFragment : Fragment() {
     private lateinit var sexText: MaterialTextView
     private lateinit var activityText: MaterialTextView
     private lateinit var targetText: MaterialTextView
+    private lateinit var profileImage: CircleImageView
 
     private lateinit var logoutButton: ImageView
     private lateinit var settingButton: ImageView
 
     private lateinit var profileDataBinding: FragmentProfileBinding
+
+    private lateinit var layoutPanduan: RelativeLayout
+    private lateinit var layoutPlans: RelativeLayout
+    private lateinit var layoutArticle: RelativeLayout
 
     private val profileViewModel: ProfileViewModel by lazy {
         ViewModelProvider(
@@ -88,6 +101,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initViews(data: User.PreTestData?) {
+        Log.d("ProfileFragment", data.toString())
         if (data != null) {
             nameText.text = data.name
             heightText.text = data.height
@@ -96,6 +110,11 @@ class ProfileFragment : Fragment() {
             sexText.text = data.sex
             activityText.text = data.activity
             targetText.text = data.target
+
+            Glide.with(requireContext())
+                .load(data.imageUrl)
+                .centerCrop()
+                .into(profileImage)
         }
     }
 
@@ -107,6 +126,7 @@ class ProfileFragment : Fragment() {
         sexText = view.findViewById(R.id.text_sex_value_profile)
         activityText = view.findViewById(R.id.text_activity_value_profile)
         targetText = view.findViewById(R.id.text_target_value_profile)
+        profileImage = view.findViewById(R.id.image_profile_toolbar)
 
         logoutButton = view.findViewById(R.id.ic_logout_profile)
         logoutButton.setOnClickListener {
@@ -120,10 +140,51 @@ class ProfileFragment : Fragment() {
         settingButton.setOnClickListener {
             intentToSetting()
         }
+
+        layoutPanduan = view.findViewById(R.id.layout_panduan_profile)
+        layoutPanduan.setOnClickListener {
+            intentToPanduan()
+        }
+        layoutPlans = view.findViewById(R.id.layout_plans_profile)
+        layoutPlans.setOnClickListener {
+            if (profileViewModel.result.value != null) {
+                profileViewModel.result.value?.let {
+                    when (it) {
+                        is Resource.Success -> {
+                            intentToPlans(it.data!!)
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
+            }
+        }
+        layoutArticle = view.findViewById(R.id.layout_article_profile)
+        layoutArticle.setOnClickListener {
+            intentToArticle()
+        }
     }
 
     private fun intentToSetting() {
         startActivity(Intent(requireContext(), SettingActivity::class.java))
+    }
+
+    private fun intentToPlans(value: User.PreTestData) {
+        val intent = Intent(this.context, PlansActivity::class.java)
+        intent.putExtra("USERDATA", Gson().toJson(value))
+        requireContext().startActivity(intent)
+    }
+
+    private fun intentToArticle() {
+        val intent = Intent(this.context, ArticleActivity::class.java)
+        requireContext().startActivity(intent)
+    }
+
+    private fun intentToPanduan() {
+        val intent = Intent(this.context, ArticleDetailActivity::class.java)
+        intent.putExtra(Constants.PANDUAN_KEY, "Panduan Gizi Seimbang")
+        requireContext().startActivity(intent)
     }
 
 

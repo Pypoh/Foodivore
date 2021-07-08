@@ -23,7 +23,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp">
 
                 <include
                     android:id="@+id/toolbar_home"
@@ -177,26 +178,26 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/text_title_feature"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="LAYANAN"
-                    android:textColor="@color/black_500"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/header_nutritions_home" />
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:id="@+id/text_title_feature"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="16dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:text="LAYANAN"-->
+<!--                    android:textColor="@color/black_500"-->
+<!--                    android:textSize="18sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/header_nutritions_home" />-->
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_feature_home"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintBottom_toTopOf="@id/text_title_food_trend"
-                    app:layout_constraintTop_toBottomOf="@id/text_title_feature" />
+<!--                <androidx.recyclerview.widget.RecyclerView-->
+<!--                    android:id="@+id/recycler_feature_home"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/text_title_food_trend"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/text_title_feature" />-->
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/text_title_food_trend"
@@ -210,7 +211,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/recycler_food_trend_home"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recycler_feature_home" />
+                    app:layout_constraintTop_toBottomOf="@id/header_nutritions_home" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_food_trend_home"

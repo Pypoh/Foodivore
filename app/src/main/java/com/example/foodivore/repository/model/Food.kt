@@ -59,6 +59,8 @@ object  Food {
         var id: String
     )
 
+    
+
     data class Schedule(
         @SerializedName("_id")
         var _id: String,
@@ -66,9 +68,55 @@ object  Food {
         @SerializedName("name")
         var name: String,
 
-        @SerializedName("scala")
-        var scala: Float,
+        @SerializedName("maxPercentage")
+        var maxPercentage: Float,
+
+        @SerializedName("minPercentage")
+        var minPercentage: Float,
     )
+
+    data class IngredientResponse(
+        @SerializedName("imageUrl")
+        var imageUrl: String,
+
+        @SerializedName("name")
+        var title: String,
+
+        @SerializedName("calorie")
+        var calorie: Float,
+
+        @SerializedName("fat")
+        var fat: Float,
+
+        @SerializedName("carb")
+        var carb: Float,
+
+        @SerializedName("prot")
+        var prot: Float,
+
+        @SerializedName("foodtype")
+        var foodtype: FoodType,
+
+        @SerializedName("createdAt")
+        var createdAt: String,
+
+        @SerializedName("updatedAt")
+        var updatedAt: String,
+
+        @SerializedName("id")
+        var id: String,
+
+        var selected: Boolean = false
+    )
+
+    data class FoodType(
+        @SerializedName("_id")
+        var _id: String,
+
+        @SerializedName("name")
+        var name: String,
+    )
+
 /*
     data class Menu(
         @SerializedName("schedule")

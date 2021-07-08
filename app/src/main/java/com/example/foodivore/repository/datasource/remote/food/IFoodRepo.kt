@@ -7,4 +7,6 @@ interface IFoodRepo {
     suspend fun getFoodByName(name: String): Resource<List<Food.FoodResponse?>?>
     suspend fun getFoods(): Resource<List<Food.FoodResponse>?>
     suspend fun getFoodBySchedule(schedule: String): Resource<List<Food.FoodResponse>?>
+    suspend fun getIngredients(): Resource<List<Food.IngredientResponse>?>
+    suspend fun getIngredientByType(type: String): Resource<List<Food.IngredientResponse>?>
 }

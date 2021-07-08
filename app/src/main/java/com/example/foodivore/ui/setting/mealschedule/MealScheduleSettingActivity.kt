@@ -87,13 +87,13 @@ class MealScheduleSettingActivity : AppCompatActivity() {
                 materialTimePicker.addOnPositiveButtonClickListener {
                     data.hour = materialTimePicker.hour
                     data.minute = materialTimePicker.minute
-                    mealScheduleViewModel.updateReminder(data)
+                    Log.d("MealSchedule", "${data.hour}, ${data.minute}")
+                    mealScheduleViewModel.updateReminder(data, this@MealScheduleSettingActivity)
                     adapterMealSchedule.notifyDataSetChanged()
                 }
 
                 materialTimePicker.show(supportFragmentManager, "time_picker")
             }
-
         })
         recyclerMealSchedule.adapter = adapterMealSchedule
 

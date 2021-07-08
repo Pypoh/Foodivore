@@ -13,12 +13,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:src="@drawable/person"
-            android:padding="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:tint="@color/grey_300" />
+<!--        <ImageView-->
+<!--            android:src="@drawable/person"-->
+<!--            android:padding="16dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:tint="@color/grey_300" />-->
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_profile_toolbar"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_circle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </RelativeLayout>
 
