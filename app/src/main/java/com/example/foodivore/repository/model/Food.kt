@@ -27,6 +27,22 @@ object  Food {
         var schedule: String
     )
 
+    data class Schedule(
+        @SerializedName("_id")
+        var _id: String,
+
+        @SerializedName("name")
+        var name: String,
+
+        @SerializedName("maxPercentage")
+        var maxPercentage: Float,
+
+        @SerializedName("minPercentage")
+        var minPercentage: Float,
+    )
+
+
+
     data class FoodResponse(
         @SerializedName("imageUrl")
         var imageUrl: String,
@@ -57,22 +73,6 @@ object  Food {
 
         @SerializedName("id")
         var id: String
-    )
-
-    
-
-    data class Schedule(
-        @SerializedName("_id")
-        var _id: String,
-
-        @SerializedName("name")
-        var name: String,
-
-        @SerializedName("maxPercentage")
-        var maxPercentage: Float,
-
-        @SerializedName("minPercentage")
-        var minPercentage: Float,
     )
 
     data class IngredientResponse(

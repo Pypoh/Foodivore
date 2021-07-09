@@ -34,4 +34,6 @@ object Record {
         @SerializedName("schedule")
         var type: String
     )
+
+
 }

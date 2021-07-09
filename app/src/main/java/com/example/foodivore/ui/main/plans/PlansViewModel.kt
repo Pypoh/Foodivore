@@ -12,7 +12,7 @@ import java.lang.Exception
 
 class PlansViewModel(private val useCase: IPlan) : ViewModel() {
 
-    fun getPlanByDate(jwtToken: String, time: Long) : LiveData<Resource<List<Food.FoodResponse?>?>> {
+    fun getRecordByDate(jwtToken: String, time: Long) : LiveData<Resource<List<Food.FoodResponse?>?>> {
         return liveData(Dispatchers.IO) {
             emit(Resource.Loading())
             try {
@@ -25,4 +25,16 @@ class PlansViewModel(private val useCase: IPlan) : ViewModel() {
         }
     }
 
+    fun getPlanByDate(jwtToken: String, time:Long) : LiveData<Resource<List<Food.FoodResponse?>?>> {
+        return liveData(Dispatchers.IO) {
+            emit(Resource.Loading())
+            try {
+                val recordResult = useCase.getRecordByDate(jwtToken, time)
+
+                emit(recordResult)
+            } catch (e: Exception) {
+                emit(Resource.Failure(e))
+            }
+        }
+    }
 }

@@ -11,7 +11,7 @@ import com.example.foodivore.repository.model.Food
 import com.example.foodivore.scanner.camera.adapter.AdapterFoodCameraDialog
 import com.google.android.material.textview.MaterialTextView
 
-class AdapterFoodList(val context: Context, var dataset: List<Food.FoodResponse?>?) :
+class AdapterFoodList(val context: Context, var dataset: List<Any?>?) :
     RecyclerView.Adapter<AdapterFoodList.ViewHolder>() {
 
 
@@ -30,10 +30,12 @@ class AdapterFoodList(val context: Context, var dataset: List<Food.FoodResponse?
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataset?.get(position)
         if (data != null) {
-            holder.title.text = data.title
-            holder.calorie.text = data.calorie.toString() + " kkal"
-
-
+            if (data is Food.FoodResponse) {
+                holder.title.text = data.title
+                holder.calorie.text = data.calorie.toString() + " kkal"
+            } else if (data is Food.IngredientResponse) {
+                
+            }
         }
     }
 

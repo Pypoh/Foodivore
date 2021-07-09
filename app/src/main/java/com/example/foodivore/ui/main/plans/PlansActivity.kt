@@ -1,12 +1,10 @@
 package com.example.foodivore.ui.main.plans
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +23,6 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textview.MaterialTextView
@@ -132,7 +129,7 @@ class PlansActivity : AppCompatActivity() {
 
         currentTime.set(Calendar.HOUR_OF_DAY, 0)
 
-        plansViewModel.getPlanByDate(
+        plansViewModel.getRecordByDate(
             sessionManager.fetchAuthToken()!!,
             currentTime.timeInMillis
         ).observe(this, { task ->
@@ -161,14 +158,14 @@ class PlansActivity : AppCompatActivity() {
                 .build()
 
         datePicker.addOnPositiveButtonClickListener {
-            if (plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+            if (plansViewModel.getRecordByDate(sessionManager.fetchAuthToken()!!, it)
                     .hasActiveObservers()
             ) {
-                plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                plansViewModel.getRecordByDate(sessionManager.fetchAuthToken()!!, it)
                     .removeObservers(this)
             }
 
-            plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+            plansViewModel.getRecordByDate(sessionManager.fetchAuthToken()!!, it)
                 .observe(this, { task ->
                     when (task) {
                         is Resource.Success -> {

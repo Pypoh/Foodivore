@@ -58,6 +58,9 @@ interface ApiServices {
     @GET(Constants.RECORD_URL)
     suspend fun getRecordByDate(@Query("time") time: Long): List<Food.FoodResponse?>
 
+    @GET(Constants.PLAN_URL)
+    suspend fun getPlanByDate(@Query("time") time: Long): List<Food.IngredientResponse?>
+
     @POST(Constants.RECORD_URL)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun postRecord(@Body request: Record.RecordRequest): Call<Record.RecordResponse>

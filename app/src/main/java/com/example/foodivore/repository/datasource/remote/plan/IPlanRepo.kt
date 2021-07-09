@@ -10,5 +10,8 @@ interface IPlanRepo {
         authToken: String,
         time: Long
     ): Resource<List<Food.FoodResponse?>?>
-
+    suspend fun getPlanByDate(
+        authToken: String,
+        time: Long
+    ): Resource<List<Food.FoodResponse?>?>
 }

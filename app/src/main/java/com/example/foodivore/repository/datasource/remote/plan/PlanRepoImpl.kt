@@ -22,4 +22,16 @@ class PlanRepoImpl : IPlanRepo {
 
         }
     }
+
+    override suspend fun getPlanByDate(
+        authToken: String,
+        time: Long
+    ): Resource<List<Food.FoodResponse?>?> {
+        return try {
+            val planResult = ApiClient.getUserApiService(authToken).getRecordByDate(time)
+            Resource.Success(planResult)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
 }
