@@ -29,15 +29,20 @@
 
         <!--        </androidx.appcompat.widget.Toolbar>-->
 
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/ic_arrow_left"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+        <!--        <ImageView-->
+        <!--            android:id="@+id/back_arrow_camera"-->
+        <!--            android:layout_width="36dp"-->
+        <!--            android:layout_height="36dp"-->
+        <!--            android:layout_marginStart="16dp"-->
+        <!--            android:layout_marginTop="16dp"-->
+        <!--            android:src="@drawable/ic_arrow_left"-->
+        <!--            app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:tint="@color/white" />-->
+
+        <include
+            android:id="@+id/toolbar_camera"
+            layout="@layout/toolbar_transparent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_schedule_camera"
@@ -83,31 +88,30 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container">
 
-            <LinearLayout
-                android:id="@+id/layout_select_image_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/button_capture_image_camera"
-                app:layout_constraintTop_toTopOf="parent">
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/layout_select_image_camera"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:orientation="vertical"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--                app:layout_constraintRight_toLeftOf="@id/button_capture_image_camera"-->
+            <!--                app:layout_constraintTop_toTopOf="parent">-->
 
-                <ImageView
-                    android:id="@+id/button_select_image_camera"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_baseline_image_search_24" />
+            <!--                <ImageView-->
+            <!--                    android:id="@+id/button_select_image_camera"-->
+            <!--                    android:layout_width="32dp"-->
+            <!--                    android:layout_height="32dp"-->
+            <!--                    android:layout_gravity="center_horizontal"-->
+            <!--                    android:src="@drawable/ic_baseline_image_search_24" />-->
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Pilih" />
+            <!--                <com.google.android.material.textview.MaterialTextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_gravity="center_horizontal"-->
+            <!--                    android:text="Pilih" />-->
 
-            </LinearLayout>
-
+            <!--            </LinearLayout>-->
 
             <ImageView
                 android:id="@+id/button_capture_image_camera"
@@ -115,34 +119,33 @@
                 android:layout_height="48dp"
                 android:src="@drawable/camera_button"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/layout_select_image_camera"
-                app:layout_constraintRight_toLeftOf="@id/layout_search_image_camera"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/layout_search_image_camera"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:orientation="vertical"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintLeft_toRightOf="@id/button_capture_image_camera"-->
+            <!--                app:layout_constraintRight_toRightOf="parent"-->
+            <!--                app:layout_constraintTop_toTopOf="parent">-->
 
-            <LinearLayout
-                android:id="@+id/layout_search_image_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/button_capture_image_camera"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            <!--                <ImageView-->
+            <!--                    android:id="@+id/button_search_image_camera"-->
+            <!--                    android:layout_width="32dp"-->
+            <!--                    android:layout_height="32dp"-->
+            <!--                    android:src="@drawable/ic_md_search" />-->
 
-                <ImageView
-                    android:id="@+id/button_search_image_camera"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_md_search" />
+            <!--                <com.google.android.material.textview.MaterialTextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_gravity="center_horizontal"-->
+            <!--                    android:text="Cari" />-->
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Cari" />
-
-            </LinearLayout>
+            <!--            </LinearLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

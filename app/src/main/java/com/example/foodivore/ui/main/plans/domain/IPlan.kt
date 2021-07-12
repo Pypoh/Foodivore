@@ -13,5 +13,9 @@ interface IPlan {
     suspend fun getPlanByDate(
         authToken: String,
         time: Long
-    ): Resource<List<Food.FoodResponse?>?>
+    ): Resource<List<Record.PlanResponse?>?>
+    suspend fun sendPlan(
+        authToken: String,
+        plan: Record.PlanRequest
+    ): Resource<Record.PlanResponse>
 }

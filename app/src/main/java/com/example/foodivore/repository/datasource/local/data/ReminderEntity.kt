@@ -80,6 +80,7 @@ data class ReminderEntity(
         Breakfast,
         Lunch,
         Dinner,
+        Snack,
         Other
     }
 

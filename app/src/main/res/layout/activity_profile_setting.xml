@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--    <data>-->
     <!--        -->
@@ -8,7 +8,7 @@
     <!--            type="" />-->
     <!--    </data>-->
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,118 +19,213 @@
             android:id="@+id/toolbar_profile_setting"
             layout="@layout/toolbar_default" />
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_profile_setting">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/image_profile_setting"
-                android:layout_width="108dp"
-                android:layout_height="108dp"
-                android:layout_centerHorizontal="true"
-                android:src="@color/orange_200" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/text_change_pic_profile_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/image_profile_setting"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/orange_500"
-                android:text="Ubah"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/name_profile_setting"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/iet_name_profile_setting"
+            <LinearLayout
+                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nama" />
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/height_profile_setting"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/image_profile_setting"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@color/orange_200" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/iet_height_profile_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Tinggi badan" />
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/text_change_pic_profile_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/image_profile_setting"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="Ubah"
+                        android:textColor="@color/orange_500"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </RelativeLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/weight_profile_setting"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/name_profile_setting"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/iet_weight_profile_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Berat badan" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/iet_name_profile_setting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nama" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/sex_profile_setting"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/height_profile_setting"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/iet_sex_profile_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Jenis Kelamin"
-                android:enabled="false"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/iet_height_profile_setting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Tinggi badan" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/age_profile_setting"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/weight_profile_setting"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/iet_age_profile_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Umur" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/iet_weight_profile_setting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Berat badan" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/sex_profile_setting"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/iet_sex_profile_setting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:hint="Jenis Kelamin" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/age_profile_setting"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/iet_age_profile_setting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Umur" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/activity_profile_setting"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:clickable="true"
+                        android:focusable="false"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/button_change_activity_profile_setting"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/iet_activity_profile_setting"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:hint="Activity" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_change_activity_profile_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:text="Ubah"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/button_change_target_profile_setting"
+                        android:id="@+id/target_profile_setting"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/iet_target_profile_setting"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:hint="Target" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_change_target_profile_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:text="Ubah"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

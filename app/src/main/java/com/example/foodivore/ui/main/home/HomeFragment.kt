@@ -136,6 +136,8 @@ class HomeFragment : Fragment() {
     var totalFat = 0f
     var totalProtein = 0f
 
+    private var nextSchedule: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -195,10 +197,12 @@ class HomeFragment : Fragment() {
                         if (currentHour < data.hour) {
                             val range = data.hour - currentHour
                             nextScheduleText.text = "${data.name} dalam $range jam"
+                            nextSchedule = data.name!!
                             break
                         }
                         val range = 24 - currentHour + task.data.first().hour
                         nextScheduleText.text = "${task.data.first().name} dalam $range jam"
+                        nextSchedule = task.data.first().name.toString()
                     }
                 }
 
@@ -498,7 +502,9 @@ class HomeFragment : Fragment() {
             sharedProfileViewModel.result.value?.let {
                 when (it) {
                     is Resource.Success -> {
-                        intentToRecommendation(it.data!!)
+                        if (nextSchedule.isNotEmpty()) {
+                            intentToRecommendation(it.data!!)
+                        }
                     }
                     else -> {
                     }
@@ -511,6 +517,7 @@ class HomeFragment : Fragment() {
     private fun intentToRecommendation(value: User.PreTestData) {
         val intent = Intent(this.context, RecommendationActivity::class.java)
         intent.putExtra("USERDATA", Gson().toJson(value))
+        intent.putExtra("SCHEDULE", nextSchedule)
         requireContext().startActivity(intent)
     }
 

@@ -3,23 +3,30 @@ package com.example.foodivore.ui.setting.profilesetting
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.FileUtils
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodivore.R
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.auth.other.AuthRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.domain.AuthImpl
+import com.example.foodivore.ui.main.MainActivity
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.utils.getFileName
+import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textview.MaterialTextView
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MediaType
@@ -31,7 +38,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCallback{
+class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
     val REQUEST_CODE: Int = 100
 
@@ -58,6 +65,14 @@ class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCall
     private lateinit var ageTextInput: TextInputEditText
     private lateinit var circleImage: CircleImageView
     private lateinit var chooseImageText: MaterialTextView
+
+    private lateinit var activityInput: TextInputLayout
+    private lateinit var targetInput: TextInputLayout
+
+    private lateinit var activityTextInput: TextInputEditText
+    private lateinit var targetTextInput: TextInputEditText
+    private lateinit var activityChangeButton: MaterialButton
+    private lateinit var targetChangeButton: MaterialButton
 
     private var userData: User.PreTestData? = null
 
@@ -105,7 +120,12 @@ class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCall
             sexTextInput.setText(data.sex)
             ageTextInput.setText(data.age)
 
+            activityTextInput.setText(data.activity)
+            targetTextInput.setText(data.target)
+
             userData = data
+
+
         }
     }
 
@@ -140,7 +160,7 @@ class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCall
 
                         is Resource.Success -> {
                             Log.d("ProfileSettingActivity", task.data.toString())
-
+                            intentToMain()
                         }
 
                         is Resource.Failure -> {
@@ -153,7 +173,6 @@ class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCall
                     }
                 })
             }
-
         }
 
         nameTextInput = findViewById(R.id.iet_name_profile_setting)
@@ -163,11 +182,67 @@ class ProfileSettingActivity : AppCompatActivity(), UploadRequestBody.UploadCall
         ageTextInput = findViewById(R.id.iet_age_profile_setting)
         circleImage = findViewById(R.id.image_profile_setting)
 
+        activityChangeButton = findViewById(R.id.button_change_activity_profile_setting)
+        activityTextInput = findViewById(R.id.iet_activity_profile_setting)
+        activityChangeButton.setOnClickListener {
+            showActivityDialog()
+        }
+
+        targetChangeButton = findViewById(R.id.button_change_target_profile_setting)
+        targetTextInput = findViewById(R.id.iet_target_profile_setting)
+        targetChangeButton.setOnClickListener {
+            showTargetDialog()
+        }
+
         chooseImageText = findViewById(R.id.text_change_pic_profile_setting)
         chooseImageText.setOnClickListener {
             openGalleryForImage()
         }
 
+    }
+
+    private fun intentToMain() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    private fun showActivityDialog() {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertDialog.setTitle("Jadwal Makan")
+        val items = arrayOf("Rendah", "Biasa", "Aktif", "Sangat Aktif")
+        val checkedItem = items.indexOf(userData!!.activity)
+        alertDialog.setSingleChoiceItems(
+            items, checkedItem
+        ) { dialog, which ->
+            userData!!.activity = items[which]
+            activityTextInput.setText(items[which])
+            dialog.dismiss()
+        }
+
+        val alert: AlertDialog = alertDialog.create()
+
+        alert.setCanceledOnTouchOutside(true)
+        alert.show()
+    }
+
+    private fun showTargetDialog() {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertDialog.setTitle("Jadwal Makan")
+        val items =
+            arrayOf("Menurunkan berat badan", "Menjadi lebih bugar", "Menaikkan berat badan")
+        val checkedItem = items.indexOf(userData!!.target)
+        alertDialog.setSingleChoiceItems(
+            items, checkedItem
+        ) { dialog, which ->
+            userData!!.target = items[which]
+            targetTextInput.setText(items[which])
+            dialog.dismiss()
+        }
+
+        val alert: AlertDialog = alertDialog.create()
+
+        alert.setCanceledOnTouchOutside(true)
+        alert.show()
     }
 
     private fun openGalleryForImage() {

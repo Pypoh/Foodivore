@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,12 +16,16 @@ import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityRecommendationBinding
 import com.example.foodivore.network.SessionManager
 import com.example.foodivore.repository.datasource.remote.food.FoodRepoImpl
+import com.example.foodivore.repository.datasource.remote.plan.PlanRepoImpl
 import com.example.foodivore.repository.datasource.remote.recommendation.RecommendationRepoImpl
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.food.domain.FoodImpl
 import com.example.foodivore.ui.main.home.decoration.RecyclerViewItemDecoration
+import com.example.foodivore.ui.main.plans.domain.PlanImpl
 import com.example.foodivore.ui.recommendation.domain.RecommendationImpl
+import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
@@ -35,7 +40,8 @@ class RecommendationActivity : AppCompatActivity() {
             this,
             RecommendationVMFactory(
                 RecommendationImpl(RecommendationRepoImpl()),
-                FoodImpl(FoodRepoImpl())
+                FoodImpl(FoodRepoImpl()),
+                PlanImpl(PlanRepoImpl())
             )
         ).get(RecommendationViewModel::class.java)
     }
@@ -43,6 +49,7 @@ class RecommendationActivity : AppCompatActivity() {
     lateinit var sessionManager: SessionManager
 
     private lateinit var userData: User.PreTestData
+    private lateinit var nextScheduleData: String
     var totalCalorie = 0f
 
     // Views
@@ -55,7 +62,7 @@ class RecommendationActivity : AppCompatActivity() {
 
     private lateinit var menuAutoComplete: AutoCompleteTextView
 
-    private val dummyCalorieNeeds = 821
+    private var calorieNeeds = 0f
 
     private lateinit var toolbar: View
     private lateinit var toolbarText: MaterialTextView
@@ -72,6 +79,8 @@ class RecommendationActivity : AppCompatActivity() {
             DataBindingUtil.setContentView(this, R.layout.activity_recommendation)
 
         userData = Gson().fromJson(intent.getStringExtra("USERDATA"), User.PreTestData::class.java)
+        calorieNeeds = userData.calorieNeeds
+        nextScheduleData = intent.getStringExtra("SCHEDULE").toString()
 
         setupViews(recommendationDataBinding.root)
 
@@ -173,8 +182,8 @@ class RecommendationActivity : AppCompatActivity() {
 
     @JvmName("setTotalCalorie1")
     fun setTotalCalorie(calorie: Float) {
-        calorieProgressBar.progress = ((calorie / dummyCalorieNeeds) * 100).toInt()
-        valueProgressBar.text = "$calorie / $dummyCalorieNeeds cal"
+        calorieProgressBar.progress = ((calorie / calorieNeeds) * 100).toInt()
+        valueProgressBar.text = "$calorie / $calorieNeeds cal"
     }
 
     private fun fetchData() {
@@ -185,7 +194,8 @@ class RecommendationActivity : AppCompatActivity() {
                 }
 
                 is Resource.Success -> {
-                    adapterRecommendation.dataset = recommendationViewModel.splitListBySchedule(task.data)
+                    adapterRecommendation.dataset =
+                        recommendationViewModel.splitListBySchedule(task.data)
                     adapterRecommendation.notifyDataSetChanged()
                 }
 
@@ -219,11 +229,49 @@ class RecommendationActivity : AppCompatActivity() {
             onBackPressed()
         }
         saveButton = toolbar.findViewById(R.id.button_save_toolbar)
+        saveButton.visibility = View.VISIBLE
         saveButton.setOnClickListener {
-
+            showAlertDialog()
         }
 
     }
 
+    private fun showAlertDialog() {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertDialog.setTitle("Jadwal Makan")
+        val items = arrayOf("Sarapan", "Camilan Pagi", "Makan Siang", "Camilan Sore", "Makan Malam")
+        Log.d("RecActivityDialog", nextScheduleData)
+        val checkedItem = items.indexOf(nextScheduleData)
+        alertDialog.setSingleChoiceItems(
+            items, checkedItem
+        ) { _, which ->
+            nextScheduleData = items[which]
+        }
 
+        alertDialog.setPositiveButton(
+            "Simpan"
+        ) { _, _ ->
+            toast("Plan Saved! ")
+            recommendationViewModel.sendPlan(
+                sessionManager.fetchAuthToken()!!, Record.PlanRequest(
+                    nextScheduleData,
+                    adapterRecommendation.selectedFoodIds
+                )
+            ).observe(this, { task ->
+                when (task) {
+                    is Resource.Success -> {
+
+                    }
+                    else -> {
+
+                    }
+                }
+            })
+            Log.d("RecActivityDialog", adapterRecommendation.selectedFoodIds.toString())
+        }
+        val alert: AlertDialog = alertDialog.create()
+
+        alert.setCanceledOnTouchOutside(true)
+        alert.show()
+    }
 }

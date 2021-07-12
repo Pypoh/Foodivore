@@ -26,6 +26,8 @@ import com.example.foodivore.ui.main.article.detail.ArticleDetailActivity
 import com.example.foodivore.ui.main.plans.PlansActivity
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.ui.setting.SettingActivity
+import com.example.foodivore.ui.setting.mealschedule.MealScheduleSettingActivity
+import com.example.foodivore.ui.setting.profilesetting.ProfileSettingActivity
 import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 import com.google.android.material.textview.MaterialTextView
@@ -46,11 +48,14 @@ class ProfileFragment : Fragment() {
     private lateinit var logoutButton: ImageView
     private lateinit var settingButton: ImageView
 
+    private lateinit var editProfileButton: MaterialTextView
+
     private lateinit var profileDataBinding: FragmentProfileBinding
 
     private lateinit var layoutPanduan: RelativeLayout
     private lateinit var layoutPlans: RelativeLayout
     private lateinit var layoutArticle: RelativeLayout
+    private lateinit var layoutMealSchedule: RelativeLayout
 
     private val profileViewModel: ProfileViewModel by lazy {
         ViewModelProvider(
@@ -136,10 +141,17 @@ class ProfileFragment : Fragment() {
             ApiClient.removeInitializedApiServices()
         }
 
-        settingButton = view.findViewById(R.id.button_setting_profile)
-        settingButton.setOnClickListener {
-            intentToSetting()
+//        settingButton = view.findViewById(R.id.button_setting_profile)
+//        settingButton.setOnClickListener {
+//            intentToSetting()
+//        }
+
+        editProfileButton = view.findViewById(R.id.text_edit_information)
+        editProfileButton.setOnClickListener {
+            intentToProfileSetting()
         }
+
+
 
         layoutPanduan = view.findViewById(R.id.layout_panduan_profile)
         layoutPanduan.setOnClickListener {
@@ -164,6 +176,11 @@ class ProfileFragment : Fragment() {
         layoutArticle.setOnClickListener {
             intentToArticle()
         }
+
+        layoutMealSchedule = view.findViewById(R.id.layout_meal_schedule_profile)
+        layoutMealSchedule.setOnClickListener {
+            intentToMealScheduleSetting()
+        }
     }
 
     private fun intentToSetting() {
@@ -185,6 +202,14 @@ class ProfileFragment : Fragment() {
         val intent = Intent(this.context, ArticleDetailActivity::class.java)
         intent.putExtra(Constants.PANDUAN_KEY, "Panduan Gizi Seimbang")
         requireContext().startActivity(intent)
+    }
+
+    private fun intentToProfileSetting() {
+        startActivity(Intent(requireContext(), ProfileSettingActivity::class.java))
+    }
+
+    private fun intentToMealScheduleSetting() {
+        startActivity(Intent(requireContext(), MealScheduleSettingActivity::class.java))
     }
 
 

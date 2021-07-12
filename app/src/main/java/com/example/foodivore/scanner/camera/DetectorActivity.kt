@@ -53,7 +53,7 @@ class DetectorActivity : CameraActivity(), OnImageAvailableListener {
     // Minimum detection confidence to track a detection.
     private val MINIMUM_CONFIDENCE_TF_OD_API = 0.3f
     private val MAINTAIN_ASPECT = false
-    private val DESIRED_PREVIEW_SIZE = Size(1920, 1080)
+    private val DESIRED_PREVIEW_SIZE = Size(1280, 720)
     private val SAVE_PREVIEW_BITMAP = false
     private val TEXT_SIZE_DIP = 10f
     var trackingOverlay: OverlayView? = null

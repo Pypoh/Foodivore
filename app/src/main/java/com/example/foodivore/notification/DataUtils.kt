@@ -25,6 +25,23 @@ object DataUtils {
             false
         ), ReminderEntity(
             1,
+            "Camilan Pagi",
+            ReminderEntity.MealType.Snack,
+            "Jadwal untuk camilan pagi",
+            9,
+            30,
+            arrayListOf(
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+            ),
+            false
+        ), ReminderEntity(
+            2,
             "Makan Siang",
             ReminderEntity.MealType.Lunch,
             "Jadwal untuk makan siang",
@@ -41,11 +58,11 @@ object DataUtils {
             ),
             false
         ), ReminderEntity(
-            2,
-            "Makan Malam",
-            ReminderEntity.MealType.Dinner,
-            "Jadwal untuk makan malam",
-            19,
+            3,
+            "Camilan Sore",
+            ReminderEntity.MealType.Snack,
+            "Jadwal untuk camilan sore",
+            16,
             0,
             arrayListOf(
                 "Monday",
@@ -58,12 +75,12 @@ object DataUtils {
             ),
             false
         ), ReminderEntity(
-            3,
-            "Test Notifikasi",
-            ReminderEntity.MealType.Lunch,
-            "Cuma buat uji coba development notif",
-            17,
-            7,
+            4,
+            "Makan Malam",
+            ReminderEntity.MealType.Dinner,
+            "Jadwal untuk makan malam",
+            19,
+            0,
             arrayListOf(
                 "Monday",
                 "Tuesday",

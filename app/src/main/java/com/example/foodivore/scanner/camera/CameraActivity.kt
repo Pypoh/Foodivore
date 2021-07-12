@@ -18,6 +18,7 @@ package com.example.foodivore.scanner.camera
 import android.Manifest
 import android.app.Fragment
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.hardware.camera2.CameraAccessException
@@ -29,11 +30,10 @@ import android.media.ImageReader.OnImageAvailableListener
 import android.os.*
 import android.util.Log
 import android.util.Size
-import android.view.KeyEvent
-import android.view.Surface
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
@@ -58,6 +58,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
     Camera.PreviewCallback {
 
@@ -70,6 +71,8 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
 
     lateinit var sessionManager: SessionManager
 
+    private var scheduleString = ""
+
     // Views
     private lateinit var recyclerCameraDialog: RecyclerView
     private lateinit var adapterCameraDialog: AdapterFoodCameraDialog
@@ -77,6 +80,10 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
     private lateinit var rescanFoodButtonDialog: MaterialButton
     private lateinit var layoutSchedule: ConstraintLayout
     private lateinit var scheduleText: MaterialTextView
+    private lateinit var toolbar: View
+    private lateinit var toolbarText: MaterialTextView
+    private lateinit var backButton: ImageView
+    private lateinit var searchButton: ImageView
 
     var isDebug = false
         private set
@@ -126,6 +133,8 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
 
         sessionManager = SessionManager(this)
 
+        scheduleString = intent.getStringExtra("SCHEDULE").toString()
+
         captureButton = findViewById(R.id.button_capture_image_camera)
         captureButton.setOnClickListener {
             val cameraFragment =
@@ -164,9 +173,62 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
         }
 
         layoutSchedule = findViewById(R.id.layout_schedule_camera)
+        layoutSchedule.setOnClickListener {
+            showAlertDialog()
+        }
         scheduleText = findViewById(R.id.text_schedule_camera)
 
-        scheduleText.text = intent.getStringExtra("SCHEDULE")
+        scheduleText.text = scheduleString
+
+        toolbar = findViewById(R.id.toolbar_camera)
+        toolbarText = toolbar.findViewById(R.id.title_toolbar)
+        toolbarText.text = ""
+
+        backButton = toolbar.findViewById(R.id.back_arrow_toolbar)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
+        searchButton = toolbar.findViewById(R.id.button_search_toolbar)
+        searchButton.visibility = View.VISIBLE
+        searchButton.setOnClickListener {
+            // search function
+        }
+
+    }
+
+    private fun showAlertDialog() {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertDialog.setTitle("Jadwal Makan")
+        val items = arrayOf("Sarapan", "Camilan Pagi", "Makan Siang", "Camilan Sore", "Makan Malam")
+        val checkedItem = items.indexOf(scheduleString)
+        alertDialog.setSingleChoiceItems(
+            items, checkedItem
+        ) { dialog, which ->
+            scheduleString = items[which]
+            scheduleText.text = scheduleString
+            dialog.dismiss()
+//            when (which) {
+//                0 -> scheduleString = items[which]
+//                1 -> Toast.makeText(this, "Clicked on android", Toast.LENGTH_LONG)
+//                    .show()
+//                2 -> Toast.makeText(
+//                    this,
+//                    "Clicked on Data Structures",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//                3 -> Toast.makeText(this, "Clicked on HTML", Toast.LENGTH_LONG)
+//                    .show()
+//                4 -> Toast.makeText(this, "Clicked on CSS", Toast.LENGTH_LONG)
+//                    .show()
+//            }
+        }
+        val alert: AlertDialog = alertDialog.create()
+        alertDialog.setOnCancelListener {
+            scheduleText.text = scheduleString
+        }
+
+        alert.setCanceledOnTouchOutside(true)
+        alert.show()
     }
 
     fun toastResult(results: List<Classifier.Recognition?>?) {
@@ -227,7 +289,7 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
             adapterCameraDialog.getItemByPosition(adapterCameraDialog.getLastCheckedItem())
                 .let { data ->
                     if (data != null) {
-                        val record = Record.RecordRequest(data.id, data.schedule.name)
+                        val record = Record.RecordRequest(data.id, scheduleString)
                         Log.d(
                             "CameraActivity",
                             "data: ${record}, token: ${sessionManager.fetchAuthToken()}"

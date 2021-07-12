@@ -25,6 +25,7 @@ class AdapterRecommendation(
     RecyclerView.Adapter<AdapterRecommendation.ViewHolder>() {
 
     var totalCalorie = 0f
+    var selectedFoodIds = arrayListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View =
@@ -48,8 +49,10 @@ class AdapterRecommendation(
                 val status = adapter.setSelection(position, food)
                 if (status == "Plus") {
                     totalCalorie += food.calorie
+                    selectedFoodIds.add(food.id)
                 } else {
                     totalCalorie -= food.calorie
+                    selectedFoodIds.remove(food.id)
                 }
                 Log.d("RecActivity", "calorie : $totalCalorie")
                 sendCalorie()

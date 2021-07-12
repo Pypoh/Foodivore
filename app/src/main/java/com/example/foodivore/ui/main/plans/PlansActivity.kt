@@ -1,10 +1,12 @@
 package com.example.foodivore.ui.main.plans
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,10 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.databinding.ActivityPlansBinding
 import com.example.foodivore.network.SessionManager
+import com.example.foodivore.repository.datasource.local.data.ReminderDatabase
+import com.example.foodivore.repository.datasource.local.data.domain.ReminderDbHelperImpl
 import com.example.foodivore.repository.datasource.remote.plan.PlanRepoImpl
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
-import com.example.foodivore.ui.main.plans.adapter.AdapterFoodList
+import com.example.foodivore.ui.food.FoodDetailActivity
+import com.example.foodivore.ui.main.plans.adapter.AdapterColorLegend
+import com.example.foodivore.ui.main.plans.adapter.AdapterFoodListHistory
+import com.example.foodivore.ui.main.plans.adapter.AdapterFoodListPlan
 import com.example.foodivore.ui.main.plans.domain.PlanImpl
 import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
@@ -24,6 +32,9 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.MPPointF
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
@@ -39,17 +50,43 @@ class PlansActivity : AppCompatActivity() {
 
     private lateinit var menuAutoComplete: AutoCompleteTextView
 
-    private lateinit var recyclerFoodList: RecyclerView
-    private lateinit var adapterFoodList: AdapterFoodList
+    private lateinit var recyclerFoodListPlan: RecyclerView
+    private lateinit var adapterFoodListHistoryPlan: AdapterFoodListPlan
+
+    private lateinit var recyclerFoodListHistory: RecyclerView
+    private lateinit var adapterFoodListHistoryHistory: AdapterFoodListHistory
+
+    private lateinit var recyclerColorLegend: RecyclerView
+    private lateinit var adapterColorLegend: AdapterColorLegend
+//    private var colorIds = arrayListOf(
+//        R.color.green_100,
+//        R.color.orange_100,
+//        R.color.blue_100,
+//        R.color.red_100,
+//        R.color.purple_100
+//    )
+
+    private var colorData = arrayListOf<Record.ColorLegend>(
+        Record.ColorLegend(R.color.green_100, "Sarapan"),
+        Record.ColorLegend(R.color.orange_100, "Camilan Pagi"),
+        Record.ColorLegend(R.color.blue_100, "Makan Siang"),
+        Record.ColorLegend(R.color.red_100, "Camilan Sore"),
+        Record.ColorLegend(R.color.purple_100, "Makan Malam"),
+        )
 
     private lateinit var calendarButton: ImageView
 
     lateinit var sessionManager: SessionManager
 
+    lateinit var db: ReminderDatabase
+
     private val plansViewModel: PlansViewModel by lazy {
         ViewModelProvider(
             this,
-            PlansVMFactory(PlanImpl(PlanRepoImpl()))
+            PlansVMFactory(
+                PlanImpl(PlanRepoImpl()),
+                ReminderDbHelperImpl(db)
+            )
         ).get(PlansViewModel::class.java)
     }
 
@@ -68,11 +105,17 @@ class PlansActivity : AppCompatActivity() {
     private lateinit var protText: MaterialTextView
     private lateinit var dateText: MaterialTextView
 
+    private lateinit var toolbar: View
+    private lateinit var toolbarText: MaterialTextView
+    private lateinit var backButton: ImageView
+    private lateinit var saveButton: MaterialButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plans)
 
         sessionManager = SessionManager(this)
+        db = ReminderDatabase(this)
 
         plansDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_plans)
 
@@ -115,9 +158,26 @@ class PlansActivity : AppCompatActivity() {
 //            }
 
 
-        recyclerFoodList.layoutManager = LinearLayoutManager(this)
-        adapterFoodList = AdapterFoodList(this, arrayListOf())
-        recyclerFoodList.adapter = adapterFoodList
+        recyclerFoodListHistory.layoutManager = LinearLayoutManager(this)
+        adapterFoodListHistoryHistory = AdapterFoodListHistory(this, arrayListOf())
+        adapterFoodListHistoryHistory.setOnItemClickListener(object: AdapterFoodListHistory.OnItemClickListener {
+            override fun onItemClick(food: Food.FoodResponse) {
+//                intentToFoodDetail(food)
+            }
+
+        })
+        recyclerFoodListHistory.adapter = adapterFoodListHistoryHistory
+
+        recyclerFoodListPlan.layoutManager = LinearLayoutManager(this)
+        adapterFoodListHistoryPlan = AdapterFoodListPlan(this, arrayListOf())
+        adapterFoodListHistoryPlan.setOnItemClickListener(object: AdapterFoodListPlan.OnItemClickListener {
+            override fun onItemClick(plan: Record.PlanResponse) {
+                TODO("Not yet implemented")
+            }
+
+
+        })
+        recyclerFoodListPlan.adapter = adapterFoodListHistoryPlan
 
         val locale = Locale("in", "ID")
         val sdf = SimpleDateFormat("dd/M/yyyy", locale)
@@ -129,6 +189,9 @@ class PlansActivity : AppCompatActivity() {
 
         currentTime.set(Calendar.HOUR_OF_DAY, 0)
 
+        Log.d("PlanDebug", "time: ${currentTime.timeInMillis}")
+
+
         plansViewModel.getRecordByDate(
             sessionManager.fetchAuthToken()!!,
             currentTime.timeInMillis
@@ -136,14 +199,36 @@ class PlansActivity : AppCompatActivity() {
             when (task) {
                 is Resource.Success -> {
                     Log.d("PlanDebug", task.toString())
-                    adapterFoodList.setData(task.data)
-                    adapterFoodList.notifyDataSetChanged()
+                    adapterFoodListHistoryHistory.setData(task.data)
+                    adapterFoodListHistoryHistory.notifyDataSetChanged()
                     calculateCurrentCalories(task.data!!)
                     setupChart(task.data)
                 }
 
                 is Resource.Failure -> {
 //
+                }
+                is Resource.Loading -> {
+
+                }
+            }
+        })
+
+        plansViewModel.getPlanByDate(
+            sessionManager.fetchAuthToken()!!,
+            currentTime.timeInMillis
+        ).observe(this, { task ->
+            when (task) {
+                is Resource.Success -> {
+                    adapterFoodListHistoryPlan.setData(task.data)
+                    adapterFoodListHistoryPlan.notifyDataSetChanged()
+                    Log.d("PlanRancangan", adapterFoodListHistoryPlan.dataset.toString())
+//                    calculateCurrentCalories(task.data!!)
+//                    setupChart(task.data)
+                }
+
+                is Resource.Failure -> {
+                    Log.d("PlanRancangan","data: ${task.toString()}")
                 }
                 is Resource.Loading -> {
 
@@ -169,8 +254,8 @@ class PlansActivity : AppCompatActivity() {
                 .observe(this, { task ->
                     when (task) {
                         is Resource.Success -> {
-                            adapterFoodList.setData(task.data)
-                            adapterFoodList.notifyDataSetChanged()
+                            adapterFoodListHistoryHistory.setData(task.data)
+                            adapterFoodListHistoryHistory.notifyDataSetChanged()
                         }
                         is Resource.Failure -> {
                         }
@@ -201,7 +286,8 @@ class PlansActivity : AppCompatActivity() {
     private fun setupViews(view: View) {
         nutritionsChart = view.findViewById(R.id.piechart_nutrition)
 //        menuAutoComplete = view.findViewById(R.id.menu_auto_complete_plans)
-        recyclerFoodList = view.findViewById(R.id.recycler_food_list_plans)
+        recyclerFoodListHistory = view.findViewById(R.id.recycler_food_list_history_plans)
+        recyclerFoodListPlan = view.findViewById(R.id.recycler_food_list_plan_plans)
         calendarButton = view.findViewById(R.id.button_calendar_plans)
 
         calorieProgressBar = view.findViewById(R.id.progress_bar_plans)
@@ -210,6 +296,36 @@ class PlansActivity : AppCompatActivity() {
         carbText = view.findViewById(R.id.text_value_karb)
         protText = view.findViewById(R.id.text_value_protein)
         dateText = view.findViewById(R.id.text_calendar_date_plans)
+
+        recyclerColorLegend = view.findViewById(R.id.recycler_color_legend)
+        val layoutManagerFlex = FlexboxLayoutManager(this)
+        layoutManagerFlex.flexDirection = FlexDirection.ROW
+//        layoutManagerFlex.justifyContent = JustifyContent.FLEX_END
+        recyclerColorLegend.layoutManager = layoutManagerFlex
+
+        adapterColorLegend = AdapterColorLegend(this, colorData)
+        recyclerColorLegend.adapter = adapterColorLegend
+
+        toolbar = findViewById(R.id.toolbar_plans)
+        toolbarText = toolbar.findViewById(R.id.title_page)
+        toolbarText.text = "Rancangan"
+        backButton = toolbar.findViewById(R.id.back_arrow_white)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
+
+        /*// process data
+        val colorList = arrayListOf<Record.ColorLegend>()
+        plansViewModel.getScheduleCount().observe(this, { task ->
+            when (task) {
+                is Resource.Success -> {
+
+                }
+                else -> {
+
+                }
+            }
+        })*/
     }
 
     private fun setupChart(data: List<Food.FoodResponse?>?) {
@@ -249,9 +365,17 @@ class PlansActivity : AppCompatActivity() {
 
         // set data
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(totalCarb)) // Karb
-        entries.add(PieEntry(totalFat)) // Lemak
-        entries.add(PieEntry(totalProtein)) // Protein
+
+        if (totalCalorie == 0f) {
+            entries.clear()
+            entries.add(PieEntry(100f))
+        } else {
+            // set data
+            entries.clear()
+            entries.add(PieEntry(totalCarb)) // Karb
+            entries.add(PieEntry(totalFat)) // Lemak
+            entries.add(PieEntry(totalProtein)) // Protein
+        }
 
         val dataSet = PieDataSet(entries, "Nutritions")
 
@@ -262,10 +386,15 @@ class PlansActivity : AppCompatActivity() {
         val colors: ArrayList<Int> = ArrayList()
 
 //        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
-
-        colors.add(resources.getColor(R.color.orange_300))
-        colors.add(resources.getColor(R.color.red_300))
-        colors.add(resources.getColor(R.color.green_300))
+        if (totalCalorie == 0f) {
+            colors.clear()
+            colors.add(ContextCompat.getColor(this, R.color.white))
+        } else {
+            colors.clear()
+            colors.add(ContextCompat.getColor(this, R.color.orange_300))
+            colors.add(ContextCompat.getColor(this, R.color.red_300))
+            colors.add(ContextCompat.getColor(this, R.color.green_300))
+        }
 //
 //        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
 //
@@ -290,6 +419,12 @@ class PlansActivity : AppCompatActivity() {
         nutritionsChart.highlightValues(null)
 
         nutritionsChart.invalidate()
+    }
+
+    private fun intentToFoodDetail(food: Food.FoodResponse) {
+        val intent = Intent(this, FoodDetailActivity::class.java)
+        intent.putExtra("FOODDATA", Gson().toJson(food))
+        startActivity(intent)
     }
 
 

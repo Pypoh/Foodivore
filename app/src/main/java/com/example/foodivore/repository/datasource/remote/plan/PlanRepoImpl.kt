@@ -26,9 +26,18 @@ class PlanRepoImpl : IPlanRepo {
     override suspend fun getPlanByDate(
         authToken: String,
         time: Long
-    ): Resource<List<Food.FoodResponse?>?> {
+    ): Resource<List<Record.PlanResponse?>?> {
         return try {
-            val planResult = ApiClient.getUserApiService(authToken).getRecordByDate(time)
+            val planResult = ApiClient.getUserApiService(authToken).getPlanByDate(time)
+            Resource.Success(planResult)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+    override suspend fun sendPlan(authToken: String, plan: Record.PlanRequest): Resource<Record.PlanResponse> {
+        return try {
+            val planResult = ApiClient.getUserApiService(authToken).postPlan(plan)
             Resource.Success(planResult)
         } catch (e: Exception) {
             Resource.Failure(e)
