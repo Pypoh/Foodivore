@@ -46,6 +46,10 @@ interface ApiServices {
     @GET(Constants.FOODS_URL)
     fun getFoodByNameAsync(@Query("name") name: String): Call<List<Food.FoodResponse?>>
 
+    @POST(Constants.INGREDIENT_URL + "/all")
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    fun getIngredientsByNameAsync(@Body request: Food.IngredientNames): Call<List<Food.IngredientResponse?>>
+
     @GET(Constants.FOODS_URL)
     suspend fun getFoodBySchedule(@Query("schedule") schedule: String): List<Food.FoodResponse>?
 
@@ -56,7 +60,7 @@ interface ApiServices {
     suspend fun getIngredientByType(@Query("type") type: String): List<Food.IngredientResponse>?
 
     @GET(Constants.RECORD_URL)
-    suspend fun getRecordByDate(@Query("time") time: Long): List<Food.FoodResponse?>
+    suspend fun getRecordByDate(@Query("time") time: Long): List<Record.RecordIngredient?>
 
     @GET(Constants.PLAN_URL)
     suspend fun getPlanByDate(@Query("time") time: Long): List<Record.PlanResponse?>
@@ -67,6 +71,13 @@ interface ApiServices {
     @POST(Constants.RECORD_URL)
     @Headers("Content-Type: application/json;charset=UTF-8")
     fun postRecord(@Body request: Record.RecordRequest): Call<Record.RecordResponse>
+
+    @POST(Constants.RECORD_URL)
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    suspend fun postRecordAsync(@Body request: Record.RecordRequest): Record.RecordResponse
+
+    @DELETE(Constants.PLAN_URL + "/{planId}")
+    suspend fun deletePlan(@Path("planId") planId: String): User.DefaultResponse
 
     @GET(Constants.CALORIE_URL)
     suspend fun getUserCalorie(): User.CalorieNeedsResponse
@@ -82,6 +93,9 @@ interface ApiServices {
 
     @GET(Constants.RECOMMENDATION_URL)
     suspend fun getRecommendation(@Query("schedule") schedule: String): List<Food.FoodResponse>?
+
+    @GET(Constants.SCHEDULE_URL)
+    suspend fun getSchedule(@Query("name") name: String): List<Food.Schedule>
 
 
 }

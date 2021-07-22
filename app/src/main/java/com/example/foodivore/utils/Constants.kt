@@ -27,6 +27,7 @@ class Constants {
         const val RECORD_URL = "api/user/record"
         const val PLAN_URL = "api/user/plan"
         const val RECOMMENDATION_URL = "api/recommendation"
+        const val SCHEDULE_URL = "api/schedule"
 
     }
 

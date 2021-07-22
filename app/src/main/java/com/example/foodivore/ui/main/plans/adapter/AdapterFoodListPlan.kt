@@ -4,13 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodivore.R
 import com.example.foodivore.repository.model.Food
 import com.example.foodivore.repository.model.Record
 import com.example.foodivore.scanner.camera.adapter.AdapterFoodCameraDialog
 import com.example.foodivore.ui.main.home.adapter.FoodCatalogueAdapter
+import com.example.foodivore.ui.main.plans.PlansActivity
 import com.google.android.material.textview.MaterialTextView
 
 class AdapterFoodListPlan(val context: Context, var dataset: List<Record.PlanResponse?>?) :
@@ -26,6 +29,7 @@ class AdapterFoodListPlan(val context: Context, var dataset: List<Record.PlanRes
         var title: MaterialTextView = itemView.findViewById(R.id.text_item_title_plans)
         var calorie: MaterialTextView = itemView.findViewById(R.id.text_item_calorie_plans)
         var layout: ConstraintLayout = itemView.findViewById(R.id.layout_food_item)
+        var bulletImage: ImageView = itemView.findViewById(R.id.image_item_list_plans)
 
         fun bind(model: Record.PlanResponse, listener: OnItemClickListener) {
             layout.setOnClickListener {
@@ -48,6 +52,7 @@ class AdapterFoodListPlan(val context: Context, var dataset: List<Record.PlanRes
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataset?.get(position)
         if (data != null) {
+            holder.bind(data, onItemClickListener)
             holder.title.text = "Racikan ${data.consumedAt}"
 
             var totalCalorie = 0f
@@ -57,6 +62,13 @@ class AdapterFoodListPlan(val context: Context, var dataset: List<Record.PlanRes
             }
 
             holder.calorie.text = "$totalCalorie kkal"
+
+            holder.bulletImage.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    getColorFromParent(data.consumedAt)
+                )
+            )
         }
     }
 
@@ -64,5 +76,13 @@ class AdapterFoodListPlan(val context: Context, var dataset: List<Record.PlanRes
 
     fun setData(data: List<Record.PlanResponse?>?) {
         this.dataset = data
+    }
+
+    fun getColorFromParent(name: String): Int {
+        return if (context is PlansActivity) {
+            context.colorData.find { it.name == name }!!.colorId
+        } else {
+            0
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +26,8 @@ import com.example.foodivore.ui.main.plans.adapter.AdapterColorLegend
 import com.example.foodivore.ui.main.plans.adapter.AdapterFoodListHistory
 import com.example.foodivore.ui.main.plans.adapter.AdapterFoodListPlan
 import com.example.foodivore.ui.main.plans.domain.PlanImpl
+import com.example.foodivore.ui.recommendation.RecommendationActivity
+import com.example.foodivore.utils.toast
 import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -66,13 +69,13 @@ class PlansActivity : AppCompatActivity() {
 //        R.color.purple_100
 //    )
 
-    private var colorData = arrayListOf<Record.ColorLegend>(
+    var colorData = arrayListOf<Record.ColorLegend>(
         Record.ColorLegend(R.color.green_100, "Sarapan"),
         Record.ColorLegend(R.color.orange_100, "Camilan Pagi"),
         Record.ColorLegend(R.color.blue_100, "Makan Siang"),
         Record.ColorLegend(R.color.red_100, "Camilan Sore"),
         Record.ColorLegend(R.color.purple_100, "Makan Malam"),
-        )
+    )
 
     private lateinit var calendarButton: ImageView
 
@@ -160,23 +163,24 @@ class PlansActivity : AppCompatActivity() {
 
         recyclerFoodListHistory.layoutManager = LinearLayoutManager(this)
         adapterFoodListHistoryHistory = AdapterFoodListHistory(this, arrayListOf())
-        adapterFoodListHistoryHistory.setOnItemClickListener(object: AdapterFoodListHistory.OnItemClickListener {
-            override fun onItemClick(food: Food.FoodResponse) {
-//                intentToFoodDetail(food)
+        adapterFoodListHistoryHistory.setOnItemClickListener(object :
+            AdapterFoodListHistory.OnItemClickListener {
+            override fun onItemClick(food: Record.RecordIngredient) {
+                toast("AdapterFoodListHistoryClicked")
             }
-
         })
         recyclerFoodListHistory.adapter = adapterFoodListHistoryHistory
 
         recyclerFoodListPlan.layoutManager = LinearLayoutManager(this)
         adapterFoodListHistoryPlan = AdapterFoodListPlan(this, arrayListOf())
-        adapterFoodListHistoryPlan.setOnItemClickListener(object: AdapterFoodListPlan.OnItemClickListener {
+        adapterFoodListHistoryPlan.setOnItemClickListener(object :
+            AdapterFoodListPlan.OnItemClickListener {
             override fun onItemClick(plan: Record.PlanResponse) {
-                TODO("Not yet implemented")
+                toast("AdapterFoodListPlanClicked")
+                showSelectionDialog(plan)
             }
-
-
         })
+
         recyclerFoodListPlan.adapter = adapterFoodListHistoryPlan
 
         val locale = Locale("in", "ID")
@@ -228,7 +232,7 @@ class PlansActivity : AppCompatActivity() {
                 }
 
                 is Resource.Failure -> {
-                    Log.d("PlanRancangan","data: ${task.toString()}")
+                    Log.d("PlanRancangan", "data: ${task.toString()}")
                 }
                 is Resource.Loading -> {
 
@@ -250,6 +254,14 @@ class PlansActivity : AppCompatActivity() {
                     .removeObservers(this)
             }
 
+            if (plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                    .hasActiveObservers()
+            ) {
+                plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                    .removeObservers(this)
+            }
+
+
             plansViewModel.getRecordByDate(sessionManager.fetchAuthToken()!!, it)
                 .observe(this, { task ->
                     when (task) {
@@ -263,20 +275,82 @@ class PlansActivity : AppCompatActivity() {
                         }
                     }
                 })
+
+            plansViewModel.getPlanByDate(sessionManager.fetchAuthToken()!!, it)
+                .observe(this, { task ->
+                    when (task) {
+                        is Resource.Success -> {
+                            adapterFoodListHistoryPlan.setData(task.data)
+                            adapterFoodListHistoryPlan.notifyDataSetChanged()
+                        }
+
+                        is Resource.Failure -> {
+                            Log.d("PlanRancangan", "error: ${task.throwable.message}")
+                        }
+                        is Resource.Loading -> {
+
+                        }
+                    }
+                })
+            dateText.text = sdf.format(it)
         }
         calendarButton.setOnClickListener {
             datePicker.show(supportFragmentManager, "DATE_PICKER_PLANS")
         }
     }
 
-    private fun calculateCurrentCalories(data: List<Food.FoodResponse?>?) {
+    private fun showSelectionDialog(food: Record.PlanResponse) {
+        val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertDialog.setTitle("Jadwal Makan")
+        val items = arrayOf("Edit Rancangan", "Pindahkan ke history")
+        alertDialog.setItems(
+            items
+        ) { dialog, which ->
+            when (which) {
+                0 -> {
+                    intentToRecommendation(food)
+                }
+
+                1 -> {
+                    // Pindahkan history
+                    val ingredientsData = arrayListOf<Food.IngredientRecord>()
+
+                    for (data in food.ingredient) {
+                        ingredientsData.add(Food.IngredientRecord(1, data.id))
+                    }
+
+                    val requestData = Record.RecordRequest(ingredientsData, food.consumedAt)
+
+                    plansViewModel.deletePlan(sessionManager.fetchAuthToken()!!, food.id)
+                    plansViewModel.postRecord(sessionManager.fetchAuthToken()!!, requestData)
+
+                }
+            }
+        }
+        val alert: AlertDialog = alertDialog.create()
+        alertDialog.setOnCancelListener {
+        }
+
+        alert.setCanceledOnTouchOutside(true)
+        alert.show()
+    }
+
+    private fun intentToRecommendation(food: Record.PlanResponse) {
+        val intent = Intent(this, RecommendationActivity::class.java)
+        intent.putExtra("RECOMMENDATION_DATA", Gson().toJson(food))
+        intent.putExtra("USERDATA", Gson().toJson(userData))
+        intent.putExtra("SCHEDULE", food.consumedAt)
+        startActivity(intent)
+    }
+
+    private fun calculateCurrentCalories(data: List<Record.RecordIngredient?>?) {
         if (data != null) {
             for (item in data) {
-                item?.let {
-                    totalCalorie += it.calorie
-                    totalCarb += it.carb
-                    totalFat += it.fat
-                    totalProtein += it.prot
+                for (ingredient in item!!.ingredients) {
+                    totalCalorie += (ingredient.ingredient.calorie * ingredient.count.toFloat())
+                    totalCarb += (ingredient.ingredient.carb * ingredient.count.toFloat())
+                    totalFat += (ingredient.ingredient.fat * ingredient.count.toFloat())
+                    totalProtein += (ingredient.ingredient.prot * ingredient.count.toFloat())
                 }
             }
         }
@@ -328,7 +402,7 @@ class PlansActivity : AppCompatActivity() {
         })*/
     }
 
-    private fun setupChart(data: List<Food.FoodResponse?>?) {
+    private fun setupChart(data: List<Record.RecordIngredient?>?) {
 //        nutritionsChart.setUsePercentValues(true)
         nutritionsChart.description.isEnabled = false
         nutritionsChart.legend.isEnabled = false

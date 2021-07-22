@@ -28,11 +28,11 @@ object Record {
     )
 
     data class RecordRequest(
-        @SerializedName("foodId")
-        var foodId: String,
+        @SerializedName("ingredient")
+        var ingredient: ArrayList<Food.IngredientRecord>,
 
         @SerializedName("schedule")
-        var type: String
+        var schedule: String
     )
 
     data class PlanRequest(
@@ -41,6 +41,9 @@ object Record {
 
         @SerializedName("ingredient")
         var ingredient: ArrayList<String> = arrayListOf(),
+
+        @SerializedName("planId")
+        var planId: String,
     )
 
     data class PlanResponse(
@@ -75,11 +78,31 @@ object Record {
         @SerializedName("name")
         var name: String,
 
-        @SerializedName("id")
+        @SerializedName("_id")
         var id: String,
 
         @SerializedName("calorie")
         var calorie: Float,
+    )
+
+    data class RecordIngredient(
+        @SerializedName("userId")
+        var userId: String,
+
+        @SerializedName("consumedAt")
+        var consumedAt: String,
+
+        @SerializedName("createdAt")
+        var createdAt: String,
+
+        @SerializedName("updatedAt")
+        var updatedAt: String,
+
+        @SerializedName("id")
+        var id: String,
+
+        @SerializedName("ingredients")
+        var ingredients: ArrayList<Food.IngredientParent>
     )
 
 }

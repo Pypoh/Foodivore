@@ -9,4 +9,7 @@ class RecommendationImpl(private val useCase: IRecommendationRepo) : IRecommenda
         authToken: String,
         schedule: String
     ): Resource<List<Food.FoodResponse?>?> = useCase.getRecommendation(authToken, schedule)
+
+    override suspend fun getSchedule(schedule: String): Resource<List<Food.Schedule>> =
+        useCase.getSchedule(schedule)
 }

@@ -11,11 +11,9 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -32,25 +30,22 @@ import com.example.foodivore.repository.datasource.remote.plan.PlanRepoImpl
 import com.example.foodivore.repository.datasource.remote.profile.ProfileRepoImpl
 import com.example.foodivore.repository.model.Feature
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.repository.model.User
 import com.example.foodivore.ui.auth.domain.AuthImpl
 import com.example.foodivore.ui.food.catalogue.FoodCatalogueActivity
 import com.example.foodivore.ui.food.domain.FoodImpl
 import com.example.foodivore.ui.main.MainActivity
-import com.example.foodivore.ui.main.article.ArticleActivity
-import com.example.foodivore.ui.main.article.detail.ArticleDetailActivity
 import com.example.foodivore.ui.main.home.adapter.FeatureServiceAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodRecyclerAdapter
 import com.example.foodivore.ui.main.home.adapter.FoodTrendRecyclerAdapter
 import com.example.foodivore.ui.main.home.decoration.HorizontalSpaceItemDecoration
 import com.example.foodivore.ui.main.home.decoration.RecyclerViewItemDecoration
 import com.example.foodivore.ui.main.home.domain.HomeImpl
-import com.example.foodivore.ui.main.plans.PlansActivity
 import com.example.foodivore.ui.main.profile.ProfileVMFactory
 import com.example.foodivore.ui.main.profile.ProfileViewModel
 import com.example.foodivore.ui.main.profile.domain.ProfileImpl
 import com.example.foodivore.ui.recommendation.RecommendationActivity
-import com.example.foodivore.utils.Constants
 import com.example.foodivore.utils.viewobject.Resource
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -161,7 +156,7 @@ class HomeFragment : Fragment() {
             when (task) {
                 is Resource.Success -> {
                     calculateCurrentCalories(task.data)
-                    setupChart(task.data)
+                    setupChart()
                 }
 
                 is Resource.Failure -> {
@@ -179,7 +174,7 @@ class HomeFragment : Fragment() {
 
         fetchFoods()
 
-        setupChart(null)
+        setupChart()
 
 //        requestPermission()
 
@@ -309,7 +304,7 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun setupChart(data: List<Food.FoodResponse?>?) {
+    private fun setupChart() {
 //        nutritionsChart.setUsePercentValues(true)
         nutritionsChart.description.isEnabled = false
         nutritionsChart.legend.isEnabled = false
@@ -407,14 +402,14 @@ class HomeFragment : Fragment() {
         textValueProt.text = "$totalProtein gram"
     }
 
-    private fun calculateCurrentCalories(data: List<Food.FoodResponse?>?) {
+    private fun calculateCurrentCalories(data: List<Record.RecordIngredient?>?) {
         if (data != null) {
             for (item in data) {
-                item?.let {
-                    totalCalorie += it.calorie
-                    totalCarb += it.carb
-                    totalFat += it.fat
-                    totalProtein += it.prot
+                for (ingredient in item!!.ingredients) {
+                    totalCalorie += ingredient.ingredient.calorie
+                    totalCarb += ingredient.ingredient.carb
+                    totalFat += ingredient.ingredient.fat
+                    totalProtein += ingredient.ingredient.prot
                 }
             }
         }

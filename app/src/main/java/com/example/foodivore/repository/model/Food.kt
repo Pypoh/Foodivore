@@ -75,12 +75,23 @@ object  Food {
         var id: String
     )
 
+    data class IngredientParent(
+        @SerializedName("_id")
+        var id: String,
+
+        @SerializedName("count")
+        var count: Int,
+
+        @SerializedName("ingredient")
+        var ingredient: IngredientResponse,
+    )
+
     data class IngredientResponse(
         @SerializedName("imageUrl")
         var imageUrl: String,
 
         @SerializedName("name")
-        var title: String,
+        var name: String,
 
         @SerializedName("calorie")
         var calorie: Float,
@@ -106,6 +117,9 @@ object  Food {
         @SerializedName("id")
         var id: String,
 
+//        @SerializedName("count")
+//        var count: Int = 0,
+
         var selected: Boolean = false
     )
 
@@ -115,6 +129,27 @@ object  Food {
 
         @SerializedName("name")
         var name: String,
+    )
+
+    data class IngredientNames(
+        @SerializedName("names")
+        var names: ArrayList<String> = arrayListOf()
+    )
+
+    data class IngredientCount(
+        @SerializedName("count")
+        var count: Int,
+
+        @SerializedName("ingredient")
+        var ingredient: IngredientResponse,
+    )
+
+    data class IngredientRecord(
+        @SerializedName("count")
+        var count: Int,
+
+        @SerializedName("ingredient")
+        var ingredient: String,
     )
 
 

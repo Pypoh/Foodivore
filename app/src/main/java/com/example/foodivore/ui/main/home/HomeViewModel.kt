@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.foodivore.repository.datasource.local.data.ReminderEntity
 import com.example.foodivore.repository.datasource.local.data.domain.IReminderDbHelper
 import com.example.foodivore.repository.model.Food
+import com.example.foodivore.repository.model.Record
 import com.example.foodivore.ui.food.domain.IFood
 import com.example.foodivore.ui.main.home.domain.IHome
 import com.example.foodivore.utils.viewobject.Resource
@@ -18,7 +19,7 @@ class HomeViewModel(
 ) :
     ViewModel() {
 
-    fun getPlanByDate(jwtToken: String, time: Long): LiveData<Resource<List<Food.FoodResponse?>?>> {
+    fun getPlanByDate(jwtToken: String, time: Long): LiveData<Resource<List<Record.RecordIngredient?>?>> {
         return liveData(Dispatchers.IO) {
             emit(Resource.Loading())
             try {

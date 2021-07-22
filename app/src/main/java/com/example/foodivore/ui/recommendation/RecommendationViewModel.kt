@@ -74,4 +74,21 @@ class RecommendationViewModel(
         }
     }
 
+    fun getSchedule(
+        schedule: String
+    ): LiveData<Resource<List<Food.Schedule>>> {
+        return liveData(Dispatchers.IO) {
+            emit(Resource.Loading())
+            try {
+                val result = useCase.getSchedule(schedule)
+                Log.d("CalorieMeter", "data: $result")
+
+                emit(result)
+            } catch (e: Exception) {
+                Log.d("CalorieMeter", "error: ${e.message}")
+                emit(Resource.Failure(e))
+            }
+        }
+    }
+
 }

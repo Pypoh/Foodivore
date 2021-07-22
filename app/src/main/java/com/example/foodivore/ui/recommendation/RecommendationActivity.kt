@@ -50,6 +50,7 @@ class RecommendationActivity : AppCompatActivity() {
 
     private lateinit var userData: User.PreTestData
     private lateinit var nextScheduleData: String
+    private var recommendationData: Record.PlanResponse? = null
     var totalCalorie = 0f
 
     // Views
@@ -69,6 +70,8 @@ class RecommendationActivity : AppCompatActivity() {
     private lateinit var backButton: ImageView
     private lateinit var saveButton: MaterialButton
 
+    private var scheduleData: Food.Schedule? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recommendation)
@@ -81,12 +84,17 @@ class RecommendationActivity : AppCompatActivity() {
         userData = Gson().fromJson(intent.getStringExtra("USERDATA"), User.PreTestData::class.java)
         calorieNeeds = userData.calorieNeeds
         nextScheduleData = intent.getStringExtra("SCHEDULE").toString()
+        recommendationData = Gson().fromJson(
+            intent.getStringExtra("RECOMMENDATION_DATA"),
+            Record.PlanResponse::class.java
+        )
+        Log.d("RecActivityInt", "rec data: $recommendationData")
 
         setupViews(recommendationDataBinding.root)
 
 //        setupMenu()
 
-        fetchData()
+        fetchData(nextScheduleData)
 
     }
 
@@ -173,20 +181,17 @@ class RecommendationActivity : AppCompatActivity() {
                 }
             }
         }
-        initProgressBar()
-    }
-
-    private fun initProgressBar() {
-
     }
 
     @JvmName("setTotalCalorie1")
     fun setTotalCalorie(calorie: Float) {
-        calorieProgressBar.progress = ((calorie / calorieNeeds) * 100).toInt()
-        valueProgressBar.text = "$calorie / $calorieNeeds cal"
+        val totalCalorie = (scheduleData!!.minPercentage / 100) * calorieNeeds
+        Log.d("CalorieMeter", "TotalCalorie: $totalCalorie")
+        calorieProgressBar.progress = ((calorie / totalCalorie) * 100).toInt()
+        valueProgressBar.text = "$calorie / $totalCalorie cal"
     }
 
-    private fun fetchData() {
+    private fun fetchData(nextScheduleData: String) {
         recommendationViewModel.getIngredients().observe(this, { task ->
             when (task) {
                 is Resource.Loading -> {
@@ -194,9 +199,51 @@ class RecommendationActivity : AppCompatActivity() {
                 }
 
                 is Resource.Success -> {
-                    adapterRecommendation.dataset =
-                        recommendationViewModel.splitListBySchedule(task.data)
+                    val splittedDataset = recommendationViewModel.splitListBySchedule(task.data)
+                    if (recommendationData != null) {
+                        try {
+                            for (item in recommendationData!!.ingredient) {
+                                for (storedData in splittedDataset) {
+                                    for (storedIds in storedData.second) {
+                                        if (item.id == storedIds!!.id) {
+                                            storedIds.selected = true
+                                            Log.d(
+                                                "RecActivityTry",
+                                                "item comparing ${item.id} : ${storedIds.id}"
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.d("RecActivty", "try errror: ${e.message}")
+                        }
+                    }
+                    adapterRecommendation.dataset = splittedDataset
+
+                    Log.d("RecActivty", task.data.toString())
                     adapterRecommendation.notifyDataSetChanged()
+                }
+
+                is Resource.Failure -> {
+                    Log.d("RecActivty", "error: ${task.throwable}")
+                }
+
+                else -> {
+
+                }
+            }
+        })
+
+        recommendationViewModel.getSchedule(nextScheduleData).observe(this, { task ->
+            when (task) {
+                is Resource.Loading -> {
+
+                }
+
+                is Resource.Success -> {
+                    scheduleData = task.data.first()
+                    setTotalCalorie(0f)
                 }
 
                 is Resource.Failure -> {
@@ -252,10 +299,16 @@ class RecommendationActivity : AppCompatActivity() {
             "Simpan"
         ) { _, _ ->
             toast("Plan Saved! ")
+            val planId = if (recommendationData == null) {
+                ""
+            } else {
+                recommendationData!!.id
+            }
             recommendationViewModel.sendPlan(
                 sessionManager.fetchAuthToken()!!, Record.PlanRequest(
                     nextScheduleData,
-                    adapterRecommendation.selectedFoodIds
+                    adapterRecommendation.selectedFoodIds,
+                    planId
                 )
             ).observe(this, { task ->
                 when (task) {

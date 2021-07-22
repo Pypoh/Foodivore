@@ -34,7 +34,7 @@ class AdapterRecommendationItem(val context: Context, var dataset: List<Food.Ing
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = dataset[position]
         holder.bind(data!!, onItemClickListener, position)
-        holder.title.text = data.title
+        holder.title.text = data.name
         holder.calorie.text = "${data.calorie} kal"
         Glide.with(context)
             .load(data.imageUrl)

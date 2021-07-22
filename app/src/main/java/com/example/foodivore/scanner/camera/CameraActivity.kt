@@ -18,7 +18,6 @@ package com.example.foodivore.scanner.camera
 import android.Manifest
 import android.app.Fragment
 import android.content.Context
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.hardware.camera2.CameraAccessException
@@ -244,84 +243,113 @@ abstract class CameraActivity : AppCompatActivity(), OnImageAvailableListener,
 
 //                cameraViewModel.getFoodByName(results.first()!!.title.toString())
 
-                val name = results.first()!!.title.toString()
+//                val name = results.first()!!.title.toString()
+
+                val namesList = results.map { it?.title }.distinct().toTypedArray()
+                val names = Food.IngredientNames()
+                for (item in namesList) {
+                    names.names.add(item!!)
+                }
+
+                Log.d(
+                    "DetectionResultActivty",
+                    "Getting Data Remote: $names"
+                )
 
                 try {
-                    ApiClient.getApiService().getFoodByNameAsync(name)
-                        .enqueue(object : Callback<List<Food.FoodResponse?>> {
+                    ApiClient.getApiService().getIngredientsByNameAsync(names)
+                        .enqueue(object : Callback<List<Food.IngredientResponse?>> {
                             override fun onResponse(
-                                call: Call<List<Food.FoodResponse?>>,
-                                response: Response<List<Food.FoodResponse?>>
+                                call: Call<List<Food.IngredientResponse?>>,
+                                response: Response<List<Food.IngredientResponse?>>
                             ) {
-                                Log.d("CameraActivity", "${response.body()}")
+                                Log.d(
+                                    "DetectionResultActivty",
+                                    "Getting Response Body: ${response.body()}"
+                                )
+                                Log.d(
+                                    "DetectionResultActivty",
+                                    "Getting Response Code: ${response.code()}"
+                                )
+                                Log.d(
+                                    "DetectionResultActivty",
+                                    "Getting Response Raw: ${response.raw()}"
+                                )
                                 showBottomDialog(response.body())
                             }
 
                             override fun onFailure(
-                                call: Call<List<Food.FoodResponse?>>,
+                                call: Call<List<Food.IngredientResponse?>>,
                                 t: Throwable
                             ) {
-                                Log.d("CameraActivity", "${t.message}")
+                                Log.d("DetectionResultActivty", "error failure: ${t.message}")
 
                             }
 
                         })
 
                 } catch (e: Exception) {
-
+                    Log.d("DetectionResultActivty", "error try: ${e.message}")
                 }
             }
         }
 
     }
 
-    private fun showBottomDialog(foods: List<Food.FoodResponse?>?) {
+    private fun showBottomDialog(foods: List<Food.IngredientResponse?>?) {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.dialog_bottom_camera)
 
+        val arrayFoods = arrayListOf<Food.IngredientCount>()
+
+        for (data in foods!!) {
+            arrayFoods.add(Food.IngredientCount(1, data!!))
+        }
+
         recyclerCameraDialog = bottomSheetDialog.findViewById(R.id.recycler_camera_dialog)!!
         recyclerCameraDialog.layoutManager = LinearLayoutManager(this)
-        adapterCameraDialog = AdapterFoodCameraDialog(this, foods)
+        adapterCameraDialog = AdapterFoodCameraDialog(this, arrayFoods)
         recyclerCameraDialog.adapter = adapterCameraDialog
 
         selectFoodButtonDialog = bottomSheetDialog.findViewById(R.id.button_select_dialog_camera)!!
         selectFoodButtonDialog.setOnClickListener {
-            adapterCameraDialog.getItemByPosition(adapterCameraDialog.getLastCheckedItem())
-                .let { data ->
-                    if (data != null) {
-                        val record = Record.RecordRequest(data.id, scheduleString)
-                        Log.d(
-                            "CameraActivity",
-                            "data: ${record}, token: ${sessionManager.fetchAuthToken()}"
-                        )
-                        try {
-                            ApiClient.getUserApiService(sessionManager.fetchAuthToken())
-                                .postRecord(record)
-                                .enqueue(object : Callback<Record.RecordResponse> {
-                                    override fun onResponse(
-                                        call: Call<Record.RecordResponse>,
-                                        response: Response<Record.RecordResponse>
-                                    ) {
-                                        Log.d(
-                                            "CameraActivity",
-                                            "response: ${response.body()}, code: ${response.code()}"
-                                        )
-                                    }
 
-                                    override fun onFailure(
-                                        call: Call<Record.RecordResponse>,
-                                        t: Throwable
-                                    ) {
-                                        Log.d("CameraActivity", "error: ${t.message}")
-                                    }
+            val ingredientsData = arrayListOf<Food.IngredientRecord>()
 
-                                })
-                        } catch (e: Exception) {
+            for (data in adapterCameraDialog.dataset) {
+                ingredientsData.add(Food.IngredientRecord(data.count, data.ingredient.id))
+            }
 
+            val requestData = Record.RecordRequest(ingredientsData, scheduleString)
+
+            Log.d(
+                "CameraActivity",
+                "data: ${requestData}, token: ${sessionManager.fetchAuthToken()}"
+            )
+            try {
+                ApiClient.getUserApiService(sessionManager.fetchAuthToken())
+                    .postRecord(requestData)
+                    .enqueue(object : Callback<Record.RecordResponse> {
+                        override fun onResponse(
+                            call: Call<Record.RecordResponse>,
+                            response: Response<Record.RecordResponse>
+                        ) {
+                            Log.d(
+                                "CameraActivity",
+                                "response: ${response.body()}, code: ${response.code()}"
+                            )
                         }
-                    }
 
-                }
+                        override fun onFailure(
+                            call: Call<Record.RecordResponse>,
+                            t: Throwable
+                        ) {
+                            Log.d("CameraActivity", "error: ${t.message}")
+                        }
+                    })
+            } catch (e: Exception) {
+
+            }
         }
 
         rescanFoodButtonDialog = bottomSheetDialog.findViewById(R.id.button_rescan_dialog_camera)!!

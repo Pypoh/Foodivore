@@ -9,4 +9,8 @@ interface IRecommendationRepo {
         schedule: String
     ): Resource<List<Food.FoodResponse?>?>
 
+    suspend fun getSchedule(
+        schedule: String
+    ): Resource<List<Food.Schedule>>
+
 }
